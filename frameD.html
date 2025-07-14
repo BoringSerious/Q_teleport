@@ -403,6 +403,70 @@
       user-select: none;
       height: 32px;
     }
+    .pauli-expect-block {
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-start;
+      align-items: flex-start;
+      margin-top: 10px;
+      margin-bottom: 10px;
+      gap: 10px;
+      padding-left: 16px;
+      padding-right: 16px;
+    }
+    .pauli-row {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      width: 100%;
+      margin-bottom: 0;
+    }
+    .pauli-label {
+      width: 2.5em;
+      min-width: 2.5em;
+      margin-left: 8px;
+    }
+    .pauli-box {
+      flex: 1 1 0;
+      min-width: 0;
+      height: 28px;
+      border: 1px solid #39382c;
+      border-radius: 5px;
+      background: #222;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #fff;
+      font-weight: bold;
+      font-size: 0.98em;
+      transition: background 0.2s;
+    }
+    #block1 {
+      display: flex;
+      flex-direction: column;
+      justify-content: stretch;
+      height: 100%;
+    }
+    .pauli-expect-block {
+      flex: 1 1 auto;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-evenly;
+      align-items: flex-start;
+      height: 100%;
+      margin: 0;
+      gap: 0;
+    }
+    .pauli-row {
+      margin-bottom: 0;
+    }
+    #block1 .block-label {
+      margin-bottom: 0.8em;
+      z-index: 1;
+    }
+    .pauli-expect-block {
+      height: calc(100% - 2.5em);
+    }
   </style>
 </head>
 <body>
@@ -417,8 +481,13 @@
       <div id="blockContent">Block 0 content...</div>
     </div>
     <div class="block" id="block1">
-      <span class="block-label">Block 1</span>
+      <span class="block-label">Block1</span>
       <span class="btn-help">?</span>
+      <div class="pauli-expect-block">
+        <div class="pauli-row"><span class="pauli-label">Q₁</span><div class="pauli-box" id="pauli-q1-left"></div><div class="pauli-box" id="pauli-q1-right"></div></div>
+        <div class="pauli-row"><span class="pauli-label">Q₂</span><div class="pauli-box" id="pauli-q2-left"></div><div class="pauli-box" id="pauli-q2-right"></div></div>
+        <div class="pauli-row"><span class="pauli-label">Q₃</span><div class="pauli-box" id="pauli-q3-left"></div><div class="pauli-box" id="pauli-q3-right"></div></div>
+      </div>
     </div>
     <div class="block" id="block2-block">
       <div id="block2" class="block-inner">
@@ -537,6 +606,8 @@
         updateSchrodingerGrid(idx);
         // 新增：同步更新 block4 的 Heisenberg picture
         updateHeisenbergGrid(idx);
+        // 新增：同步更新 block1 的 Pauli expectation
+        updatePauliExpectation(idx);
       }
       setThumb(0);
       let dragging = false;
@@ -585,6 +656,8 @@
       // 初始化 block4 的 Heisenberg picture
       initGridHei();
       updateHeisenbergGrid(0);
+      // 初始化 block1 的 Pauli expectation（移到最後，確保DOM已渲染）
+      setTimeout(() => updatePauliExpectation(0), 0);
     }
 
     // 切換整個 block 顯示/隱藏
@@ -821,6 +894,57 @@
           cell.classList.remove('active-ut');
         }
       }
+    }
+    // --- Pauli expectation 移植 ---
+    const pauliExpectationData = [
+      { q1: "(0,1)", q2: "(0,1)", q3: "(0,1)" },//t=0
+      { q1: "(0,1)", q2: "(1,0)", q3: "(0,1)" },//t=1
+      { q1: "(0,1)", q2: "(0,0)", q3: "(0,0)" },//t=2
+      { q1: "(2αβ,α²-β²)", q2: "(0,0)", q3: "(0,0)" },//t=3
+      { q1: "(0,α²-β²)", q2: "(0,0)", q3: "(0,0)" },//t=4
+      { q1: "(α²-β²,0)", q2: "(0,0)", q3: "(0,0)" },//t=5
+      { q1: "(α²-β²,0)", q2: "(1,0)", q3: "(0,α²-β²)" },//t=6
+      { q1: "(α²-β²,0)", q2: "(1,0)", q3: "(α²-β²,0)" },//t=7
+      { q1: "(1,0)", q2: "(1,0)", q3: "(α²-β²,2αβ)" },//t=8
+      { q1: "(1,0)", q2: "(1,0)", q3: "(2αβ,α²-β²)" },//t=9
+    ];
+    function pauliValToColor(val) {
+      if (!isNaN(val)) {
+        val = parseFloat(val);
+        const strength = Math.min(1, Math.abs(val));
+        if (val > 0) return `rgba(115, 199, 243, ${strength})`;  // 藍
+        if (val < 0) return `rgba(242, 77, 77, ${strength})`;    // 紅
+      }
+      if (typeof val === 'string') {
+        if (val.includes('α') || val.includes('β')) {
+          return '#f24d4d';  // 紅色代表含有 α² - β² 等
+        }
+      }
+      return "#222";  // 非數值則用深色背景
+    }
+    function pauliFormat(val) {
+      if (!isNaN(val)) {
+        val = parseFloat(val);
+        return (val >= 0 ? '+' : '') + val.toFixed(2);
+      }
+      return val;
+    }
+    function extractPair(val) {
+      if (typeof val === 'string' && val.startsWith('(')) {
+        const [left, right] = val.replace(/[()]/g, '').split(',');
+        return [left, right];
+      }
+      return [val, val];
+    }
+    function updatePauliExpectation(t) {
+      const expect = pauliExpectationData[t] || {q1: 0, q2: 0, q3: 0};
+      ['q1', 'q2', 'q3'].forEach((q, i) => {
+        const [left, right] = extractPair(expect[q]);
+        document.getElementById(`pauli-q${i+1}-left`).textContent = pauliFormat(left);
+        document.getElementById(`pauli-q${i+1}-right`).textContent = pauliFormat(right);
+        document.getElementById(`pauli-q${i+1}-left`).style.background = pauliValToColor(left);
+        document.getElementById(`pauli-q${i+1}-right`).style.background = pauliValToColor(right);
+      });
     }
   </script>
 </body>
