@@ -397,11 +397,14 @@
       display: flex;
       align-items: center;
       justify-content: center;
-      font-size: 1.5em;
+      font-size: 2.2em;
       color: #2d5ec7;
-      margin-left: 8px;
+      margin-left: 12px;
       user-select: none;
-      height: 32px;
+      width: 36px;
+      height: 36px;
+      line-height: 36px;
+      pointer-events: auto;
     }
     .pauli-expect-block {
       display: flex;
@@ -528,7 +531,7 @@
         <div class="simple-slider-track">
           <div class="simple-slider-thumb"></div>
         </div>
-        <div class="simple-slider-arrow">&#9654;</div>
+        <div class="simple-slider-arrow" id="slider-arrow-btn">&#9654;</div>
       </div>
     </div>
     <div class="block" id="block6-block">
@@ -610,6 +613,14 @@
         updatePauliExpectation(idx);
       }
       setThumb(0);
+      // 新增：三角形按鈕點擊事件
+      document.getElementById('slider-arrow-btn').onclick = function(e) {
+        if (valueIdx < ticks.length - 1) {
+          setThumb(valueIdx + 1);
+        } else {
+          setThumb(0);
+        }
+      };
       let dragging = false;
       let trackRect = null;
       function preventSelection(e) {
@@ -622,15 +633,6 @@
         document.body.style.userSelect = 'none';
         document.addEventListener('selectstart', preventSelection);
       };
-      // 手機觸控支援
-      thumb.addEventListener('touchstart', function(e) {
-        dragging = true;
-        trackRect = track.getBoundingClientRect();
-        document.body.style.userSelect = 'none';
-        document.addEventListener('selectstart', preventSelection);
-        e.preventDefault();
-      }, {passive: false});
-
       document.addEventListener('mousemove', function(e) {
         if (!dragging) return;
         let x = e.clientX - trackRect.left;
@@ -640,29 +642,11 @@
         let idx = tickPercents.reduce((prev, curr, i) => Math.abs(curr-percent)<Math.abs(tickPercents[prev]-percent)?i:prev, 0);
         setThumb(idx);
       });
-      document.addEventListener('touchmove', function(e) {
-        if (!dragging) return;
-        let touch = e.touches[0];
-        let x = touch.clientX - trackRect.left;
-        x = Math.max(0, Math.min(x, trackRect.width));
-        let percent = x / trackRect.width;
-        let idx = tickPercents.reduce((prev, curr, i) => Math.abs(curr-percent)<Math.abs(tickPercents[prev]-percent)?i:prev, 0);
-        setThumb(idx);
-        e.preventDefault();
-      }, {passive: false});
-
       document.addEventListener('mouseup', function(e) {
         dragging = false;
         document.body.style.userSelect = '';
         document.removeEventListener('selectstart', preventSelection);
       });
-      document.addEventListener('touchend', function(e) {
-        dragging = false;
-        document.body.style.userSelect = '';
-        document.removeEventListener('selectstart', preventSelection);
-        e.preventDefault();
-      }, {passive: false});
-
       // 點擊軌道也能移動
       track.onclick = function(e) {
         if (e.target === thumb) return;
@@ -673,17 +657,6 @@
         let idx = tickPercents.reduce((prev, curr, i) => Math.abs(curr-percent)<Math.abs(tickPercents[prev]-percent)?i:prev, 0);
         setThumb(idx);
       };
-      track.addEventListener('touchstart', function(e) {
-        if (e.target === thumb) return;
-        trackRect = track.getBoundingClientRect();
-        let touch = e.touches[0];
-        let x = touch.clientX - trackRect.left;
-        x = Math.max(0, Math.min(x, trackRect.width));
-        let percent = x / trackRect.width;
-        let idx = tickPercents.reduce((prev, curr, i) => Math.abs(curr-percent)<Math.abs(tickPercents[prev]-percent)?i:prev, 0);
-        setThumb(idx);
-        e.preventDefault();
-      }, {passive: false});
     }
     window.onload = function() {
       bindHelpButtons();
