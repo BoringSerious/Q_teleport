@@ -622,6 +622,15 @@
         document.body.style.userSelect = 'none';
         document.addEventListener('selectstart', preventSelection);
       };
+      // 手機觸控支援
+      thumb.addEventListener('touchstart', function(e) {
+        dragging = true;
+        trackRect = track.getBoundingClientRect();
+        document.body.style.userSelect = 'none';
+        document.addEventListener('selectstart', preventSelection);
+        e.preventDefault();
+      }, {passive: false});
+
       document.addEventListener('mousemove', function(e) {
         if (!dragging) return;
         let x = e.clientX - trackRect.left;
@@ -631,11 +640,29 @@
         let idx = tickPercents.reduce((prev, curr, i) => Math.abs(curr-percent)<Math.abs(tickPercents[prev]-percent)?i:prev, 0);
         setThumb(idx);
       });
+      document.addEventListener('touchmove', function(e) {
+        if (!dragging) return;
+        let touch = e.touches[0];
+        let x = touch.clientX - trackRect.left;
+        x = Math.max(0, Math.min(x, trackRect.width));
+        let percent = x / trackRect.width;
+        let idx = tickPercents.reduce((prev, curr, i) => Math.abs(curr-percent)<Math.abs(tickPercents[prev]-percent)?i:prev, 0);
+        setThumb(idx);
+        e.preventDefault();
+      }, {passive: false});
+
       document.addEventListener('mouseup', function(e) {
         dragging = false;
         document.body.style.userSelect = '';
         document.removeEventListener('selectstart', preventSelection);
       });
+      document.addEventListener('touchend', function(e) {
+        dragging = false;
+        document.body.style.userSelect = '';
+        document.removeEventListener('selectstart', preventSelection);
+        e.preventDefault();
+      }, {passive: false});
+
       // 點擊軌道也能移動
       track.onclick = function(e) {
         if (e.target === thumb) return;
@@ -646,6 +673,17 @@
         let idx = tickPercents.reduce((prev, curr, i) => Math.abs(curr-percent)<Math.abs(tickPercents[prev]-percent)?i:prev, 0);
         setThumb(idx);
       };
+      track.addEventListener('touchstart', function(e) {
+        if (e.target === thumb) return;
+        trackRect = track.getBoundingClientRect();
+        let touch = e.touches[0];
+        let x = touch.clientX - trackRect.left;
+        x = Math.max(0, Math.min(x, trackRect.width));
+        let percent = x / trackRect.width;
+        let idx = tickPercents.reduce((prev, curr, i) => Math.abs(curr-percent)<Math.abs(tickPercents[prev]-percent)?i:prev, 0);
+        setThumb(idx);
+        e.preventDefault();
+      }, {passive: false});
     }
     window.onload = function() {
       bindHelpButtons();
