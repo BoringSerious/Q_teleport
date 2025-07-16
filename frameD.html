@@ -146,7 +146,7 @@
     }
 
     /* Block position corresponds to image */
-    #block0 { grid-column: 1 / 2; grid-row: 1 / 3; background-color: #fffff0; }
+    #block0 { grid-column: 1 / 2; grid-row: 1 / 3; background-color: #fffff0; overflow-y: auto; }
     #block1 { grid-column: 1 / 2; grid-row: 3 / 4; background-color: #ffe9b3; }
     #block2 { grid-column: 2 / 3; grid-row: 1 / 2; background-color: #fffff0; }
     #block6 { grid-column: 2 / 3; grid-row: 2 / 3; background-color: #fffff0; }
@@ -271,9 +271,8 @@
       grid-template-columns: repeat(11, 1fr);
       grid-template-rows: repeat(4, 1fr);
       gap: 0.2vw;
-      width: calc(100% - 20px);
-      margin: 0 10px;
-      min-width: 120px;
+      width: 100%;
+      margin: 0 0;
       margin-bottom: 50px;
     }
     .cell {
@@ -286,12 +285,14 @@
       display: flex;
       align-items: center;
       justify-content: center;
-      font-size: clamp(0.9em, 1.5vw, 1.15em);
       font-family: 'Quicksand', 'Arial Rounded MT Bold', 'Poppins', 'circular', 'Segoe UI Rounded', 'Segoe UI', 'Arial', sans-serif;
       font-weight: 700;
-      transition: background 0.2s, color 0.2s, opacity 0.2s;
+      transition: background 0.2s, color 0.2s, opacity 0.2s, font-size 0.2s;
       color: #c9b18a;
       opacity: 0.25;
+      min-width: 0;
+      min-height: 0;
+      box-sizing: border-box;
     }
     .cell.gate { opacity: 1; color: #222; font-weight: bold; }
     .cell.gate.highlight {
@@ -352,7 +353,7 @@
       align-items: center;
       justify-content: center;
       width: 100%;
-      padding: 30px 10px 20px 3px;
+      padding: 30px 10px 20px 10px;
     }
     #block4-heisenberg {
       display: flex;
@@ -360,7 +361,7 @@
       align-items: center;
       justify-content: center;
       width: 100%;
-      padding: 30px 10px 20px 3px;
+      padding: 30px 10px 20px 10px;
       background: #fffff0;
     }
     #grid-hei .cell {
@@ -475,10 +476,15 @@
       overflow-wrap: break-word;
       word-break: break-all;
       margin-top: 32px;
+      text-align: left !important;
+    }
+    #block3-quantum-state mjx-container {
+      justify-content: flex-start !important;
+      text-align: left !important;
     }
     #block6-descriptor {
       background: #ffe9b3;
-      padding: 10px 30px;
+      padding: 10px 10px;
       color: #222;
       margin-top: 24px;
     }
@@ -493,10 +499,10 @@
       font-family: 'Fira Mono', 'Menlo', 'Consolas', monospace;
       font-size: 1.12em;
       color: #2f4f78;
-      margin-bottom: 0;
-      line-height: 1.1;
-      padding-left: 1px;
-      justify-content: center;
+      margin-bottom: 4px;
+      line-height: 1.8;
+      padding-left: 3px;
+      justify-content: flex-start;
       align-items: center;
       display: flex;
       width: 100%;
@@ -540,6 +546,7 @@
       position: relative;
       border-radius: 16px;
       box-shadow: 0 4px 16px 0 rgba(0,0,0,0.15), 0 1.5px 4px 0 rgba(0,0,0,0.10);
+      overflow-y: auto;
     }
     .block7-properties .block-label {
       position: absolute;
@@ -553,6 +560,12 @@
       padding: 1px 8px;
       font-weight: bold;
       z-index: 2;
+    }
+    .block7-content, .block7-content-secondary {
+      word-break: break-word;
+      overflow-wrap: break-word;
+      max-width: 100%;
+      box-sizing: border-box;
     }
     .block7-content {
       font-size: 1.1em;
@@ -594,6 +607,31 @@
     .time-panel-tip {
       font-size: 0.7em;
     }
+    #blockContent {
+      padding: 0 10px;
+      box-sizing: border-box;
+      text-align: center;
+      font-family: Georgia, serif;
+    }
+    .teleport-title {
+      font-family: Georgia, serif;
+    }
+    .teleport-desc {
+      text-align: left;
+      margin-left: 0;
+      padding-left: 0;
+      font-family: Arial, sans-serif;
+    }
+    .highlight-explain {
+      background: #cce6ff;
+      color: #003366;
+      font-weight: bold;
+      padding: 0 3px;
+      border-radius: 4px;
+    }
+    mjx-container[jax='CHTML'][display='true'] {
+      margin: 0.09em 0 !important;
+    }
   </style>
 </head>
 <body>
@@ -605,7 +643,14 @@
   <!-- Table 1 -->
   <div class="container active" id="tab0">
     <div class="block" id="block0">
-      <div id="blockContent">Block 0 content...</div>
+      <div id="blockContent">
+        <p class="teleport-title">A simulation of Quantum Teleportation between two different Pictures!</p>
+        <small><div class="teleport-desc">
+          • The grids show the evolution of Quantum bits(Qubits) of Schrodinger and Heisenberg's Pictures. <span class="highlight-explain">Click the "?" mark to gain further explainations.</span><br>
+        <br>• In tranditional Schrödinger's way, which we learn in the Introduction of Quantum mechanics , it is a useful tool to descript the quantum state when the qubits are fully operated. However, it was hard to explain the information flow since the state of the qubits is descrtibed in nonlocal situation. <br>
+        <br>• Therefore, Heisenberg Picture provide an effective and local way for the description of information flow and the role of the entanglement.
+        </div></small>
+      </div>
     </div>
     <div class="block" id="block1">
       <span class="block-label">Block1</span>
@@ -699,6 +744,10 @@
         tab.classList.toggle('active', i === index);
         containers[i].classList.toggle('active', i === index);
       });
+      setTimeout(() => {
+        fitGridToBlock('block2-block', 'grid-sch');
+        fitGridToBlock('block4-block', 'grid-hei');
+      }, 100);
     }
 
     function hideBlock(id) {
@@ -707,16 +756,45 @@
 
     // block內容對應
     const blockContents = {
-      block1: 'Block 1 content...',
-      block2: 'Block 2 content...',
-      block3: 'Block 3 content...',
-      block4: 'Block 4 content...',
-      block5: 'Block 5 content...',
-      block6: 'Block 6 content...'
+      block0: `This is a simulation that showing the Quantum Teleportation!`,
+      block1: `<p{margin-bottom: 0.1em;} class="teleport-title">Expectaitonal Outcomes of Qubits(Q₁,Q₂,Q₃) on Pauli Operators <span class="highlight-explain">X</span>(left-hand boxes) & <span class="highlight-explain">Z</span>(right-hand boxes)<div class="teleport-desc"><small>
+               <br>• The expectational value of operator X&Z will be calculated(It's straight-forward as we encountered in basic quantum courses.):
+                   \\[\\langle\\psi_t|X\\otimes X\\otimes X|\\psi_t\\rangle\\, \\&\\, \\langle\\psi_t|Z\\otimes Z\\otimes Z|\\psi_t\\rangle\\]
+               <br>• In Heisenberg's Picture, the expectation outcomes will be found from descriptor with the reference state |0>:
+                   \\[\\langle 000|(U_i x(t), U_i z(t))|000\\rangle\\]
+               <br>• However, they will result the equal outcomes. For example(at t=0):
+                   \\[\\begin{align*}
+                     &(\\langle 000|X\\otimes X\\otimes X|000\\rangle , \\langle 000|Z\\otimes Z\\otimes Z|000\\rangle)\\\\
+                     &=\\langle 000|(\\sigma_i x(0), \\sigma_i z(0))|000\\rangle \\\\
+                     &=[(0,1),(0,1),(0,1)]\\\\
+                   \\end{align*}\\]
+               </small></div></p>`,
+      block2: `<p{margin-bottom: 0.1em;} class="teleport-title">Schrödinger's Picture <div class="teleport-desc"><small>
+               <br>• The expectational value of operator X&Z will be calculated(It's straight-forward as we encountered in basic quantum courses.):
+                   \\[\\langle\\psi_t|X\\otimes X\\otimes X|\\psi_t\\rangle\\, \\&\\, \\langle\\psi_t|Z\\otimes Z\\otimes Z|\\psi_t\\rangle\\]
+               <br>• In Heisenberg's Picture, the expectation outcomes will be found from descriptor with the reference state |0>:
+                   \\[\\langle 000|(U_i x(t), U_i z(t))|000\\rangle\\]
+               <br>• However, they will result the equal outcomes. For example(at t=0):
+                   \\[\\begin{align*}
+                     &(\\langle 000|X\\otimes X\\otimes X|000\\rangle , \\langle 000|Z\\otimes Z\\otimes Z|000\\rangle)\\\\
+                     &=\\langle 000|(\\sigma_i x(0), \\sigma_i z(0))|000\\rangle \\\\
+                     &=[(0,1),(0,1),(0,1)]\\\\
+                   \\end{align*}\\]
+               </small></div></p>`,
+      block3: `\( \int_0^1 x^2 dx \)`,
+      block4: `\( a^2 + b^2 = c^2 \)`,
+      block5: `\( \frac{d}{dx}e^x = e^x \)`,
+      block6: `\( \sum_{n=1}^\infty \frac{1}{n^2} = \frac{\pi^2}{6} \)`
     };
     function showBlockContent(blockId) {
       const content = document.getElementById("blockContent");
-      content.textContent = blockContents[blockId] || 'Block 0 content...';
+      content.innerHTML = blockContents[blockId] || 'Block 0 content...';
+      autoFitBlock0Font();
+      if (window.MathJax && /\\\(|\\\[|\$/.test(content.innerHTML)) {
+        MathJax.typesetPromise([content]).then(() => {
+          autoFitBlock0Font();
+        });
+      }
     }
     // 問號按鈕事件綁定（可重複呼叫）
     function bindHelpButtons(scope=document) {
@@ -804,20 +882,31 @@
       };
     }
     window.onload = function() {
-      bindHelpButtons();
-      initSimpleSlider();
-      // Initialize block2's Schrodinger picture
-      initGridSch();
-      updateSchrodingerGrid(0);
-      // Initialize block4's Heisenberg picture
-      initGridHei();
-      updateHeisenbergGrid(0);
-      // Initialize block1's Pauli expectation (move to last to ensure DOM is rendered)
-      setTimeout(() => updatePauliExpectation(0), 0);
-      // Initialize block3's quantum state
-      updateBlock3QuantumState(0);
-      // Initialize block6's descriptor
-      updateBlock6Descriptor(0);
+      try {
+        bindHelpButtons();
+        initSimpleSlider();
+        // Initialize block2's Schrodinger picture
+        initGridSch();
+        updateSchrodingerGrid(0);
+        observeBlockResize('block2-block', 'grid-sch');
+        // Initialize block4's Heisenberg picture
+        initGridHei();
+        updateHeisenbergGrid(0);
+        observeBlockResize('block4-block', 'grid-hei');
+        // Initialize block1's Pauli expectation (move to last to ensure DOM is rendered)
+        setTimeout(() => updatePauliExpectation(0), 0);
+        // Initialize block3's quantum state
+        updateBlock3QuantumState(0);
+        // Initialize block6's descriptor
+        updateBlock6Descriptor(0);
+        // MathJax 渲染 block0 初始內容
+        autoFitBlock0Font();
+        if (window.MathJax) MathJax.typesetPromise([document.getElementById('blockContent')]).then(() => {
+          autoFitBlock0Font();
+        });
+      } catch (e) {
+        alert('JS Error: ' + e.message + '\n' + (e.stack||''));
+      }
     }
 
     // Toggle the visibility of the entire block
@@ -940,6 +1029,7 @@
           window.gridCellLefts[col] = cell.offsetLeft;
         }
       }
+      fitGridToBlock('block2-block', 'grid-sch');
     }
     function updateSchrodingerGrid(t) {
       // grid highlight
@@ -979,6 +1069,7 @@
           cell.style.fontWeight = '';
         }
       }
+      fitGridToBlock('block2-block', 'grid-sch');
     }
     function initGridHei() {
       const grid = document.getElementById('grid-hei');
@@ -1000,6 +1091,7 @@
           grid.appendChild(cell);
         }
       }
+      fitGridToBlock('block4-block', 'grid-hei');
     }
     function updateHeisenbergGrid(t) {
       let gateMap = {};
@@ -1054,6 +1146,7 @@
           cell.classList.remove('active-ut');
         }
       }
+      fitGridToBlock('block4-block', 'grid-hei');
     }
     // --- Pauli expectation migrated ---
     const pauliExpectationData = [
@@ -1148,155 +1241,155 @@
     const descriptorData = [
       //t=0
       [
-        { label: 'Q₁(0)', ops: [
+        { label: 'U₁(0)', ops: [
           { text: 'σ₁x', class: 'desc-s1' }, 
           { text: ',', class: 'desc-comma' }, { text: 'σ₁z', class: 'desc-s1' }
         ]},
-        { label: 'Q₂(0)', ops: [
+        { label: 'U₂(0)', ops: [
           { text: 'σ₂x', class: 'desc-s2' }, 
           { text: ',', class: 'desc-comma' }, { text: 'σ₂z', class: 'desc-s2' }
         ]},
-        { label: 'Q₃(0)', ops: [
+        { label: 'U₃(0)', ops: [
           { text: 'σ₃x', class: 'desc-s3' }, 
           { text: ',', class: 'desc-comma' }, { text: 'σ₃z', class: 'desc-s3' }
         ]}
       ],
       // t=1
       [
-        { label: 'Q₁(1)', ops: [
+        { label: 'U₁(1)', ops: [
           { text: 'σ₁x', class: 'desc-s1' }, 
           { text: ',', class: 'desc-comma' }, { text: 'σ₁z', class: 'desc-s1' }
         ]},
-        { label: 'Q₂(1)', ops: [
+        { label: 'U₂(1)', ops: [
           { text: 'σ₂z', class: 'desc-s2' }, 
           { text: ',', class: 'desc-comma' }, { text: 'σ₂x', class: 'desc-s2' }
         ]},
-        { label: 'Q₃(1)', ops: [
+        { label: 'U₃(1)', ops: [
           { text: 'σ₃x', class: 'desc-s3' }, 
           { text: ',', class: 'desc-comma' }, { text: 'σ₃z', class: 'desc-s3' }
         ]}
       ],
       // t=2
       [
-       { label: 'Q₁(2)', ops: [
+       { label: 'U₁(2)', ops: [
           { text: 'σ₁x', class: 'desc-s1' }, 
           { text: ',', class: 'desc-comma' }, { text: 'σ₁z', class: 'desc-s1' }
         ]},
-       { label: 'Q₂(2)', ops: [
+       { label: 'U₂(2)', ops: [
          { text: 'σ₂z', class: 'desc-s2' },{ text: 'σ₃x', class: 'desc-s3' },
          { text: ',', class: 'desc-comma' },{ text: 'σ₂x', class: 'desc-s2' }
        ]},
-       { label: 'Q₃(2)', ops: [
+       { label: 'U₃(2)', ops: [
          { text: 'σ₃x', class: 'desc-s3' }, 
          { text: ',', class: 'desc-comma' }, { text: 'σ₃z', class: 'desc-s3' }, { text: 'σ₂x', class: 'desc-s2' }
        ]}
       ],
       //t=3
       [
-       { label: 'Q₁(3)', ops: [
+       { label: 'U₁(3)', ops: [
           { text: 'D₁x', class: 'desc-s4' }, 
           { text: ',', class: 'desc-comma' }, { text: 'D₁z', class: 'desc-s4' }
         ]},
-       { label: 'Q₂(3)', ops: [
+       { label: 'U₂(3)', ops: [
          { text: 'σ₂z', class: 'desc-s2' },{ text: 'σ₃x', class: 'desc-s3' },
          { text: ',', class: 'desc-comma' },{ text: 'σ₂x', class: 'desc-s2' }
        ]},
-       { label: 'Q₃(3)', ops: [
+       { label: 'U₃(3)', ops: [
          { text: 'σ₃x', class: 'desc-s3' }, 
          { text: ',', class: 'desc-comma' }, { text: 'σ₃z', class: 'desc-s3' }, { text: 'σ₂x', class: 'desc-s2' }
        ]}
       ],
       //t=4
       [
-       { label: 'Q₁(4)', ops: [
+       { label: 'U₁(4)', ops: [
           { text: 'D₁x', class: 'desc-s4' }, { text: 'σ₂z', class: 'desc-s2' },{ text: 'σ₃x', class: 'desc-s3' },
           { text: ',', class: 'desc-comma' }, { text: 'D₁z', class: 'desc-s4' }
         ]},
-       { label: 'Q₂(4)', ops: [
+       { label: 'U₂(4)', ops: [
          { text: 'σ₂z', class: 'desc-s2' },{ text: 'σ₃x', class: 'desc-s3' },
          { text: ',', class: 'desc-comma' }, { text: 'D₁z', class: 'desc-s4' }, { text: 'σ₂x', class: 'desc-s2' }
        ]},
-       { label: 'Q₃(4)', ops: [
+       { label: 'U₃(4)', ops: [
          { text: 'σ₃x', class: 'desc-s3' }, 
          { text: ',', class: 'desc-comma' }, { text: 'σ₃z', class: 'desc-s3' }, { text: 'σ₂x', class: 'desc-s2' }
        ]}
       ],
       //t=5
       [
-       { label: 'Q₁(5)', ops: [
+       { label: 'U₁(5)', ops: [
        { text: 'D₁z', class: 'desc-s4' },
           { text: ',', class: 'desc-comma' }, { text: 'D₁x', class: 'desc-s4' }, { text: 'σ₂z', class: 'desc-s2' },{ text: 'σ₃x', class: 'desc-s3' } 
         ]},
-       { label: 'Q₂(5)', ops: [
+       { label: 'U₂(5)', ops: [
          { text: 'σ₂z', class: 'desc-s2' },{ text: 'σ₃x', class: 'desc-s3' },
          { text: ',', class: 'desc-comma' }, 
          { text: 'D₁z', class: 'desc-s4' }, { text: 'σ₂x', class: 'desc-s2' }
        ]},
-       { label: 'Q₃(5)', ops: [
+       { label: 'U₃(5)', ops: [
          { text: 'σ₃x', class: 'desc-s3' }, 
          { text: ',', class: 'desc-comma' }, { text: 'σ₃z', class: 'desc-s3' }, { text: 'σ₂x', class: 'desc-s2' }
        ]}
       ],
       //t=6
       [
-       { label: 'Q₁(6)', ops: [
+       { label: 'U₁(6)', ops: [
        { text: 'D₁z', class: 'desc-s4' },
           { text: ',', class: 'desc-comma' }, { text: 'D₁x', class: 'desc-s4' }, { text: 'σ₂z', class: 'desc-s2' },{ text: 'σ₃x', class: 'desc-s3' } 
         ]},
-       { label: 'Q₂(6)', ops: [
+       { label: 'U₂(6)', ops: [
          { text: 'σ₂z', class: 'desc-s2' },
          { text: ',', class: 'desc-comma' }, 
          { text: 'D₁z', class: 'desc-s4' }, { text: 'σ₂x', class: 'desc-s2' }
        ]},
-       { label: 'Q₃(6)', ops: [
+       { label: 'U₃(6)', ops: [
          { text: 'σ₃x', class: 'desc-s3' }, 
          { text: ',', class: 'desc-comma' }, { text: 'D₁z', class: 'desc-s4' }, { text: 'σ₃z', class: 'desc-s3' },
        ]}
       ],
       //t=7
       [
-       { label: 'Q₁(7)', ops: [
+       { label: 'U₁(7)', ops: [
        { text: 'D₁z', class: 'desc-s4' },
           { text: ',', class: 'desc-comma' }, { text: 'D₁x', class: 'desc-s4' }, { text: 'σ₂z', class: 'desc-s2' },{ text: 'σ₃x', class: 'desc-s3' } 
         ]},
-       { label: 'Q₂(7)', ops: [
+       { label: 'U₂(7)', ops: [
          { text: 'σ₂z', class: 'desc-s2' },
          { text: ',', class: 'desc-comma' }, 
          { text: 'D₁z', class: 'desc-s4' }, { text: 'σ₂x', class: 'desc-s2' }
        ]},
-       { label: 'Q₃(7)', ops: [
+       { label: 'U₃(7)', ops: [
        { text: 'D₁z', class: 'desc-s4' }, { text: 'σ₃z', class: 'desc-s3' },
          { text: ',', class: 'desc-comma' }, { text: 'σ₃x', class: 'desc-s3' }
        ]}
       ],
       //t=8
       [
-       { label: 'Q₁(8)', ops: [
+       { label: 'U₁(8)', ops: [
           { text: 'σ₃z', class: 'desc-s3' },
           { text: ',', class: 'desc-comma' }, { text: 'D₁x', class: 'desc-s4' }, { text: 'σ₂z', class: 'desc-s2' },{ text: 'σ₃x', class: 'desc-s3' } 
         ]},
-       { label: 'Q₂(8)', ops: [
+       { label: 'U₂(8)', ops: [
          { text: 'σ₂z', class: 'desc-s2' },
          { text: ',', class: 'desc-comma' }, 
          { text: 'D₁z', class: 'desc-s4' }, { text: 'σ₂x', class: 'desc-s2' }
        ]},
-       { label: 'Q₃(8)', ops: [
+       { label: 'U₃(8)', ops: [
        { text: 'D₁z', class: 'desc-s4' }, { text: 'σ₃z', class: 'desc-s3' },
          { text: ',', class: 'desc-comma' }, { text: 'D₁x', class: 'desc-s4' }, { text: 'σ₂z', class: 'desc-s2' }
        ]}
       ],
       //t=9
       [
-       { label: 'Q₁(8)', ops: [
+       { label: 'U₁(8)', ops: [
           { text: 'σ₃z', class: 'desc-s3' },
           { text: ',', class: 'desc-comma' }, { text: 'D₁x', class: 'desc-s4' }, { text: 'σ₂z', class: 'desc-s2' },{ text: 'σ₃x', class: 'desc-s3' } 
         ]},
-       { label: 'Q₂(8)', ops: [
+       { label: 'U₂(8)', ops: [
          { text: 'σ₂z', class: 'desc-s2' },
          { text: ',', class: 'desc-comma' }, 
          { text: 'D₁z', class: 'desc-s4' }, { text: 'σ₂x', class: 'desc-s2' }
        ]},
-       { label: 'Q₃(8)', ops: [
+       { label: 'U₃(8)', ops: [
          { text: 'D₁x', class: 'desc-s4' }, { text: 'σ₂z', class: 'desc-s2' },
          { text: ',', class: 'desc-comma' }, { text: 'D₁z', class: 'desc-s4' }, { text: 'σ₃z', class: 'desc-s3' }
        ]}
@@ -1306,7 +1399,7 @@
     // Style for descriptor
     const descStyle = document.createElement('style');
     descStyle.innerHTML = `
-      .desc-state-row { font-family: 'Fira Mono', 'Menlo', 'Consolas', monospace; font-size: 1.12em; color: #2f4f78; margin-bottom: 4px; line-height: 1.8; padding-left: 3px; justify-content: center; align-items: center; display: flex; width: 100%; }
+      .desc-state-row { font-family: 'Fira Mono', 'Menlo', 'Consolas', monospace; font-size: 1.12em; color: #2f4f78; margin-bottom: 4px; line-height: 1.8; padding-left: 3px; justify-content: flex-start; align-items: center; display: flex; width: 100%; }
       .desc-label2 { color: #9fdcf9; font-weight: bold; margin-right: 2px; letter-spacing: .5px; font-size: 1.05em; }
       .desc-equal { color: #eee0a2; margin: 0 7px 0 3px; font-weight: bold; }
       .desc-op { font-weight: bold; margin-right: 5px; display: inline-block; text-align: center; }
@@ -1373,6 +1466,53 @@
     function updateBlock6Descriptor(t) {
       renderDescriptor(t);
       fitBlock6DescriptorFont();
+    }
+
+    // block0 字體自動隨 block0 寬度縮放
+    function autoFitBlock0Font() {
+      const wrapper = document.getElementById('block0');
+      const el = document.getElementById('blockContent');
+      if (!wrapper || !el) return;
+      const minFont = 12;   // 最小字體大小（單位：px）
+      const maxFont = 36;   // 最大字體大小（單位：px）
+      const scale = 0.05;  // 字體大小與 block0 寬度的比例
+      let fontSize = Math.max(minFont, Math.min(maxFont, wrapper.clientWidth * scale));
+      el.style.fontSize = fontSize + 'px';
+    }
+    // 初始化 observer
+    window.addEventListener('DOMContentLoaded', () => {
+      autoFitBlock0Font();
+      const block0 = document.getElementById('block0');
+      if (block0) {
+        const observer = new ResizeObserver(autoFitBlock0Font);
+        observer.observe(block0);
+      }
+    });
+
+    // ====== 新增：自適應 grid 函數 ======
+    function fitGridToBlock(blockId, gridId) {
+      const block = document.getElementById(blockId);
+      const grid = document.getElementById(gridId);
+      if (!block || !grid) return;
+      // 取得 block 寬度
+      const blockWidth = block.clientWidth;
+      // 計算 cell 大小（11 col, 4 row, gap 0.2vw）
+      const gap = blockWidth * 0.003; // 0.2vw 近似
+      const cellSize = (blockWidth - gap * 10) / 11;
+      // 設定 cell 寬高與字體
+      grid.querySelectorAll('.cell').forEach(cell => {
+        cell.style.width = cellSize + 'px';
+        cell.style.height = cellSize + 'px';
+        cell.style.fontSize = Math.max(10, Math.min(24, cellSize * 0.38)) + 'px';
+      });
+      // grid 高度自動
+      grid.style.height = (cellSize * 4 + gap * 3) + 'px';
+    }
+    function observeBlockResize(blockId, gridId) {
+      const block = document.getElementById(blockId);
+      if (!block) return;
+      const ro = new ResizeObserver(() => fitGridToBlock(blockId, gridId));
+      ro.observe(block);
     }
   </script>
 </body>
