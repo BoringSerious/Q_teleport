@@ -646,8 +646,9 @@
       <div id="blockContent">
         <p class="teleport-title">A simulation of Quantum Teleportation between two different Pictures!</p>
         <small><div class="teleport-desc">
-          • The grids show the evolution of Quantum bits(Qubits) of Schrodinger and Heisenberg's Pictures. <span class="highlight-explain">Click the "?" mark to gain further explainations.</span><br>
-        <br>• In tranditional Schrödinger's way, which we learn in the Introduction of Quantum mechanics , it is a useful tool to descript the quantum state when the qubits are fully operated. However, it was hard to explain the information flow since the state of the qubits is descrtibed in nonlocal situation. <br>
+          • The grids show the evolution of Quantum bits(Qubits) of Schrodinger and Heisenberg's Pictures. <span class="highlight-explain">Click the "?" mark to gain further explainations.</span> Three rows of the grid represent the evolution of <i>Qubit-1</i>, <i>Qubit-2</i>, and <i>Qubit-3</i>.<br>
+        <br>•Operation Process of Teleportation: Alice prepares two entangled qubits Q2 & Q3, and a qubit Q1 embeded with state information α and β at t=3. Then she would like to use some quantum gates to "teleport" the state of Q1 to Q3. <br>
+          <br>• In tranditional Schrödinger's way, which we learn in the Introduction of Quantum mechanics , it is a useful tool to descript the quantum state when the qubits are fully operated. However, it was hard to explain the information flow since the state of the qubits is descrtibed in nonlocal situation. <br>
         <br>• Therefore, Heisenberg Picture provide an effective and local way for the description of information flow and the role of the entanglement.
         </div></small>
       </div>
@@ -769,19 +770,57 @@
                      &=[(0,1),(0,1),(0,1)]\\\\
                    \\end{align*}\\]
                </small></div></p>`,
+
       block2: `<p{margin-bottom: 0.1em;} class="teleport-title">Schrödinger's Picture <div class="teleport-desc"><small>
-               <br>• The expectational value of operator X&Z will be calculated(It's straight-forward as we encountered in basic quantum courses.):
-                   \\[\\langle\\psi_t|X\\otimes X\\otimes X|\\psi_t\\rangle\\, \\&\\, \\langle\\psi_t|Z\\otimes Z\\otimes Z|\\psi_t\\rangle\\]
-               <br>• In Heisenberg's Picture, the expectation outcomes will be found from descriptor with the reference state |0>:
-                   \\[\\langle 000|(U_i x(t), U_i z(t))|000\\rangle\\]
-               <br>• However, they will result the equal outcomes. For example(at t=0):
+               <br>• In this Picture, <b class="teleport-title">only the state of qubits will be changed by time variation</b>, and the observables/operators are constent. The quantum circuit at <i class="teleport-title">top, middle, and bottom</i> indicate the evolution of <i class="teleport-title">Qubits 1,2, and 3</i> respectively. Therefore, the observables only act at once which are highlighted at corresponding time value and only the state <b>Ψₜ</b> varied.
+               <br>
+               <br>• Additionaly, the line "━" in the circuit means the identity unitraty matrix "<i class="teleport-title">I</i>", which do nothing on the state variation.
+               <br>
+               <br>• The state at the beginning represented in braket notation is shown below, which indicates the Qubit1,2,3 from left to right:
+                   \\[|000\\rangle = |0\\rangle \\otimes |0\\rangle \\otimes |0\\rangle\\]
+               <br>• It is obvious to observe that the quantum <span class="highlight-explain">states evolve</span> in time(t). For example at t=3 on Qubit-1:
                    \\[\\begin{align*}
-                     &(\\langle 000|X\\otimes X\\otimes X|000\\rangle , \\langle 000|Z\\otimes Z\\otimes Z|000\\rangle)\\\\
-                     &=\\langle 000|(\\sigma_i x(0), \\sigma_i z(0))|000\\rangle \\\\
-                     &=[(0,1),(0,1),(0,1)]\\\\
+                   &|\\Psi_3^{q1}\\rangle = UII|\\Psi_0^{q1}\\rangle = U|0\\rangle = \\alpha |0\\rangle + \\beta |1 \\rangle \\\\
+                   &|0\\rangle =\\begin{pmatrix}1 \\\\ 0\\end{pmatrix}\\, \\&\\, |1\\rangle =\\begin{pmatrix}0 \\\\ 1\\end{pmatrix}\\\\
                    \\end{align*}\\]
+
+               <br>• Each highlighted box represent an Unitrary Matrix(click the block7 "?" for more explaination). "H" is a typical unitray matrix caled <span class="highlight-explain">Hadamard Gate</span>:
+                   \\[\\begin{align*}
+                   &|\\Psi_1^{q2}\\rangle = H|\\Psi_0^{q2}\\rangle = H|0\\rangle = \\frac{1}{\\sqrt{2}}\\begin{pmatrix}1 & 1 \\\\ 1 & -1\\end{pmatrix}\\begin{pmatrix}1 \\\\ 0\\end{pmatrix}\\\\
+                   &=\\frac{1}{\\sqrt{2}}\\left(|0\\rangle + |1\\rangle\\right)
+                   \\end{align*}\\]
+                   
+               <br>• The boxes in pair of "•" and "X" represented as a two-qubits operator(4x4 matrix) called <span class="highlight-explain">Controlled-not(Cnot) Gate</span>. Box "•" is used to check wether the first qubit is |1>, then switch the second qubit state on box "X"(like |0> → |1>, or |1> → |0>). For examples:
+                   \\[Cnot\\left(|01\\rangle +|11\\rangle\\right) = |01\\rangle +|10\\rangle\\]
                </small></div></p>`,
-      block3: `\( \int_0^1 x^2 dx \)`,
+
+      block3: `<p{margin-bottom: 0.1em;} class="teleport-title">The Evolution of Quantum State<div class="teleport-desc"><small>
+               <br><i>This block demonstrates state Ψₜ in a concrete expansion.</i>
+               <br>
+               <br>•At <b><i class="highlight-explain">t=2</i></b>, the Qubit-2 and Qubit-3 are <b>entangled</b>, which means the state of Qubits2&3 Ψₜ cannot be expressed as the tensor product of any two explict states, here is the example:
+               \\[\\begin{align*}
+               &|\\Psi_2\\rangle = \\frac{1}{\\sqrt{2}} |0\\rangle \\otimes \\left(|00\\rangle + |11\\rangle\\right)\\\\
+               &≠\\frac{1}{\\sqrt{2}} |0\\rangle \\otimes |\\phi\\rangle \\otimes |\\theta\\rangle,\\,\\,for\\,any\\,\\,\\phi\\,and\\,\\,\\theta
+               \\end{align*}\\]
+
+               <br>•At <b><i class="highlight-explain">t=3</i></b>, <span style="color:red;">Alice</span> encodes the information <span style="color:red;">α</span> and <span style="color:red;">β</span> in Qubit-1 by using "U" operator.
+               From now on, we will have no idea where the information <span style="color:red;">α</span> and <span style="color:red;">β</span> located in which qubit even though they are sent from Alice.  
+               \\[\\textcolor{red}{\\alpha}|000\\rangle =  |0\\rangle\\otimes \\textcolor{red}{\\alpha}|0\\rangle \\otimes |0\\rangle =|0\\rangle\\otimes |0\\rangle\\otimes \\textcolor{red}{\\alpha}|0\\rangle\\]
+               
+               <br>•At <b><i class="highlight-explain">t=5</i></b>, The Qubit-1 and Qubit-2 are operated by Bell measurement which projects these two qubits onto one of four maximal entangled states. Simply saying, the state becomes the following form:
+               \\[\\begin{align*}
+               &|\\Psi_5\\rangle =\\frac{1}{2}(|00\\rangle |\\psi\\rangle +|01\\rangle X|\\psi\\rangle\\\\
+               &+|10\\rangle Z|\\psi\\rangle +|11\\rangle ZX|\\psi\\rangle)\\\\
+               & where\\,:\\, |\\psi\\rangle = \\alpha |0\\rangle + \\beta |1\\rangle
+               \\end{align*}\\]
+
+               <br>•From <b><i class="highlight-explain">t=6 to t=8</i></b>, the expansion of state Ψ₈ becomes much more complicated. However, we still can't tell the location of "α" & "β" at this moment. Therefore, some may believe that the quantum information flow in quantum teleportation might be "<i><b>nonlocal</b></i> ".
+               <br>
+               <br>•At <b><i class="highlight-explain">t=9</i></b>, the teleportation seems to be completed. No matter what "0" or "1" we measure at Qubit-1 and Qubit-2, the Qubit-3 will finally become |ψ> we need.
+               \\[\\frac{1}{2}\\left(|00\\rangle + |01\\rangle + |10\\rangle +|11\\rangle\\right)\\otimes |\\psi\\rangle\\]
+               <br>•However, this Picture cannot explain how the quantum information flow from Qubit-1 to Qubit-3 and the function of entanglement. <b>The α and β are just being teleported to Q3 like a magic</b>.
+               </small></div></p>`,
+
       block4: `\( a^2 + b^2 = c^2 \)`,
       block5: `\( \frac{d}{dx}e^x = e^x \)`,
       block6: `\( \sum_{n=1}^\infty \frac{1}{n^2} = \frac{\pi^2}{6} \)`
@@ -960,6 +999,37 @@
       {row:2, col:8, type:'X', color:'#FFC94A'},
       {row:2, col:9, type:'H', color:'#73C7F3'},
     ];
+    const schGates2 = [
+      {row:0, col:1, type:'━━━', color:'#fffff0'},
+      {row:0, col:2, type:'━━━', color:'#fffff0'},
+      {row:0, col:3, type:'U', color:'#f24d4d'},
+      {row:0, col:4, type:'●', color:'#FFC94A'},
+      {row:0, col:5, type:'H', color:'#73C7F3'},
+      {row:0, col:6, type:'━━━', color:'#fffff0'},
+      {row:0, col:7, type:'━━━', color:'#fffff0'},
+      {row:0, col:8, type:'●', color:'#FFC94A'},
+      {row:0, col:9, type:'━━➤', color:'#fffff0'},
+
+      {row:1, col:1, type:'H', color:'#73C7F3'},
+      {row:1, col:2, type:'●', color:'#FFC94A'},
+      {row:1, col:3, type:'━━━', color:'#fffff0'},
+      {row:1, col:4, type:'X', color:'#FFC94A'},
+      {row:1, col:5, type:'━━━', color:'#fffff0'},
+      {row:1, col:6, type:'●', color:'#FFC94A'},
+      {row:1, col:7, type:'━━━', color:'#fffff0'},
+      {row:1, col:8, type:'━━━', color:'#fffff0'},
+      {row:1, col:9, type:'━━➤', color:'#fffff0'},
+
+      {row:2, col:1, type:'━━━', color:'#fffff0'},
+      {row:2, col:2, type:'X', color:'#FFC94A'},
+      {row:2, col:3, type:'━━━', color:'#fffff0'},
+      {row:2, col:4, type:'━━━', color:'#fffff0'},
+      {row:2, col:5, type:'━━━', color:'#fffff0'},
+      {row:2, col:6, type:'X', color:'#FFC94A'},
+      {row:2, col:7, type:'H', color:'#73C7F3'},
+      {row:2, col:8, type:'X', color:'#FFC94A'},
+      {row:2, col:9, type:'H', color:'#73C7F3'},
+    ];
     const schStates = [
       '\\[|\\psi_0\\rangle = |000\\rangle\\]',
       '\\[|\\psi_1\\rangle = \\frac{1}{\\sqrt{2}}\\left(|000\\rangle +|010\\rangle\\right)\\]',
@@ -998,7 +1068,7 @@
       if (!grid) return;
       grid.innerHTML = '';
       let lookup = {};
-      schGates.forEach(g=>{ lookup[`${g.row},${g.col}`] = g; });
+      schGates2.forEach(g=>{ lookup[`${g.row},${g.col}`] = g; });
       for (let row = 0; row < 4; row++) {
         for (let col = 0; col < 11; col++) {
           const cell = document.createElement('div');
@@ -1015,6 +1085,10 @@
               cell.style.background = lookup[`${row},${col}`].color;
               cell.style.color = '#222';
               cell.style.opacity = '1';
+              // 新增: type 為 '━━━' 或 '━━━➤' 時，border 顏色設為 #fffff0
+              if (lookup[`${row},${col}`].type === '━━━' || lookup[`${row},${col}`].type === '━━➤') {
+                cell.style.borderColor = '#fffff0';
+              }
             }
             if (col === 10) cell.classList.add('invisible-cell');
           }
@@ -1037,7 +1111,7 @@
         for (let col = 0; col < 11; col++) {
           let sch = document.getElementById(`grid-sch-r${row}c${col}`);
           if (sch && sch.classList.contains('gate')) {
-            if (col === t && sch.textContent !== 'I') {
+            if (col === t && sch.textContent !== '━━━' && sch.textContent !== '━━➤') {
               sch.classList.add('highlight');
               sch.style.background = sch.dataset.color;
               sch.style.color = '#fff';
