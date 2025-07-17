@@ -821,9 +821,52 @@
                <br>•However, this Picture cannot explain how the quantum information flow from Qubit-1 to Qubit-3 and the function of entanglement. <b>The α and β are just being teleported to Q3 like a magic</b>.
                </small></div></p>`,
 
-      block4: `\( a^2 + b^2 = c^2 \)`,
+      block4: `<p{margin-bottom: 0.1em;} class="teleport-title">Heisenberg's Picture <div class="teleport-desc"><small>
+              <br>•The state of Qubits have no longer been decribed in this Picture. In contract, only gates are performed as the discrete time variation, called the evolution of operators. Similar to what we learn in classical relative motion, velocity and position of an object changes respected to another as in frame of reference. Here we take |000> as the <i class="highlight-explain">reference vector</i> state.
+                  Heisenberg's Picture supposes the state of Qubit as reference which remain constant, and consentrates on the evolution of operators <b class="highlight-explain">Q(t)</b>.
+                  <br>
+                  <br>•At this moment, when you drag the time slider, the gates will keep highlighted which means that the operator will always be influenced by the gates before t, even identical gate will be considered. Taking the Qubit-1 at t=3 for an example:
+              \\[\\begin{align*}
+              &q_1(3) = U^{\\dagger}q_1(2)U = U^{\\dagger} I^{\\dagger} q_1(1)I\\,U \\\\
+              &= U^{\\dagger} I^{\\dagger} I^{\\dagger} q_1(0)I\\,I\\,U
+              \\end{align*}\\]
+              <br>•So if the state is in constant, how could we describe the quantum system of each qubit? No worry, <b class="highlight-explain">descriptor</b> is perfectly applied to illustrate the system. 
+                  Just like the Cartesian coordinate(x,y,z), decriptor (qx,qy,qz) is used to describe the orientation on Bloch sphere, showing how it behaves under X, Y, Z measurements.
+                  According to su(2) algebra, (qx,qz) is convenient enough for all description. 
+                  <br>•At the beginning of the Qubit-1, its descriptor is:
+                  \\[q_1(0)=\\left(\\sigma_x(0),\\sigma_z(0)\\right)=\\left(X,Z\\right)\\]
+                  and the Qubit-1 at t=3 will be:
+                  \\[\\begin{align*}
+                  &q_1(3)=U^{\\dagger} I^{\\dagger} I^{\\dagger} \\left(\\sigma_{1x}(0),\\sigma_{1z}(0)\\right)I\\,I\\,U\\\\
+                  &=\\left(D_{1x}(0),D_{1z}(0)\\right)
+                  \\end{align*}\\]
+                  <b>where "D" means the information of <span style="color:red;">α</span> and <span style="color:red;">β</span> have been stored in that descriptor</b>. More math description placed below, <u>feel free to ignore them.</u>
+                  <br>
+                  <br>•More details of Qubit-1 at t=3:
+                  \\[\\begin{align*}
+                  &\\left(D_{1x}(0),D_{1z}(0)\\right) = \\left(U^{\\dagger}\\sigma_x\\,U,U^{\\dagger}\\sigma_z\\,U)\\right)\\\\
+                  &= \\bigr[(2\\alpha\\beta\\sigma_z+(\\alpha^2-\\beta^2)\\sigma_x),(-2\\alpha\\beta\\sigma_x+(\\alpha^2-\\beta^2)\\sigma_z)\\bigr]\\\\
+                  &where\\,\\,\\,U = \\begin{pmatrix}\\alpha & -\\beta \\\\ \\beta & \\alpha\\end{pmatrix}
+                  \\end{align*}\\]
+                  
+                  <br>•If you are interested in converting the descriptor into classical state, you can calculate it from the equations:
+                  \\[\\begin{align*}
+                  &|\\Psi_3^{q1}\\rangle=\\cos{\\frac{\\theta}{2}}|0\\rangle + e^{i\\phi}\\sin{\\frac{\\theta}{2}}|1\\rangle\\\\
+                  &for\\,\\,\\,\\left(\\langle q_x\\rangle,\\langle q_z\\rangle\\right)= \\left(\\cos{\\theta}\\sin{\\phi}, \\cos{\\phi}\\right)
+                  \\end{align*}\\]
+
+                  <br>•The operator Q(t) includes all three qubits' descriptors:
+                  \\[\\begin{align*}
+                  &Q(t)=\\left(q_1(t),q_2(t),q_3(t)\\right)\\\\
+                  &= \\Bigr[ (q_{1x}(t),q_{1z}(t)),(q_{2x}(t),q_{2z}(t)),(q_{3x}(t),q_{3z}(t))\\Bigr]
+                  \\end{align*}\\]
+              </small></div></p>`,
+
       block5: `\( \frac{d}{dx}e^x = e^x \)`,
-      block6: `\( \sum_{n=1}^\infty \frac{1}{n^2} = \frac{\pi^2}{6} \)`
+
+      block6: `<p{margin-bottom: 0.1em;} class="teleport-title">The Evolution of Descriptors<div class="teleport-desc"><small>
+               <br>•
+               </small></div></p>`,
     };
     function showBlockContent(blockId) {
       const content = document.getElementById("blockContent");
@@ -1056,7 +1099,7 @@
       'Ψ₀', 'Ψ₁', 'Ψ₂', 'Ψ₃', 'Ψ₄', 'Ψ₅', 'Ψ₆', 'Ψ₇', 'Ψ₈', 'Ψ₉'
     ];
     const UInfo = [
-      'U₀', 'U₁', 'U₂', 'U₃', 'U₄', 'U₅', 'U₆', 'U₇', 'U₈', 'U₉'
+      'Q(0)', 'Q(1)', 'Q(2)', 'Q(3)', 'Q(4)', 'Q(5)', 'Q(6)', 'Q(7)', 'Q(8)', 'Q(9)'
     ];
     function colorAlphaBeta(latex) {
       return latex
@@ -1315,155 +1358,155 @@
     const descriptorData = [
       //t=0
       [
-        { label: 'U₁(0)', ops: [
+        { label: 'q₁(0)', ops: [
           { text: 'σ₁x', class: 'desc-s1' }, 
           { text: ',', class: 'desc-comma' }, { text: 'σ₁z', class: 'desc-s1' }
         ]},
-        { label: 'U₂(0)', ops: [
+        { label: 'q₂(0)', ops: [
           { text: 'σ₂x', class: 'desc-s2' }, 
           { text: ',', class: 'desc-comma' }, { text: 'σ₂z', class: 'desc-s2' }
         ]},
-        { label: 'U₃(0)', ops: [
+        { label: 'q₃(0)', ops: [
           { text: 'σ₃x', class: 'desc-s3' }, 
           { text: ',', class: 'desc-comma' }, { text: 'σ₃z', class: 'desc-s3' }
         ]}
       ],
       // t=1
       [
-        { label: 'U₁(1)', ops: [
+        { label: 'q₁(1)', ops: [
           { text: 'σ₁x', class: 'desc-s1' }, 
           { text: ',', class: 'desc-comma' }, { text: 'σ₁z', class: 'desc-s1' }
         ]},
-        { label: 'U₂(1)', ops: [
+        { label: 'q₂(1)', ops: [
           { text: 'σ₂z', class: 'desc-s2' }, 
           { text: ',', class: 'desc-comma' }, { text: 'σ₂x', class: 'desc-s2' }
         ]},
-        { label: 'U₃(1)', ops: [
+        { label: 'q₃(1)', ops: [
           { text: 'σ₃x', class: 'desc-s3' }, 
           { text: ',', class: 'desc-comma' }, { text: 'σ₃z', class: 'desc-s3' }
         ]}
       ],
       // t=2
       [
-       { label: 'U₁(2)', ops: [
+       { label: 'q₁(2)', ops: [
           { text: 'σ₁x', class: 'desc-s1' }, 
           { text: ',', class: 'desc-comma' }, { text: 'σ₁z', class: 'desc-s1' }
         ]},
-       { label: 'U₂(2)', ops: [
+       { label: 'q₂(2)', ops: [
          { text: 'σ₂z', class: 'desc-s2' },{ text: 'σ₃x', class: 'desc-s3' },
          { text: ',', class: 'desc-comma' },{ text: 'σ₂x', class: 'desc-s2' }
        ]},
-       { label: 'U₃(2)', ops: [
+       { label: 'q₃(2)', ops: [
          { text: 'σ₃x', class: 'desc-s3' }, 
          { text: ',', class: 'desc-comma' }, { text: 'σ₃z', class: 'desc-s3' }, { text: 'σ₂x', class: 'desc-s2' }
        ]}
       ],
       //t=3
       [
-       { label: 'U₁(3)', ops: [
+       { label: 'q₁(3)', ops: [
           { text: 'D₁x', class: 'desc-s4' }, 
           { text: ',', class: 'desc-comma' }, { text: 'D₁z', class: 'desc-s4' }
         ]},
-       { label: 'U₂(3)', ops: [
+       { label: 'q₂(3)', ops: [
          { text: 'σ₂z', class: 'desc-s2' },{ text: 'σ₃x', class: 'desc-s3' },
          { text: ',', class: 'desc-comma' },{ text: 'σ₂x', class: 'desc-s2' }
        ]},
-       { label: 'U₃(3)', ops: [
+       { label: 'q₃(3)', ops: [
          { text: 'σ₃x', class: 'desc-s3' }, 
          { text: ',', class: 'desc-comma' }, { text: 'σ₃z', class: 'desc-s3' }, { text: 'σ₂x', class: 'desc-s2' }
        ]}
       ],
       //t=4
       [
-       { label: 'U₁(4)', ops: [
+       { label: 'q₁(4)', ops: [
           { text: 'D₁x', class: 'desc-s4' }, { text: 'σ₂z', class: 'desc-s2' },{ text: 'σ₃x', class: 'desc-s3' },
           { text: ',', class: 'desc-comma' }, { text: 'D₁z', class: 'desc-s4' }
         ]},
-       { label: 'U₂(4)', ops: [
+       { label: 'q₂(4)', ops: [
          { text: 'σ₂z', class: 'desc-s2' },{ text: 'σ₃x', class: 'desc-s3' },
          { text: ',', class: 'desc-comma' }, { text: 'D₁z', class: 'desc-s4' }, { text: 'σ₂x', class: 'desc-s2' }
        ]},
-       { label: 'U₃(4)', ops: [
+       { label: 'q₃(4)', ops: [
          { text: 'σ₃x', class: 'desc-s3' }, 
          { text: ',', class: 'desc-comma' }, { text: 'σ₃z', class: 'desc-s3' }, { text: 'σ₂x', class: 'desc-s2' }
        ]}
       ],
       //t=5
       [
-       { label: 'U₁(5)', ops: [
+       { label: 'q₁(5)', ops: [
        { text: 'D₁z', class: 'desc-s4' },
           { text: ',', class: 'desc-comma' }, { text: 'D₁x', class: 'desc-s4' }, { text: 'σ₂z', class: 'desc-s2' },{ text: 'σ₃x', class: 'desc-s3' } 
         ]},
-       { label: 'U₂(5)', ops: [
+       { label: 'q₂(5)', ops: [
          { text: 'σ₂z', class: 'desc-s2' },{ text: 'σ₃x', class: 'desc-s3' },
          { text: ',', class: 'desc-comma' }, 
          { text: 'D₁z', class: 'desc-s4' }, { text: 'σ₂x', class: 'desc-s2' }
        ]},
-       { label: 'U₃(5)', ops: [
+       { label: 'q₃(5)', ops: [
          { text: 'σ₃x', class: 'desc-s3' }, 
          { text: ',', class: 'desc-comma' }, { text: 'σ₃z', class: 'desc-s3' }, { text: 'σ₂x', class: 'desc-s2' }
        ]}
       ],
       //t=6
       [
-       { label: 'U₁(6)', ops: [
+       { label: 'q₁(6)', ops: [
        { text: 'D₁z', class: 'desc-s4' },
           { text: ',', class: 'desc-comma' }, { text: 'D₁x', class: 'desc-s4' }, { text: 'σ₂z', class: 'desc-s2' },{ text: 'σ₃x', class: 'desc-s3' } 
         ]},
-       { label: 'U₂(6)', ops: [
+       { label: 'q₂(6)', ops: [
          { text: 'σ₂z', class: 'desc-s2' },
          { text: ',', class: 'desc-comma' }, 
          { text: 'D₁z', class: 'desc-s4' }, { text: 'σ₂x', class: 'desc-s2' }
        ]},
-       { label: 'U₃(6)', ops: [
+       { label: 'q₃(6)', ops: [
          { text: 'σ₃x', class: 'desc-s3' }, 
          { text: ',', class: 'desc-comma' }, { text: 'D₁z', class: 'desc-s4' }, { text: 'σ₃z', class: 'desc-s3' },
        ]}
       ],
       //t=7
       [
-       { label: 'U₁(7)', ops: [
+       { label: 'q₁(7)', ops: [
        { text: 'D₁z', class: 'desc-s4' },
           { text: ',', class: 'desc-comma' }, { text: 'D₁x', class: 'desc-s4' }, { text: 'σ₂z', class: 'desc-s2' },{ text: 'σ₃x', class: 'desc-s3' } 
         ]},
-       { label: 'U₂(7)', ops: [
+       { label: 'q₂(7)', ops: [
          { text: 'σ₂z', class: 'desc-s2' },
          { text: ',', class: 'desc-comma' }, 
          { text: 'D₁z', class: 'desc-s4' }, { text: 'σ₂x', class: 'desc-s2' }
        ]},
-       { label: 'U₃(7)', ops: [
+       { label: 'q₃(7)', ops: [
        { text: 'D₁z', class: 'desc-s4' }, { text: 'σ₃z', class: 'desc-s3' },
          { text: ',', class: 'desc-comma' }, { text: 'σ₃x', class: 'desc-s3' }
        ]}
       ],
       //t=8
       [
-       { label: 'U₁(8)', ops: [
+       { label: 'q₁(8)', ops: [
           { text: 'σ₃z', class: 'desc-s3' },
           { text: ',', class: 'desc-comma' }, { text: 'D₁x', class: 'desc-s4' }, { text: 'σ₂z', class: 'desc-s2' },{ text: 'σ₃x', class: 'desc-s3' } 
         ]},
-       { label: 'U₂(8)', ops: [
+       { label: 'q₂(8)', ops: [
          { text: 'σ₂z', class: 'desc-s2' },
          { text: ',', class: 'desc-comma' }, 
          { text: 'D₁z', class: 'desc-s4' }, { text: 'σ₂x', class: 'desc-s2' }
        ]},
-       { label: 'U₃(8)', ops: [
+       { label: 'q₃(8)', ops: [
        { text: 'D₁z', class: 'desc-s4' }, { text: 'σ₃z', class: 'desc-s3' },
          { text: ',', class: 'desc-comma' }, { text: 'D₁x', class: 'desc-s4' }, { text: 'σ₂z', class: 'desc-s2' }
        ]}
       ],
       //t=9
       [
-       { label: 'U₁(8)', ops: [
+       { label: 'q₁(8)', ops: [
           { text: 'σ₃z', class: 'desc-s3' },
           { text: ',', class: 'desc-comma' }, { text: 'D₁x', class: 'desc-s4' }, { text: 'σ₂z', class: 'desc-s2' },{ text: 'σ₃x', class: 'desc-s3' } 
         ]},
-       { label: 'U₂(8)', ops: [
+       { label: 'q₂(8)', ops: [
          { text: 'σ₂z', class: 'desc-s2' },
          { text: ',', class: 'desc-comma' }, 
          { text: 'D₁z', class: 'desc-s4' }, { text: 'σ₂x', class: 'desc-s2' }
        ]},
-       { label: 'U₃(8)', ops: [
+       { label: 'q₃(8)', ops: [
          { text: 'D₁x', class: 'desc-s4' }, { text: 'σ₂z', class: 'desc-s2' },
          { text: ',', class: 'desc-comma' }, { text: 'D₁z', class: 'desc-s4' }, { text: 'σ₃z', class: 'desc-s3' }
        ]}
