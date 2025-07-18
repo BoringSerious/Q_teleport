@@ -882,7 +882,7 @@
                   &for\\,\\,\\,\\left(\\langle q_x\\rangle,\\langle q_z\\rangle\\right)= \\left(\\cos{\\theta}\\sin{\\phi}, \\cos{\\phi}\\right)
                   \\end{align*}\\]
               <br>•More for (σx,σz):
-              <br>A descriptor is defined as a tuple of Pauli operators (σx, σz), representing how the qubit’s observables evolve over time. When evaluated on a reference state (like |000⟩), these yield the time-dependent expectation values ⟨qₓ(t)⟩, ⟨q_z(t)⟩.
+              <br>A descriptor is defined as a tuple of Pauli operators (σx, σz), representing how the qubit's observables evolve over time. When evaluated on a reference state (like |000⟩), these yield the time-dependent expectation values ⟨qₓ(t)⟩, ⟨q_z(t)⟩.
               </small></div></p>`,
 
       block6: `<p{margin-bottom: 0.1em;} class="teleport-title">The Evolution of Descriptors<div class="teleport-desc"><small>
@@ -915,7 +915,7 @@
                <br>•At <b><i class="highlight-explain">t=5</i></b>, changing the Qubit-1 position of "D₁xσ₂zσ₃x" into the z-compnent which is for later measurement. At this momoent, "D₁zσ₂x" and "D₁xσ₂zσ₃x" are fully encrypted and thier expectation values becomes zero. 
                    This called "Bell Measurement" which transfer the entangled correlations "σ₂zσ₃x" to Qubit-1.
                <br>    
-               <br>•From <b><i class="highlight-explain">t=6 to t=9</i></b>, these processes called the "decryption" which unlock the keys embedded in "D". The Cnot gates transform the operators such that Qubit-3’s observable becomes functionally dependent on the originally encoded D₁x and D₁z.
+               <br>•From <b><i class="highlight-explain">t=6 to t=9</i></b>, these processes called the "decryption" which unlock the keys embedded in "D". The Cnot gates transform the operators such that Qubit-3's observable becomes functionally dependent on the originally encoded D₁x and D₁z.
                <br>•For Cnot gate at <b><i class="highlight-explain">t=6</i></b>, "D₁z" transmittion:
                \\[q_{3z}(6)=q_{2z}(5)q_{3z}(5)=D_{1z}\\sigma_{2x}^2\\sigma_{3z} =D_{1z}\\sigma_{3z}\\]
                (Qubit-2 and Qubit-3 are no longer entangled at this moment, since the Qubit-2 contains nothing about correlative component of Qubit-3)
@@ -1172,6 +1172,45 @@
       grid.innerHTML = '';
       let lookup = {};
       schGates2.forEach(g=>{ lookup[`${g.row},${g.col}`] = g; });
+      // 預先找出每個col的CNOT組合
+      window.cnotCols = {};
+      for (let col = 0; col < 11; col++) {
+        let dotRow = -1, plusRow = -1;
+        for (let row = 0; row < 3; row++) {
+          const g = lookup[`${row},${col}`];
+          if (g && g.type === '●') dotRow = row;
+          if (g && g.type === 'X') plusRow = row;
+        }
+        if (dotRow !== -1 && plusRow !== -1) {
+          window.cnotCols[col] = {dotRow, plusRow};
+        }
+      }
+      // SVG helpers
+      function svgWire(gateSVG = '', color = '#39382c') {
+        return `<svg width="100%" height="100%" viewBox="-4 -8 40 48" style="overflow:visible">
+          <line x1="-16" y1="16" x2="48" y2="16" stroke="${color}" stroke-width="2"/>
+          ${gateSVG}
+        </svg>`;
+      }
+      function svgDotWithWire(connectDown = false) {
+        return svgWire(`
+          <circle cx="16" cy="16" r="5" fill="black"/>
+          ${connectDown ? '<line x1="16" y1="16" x2="16" y2="48" stroke="black" stroke-width="2"/>' : ''}
+        `);
+      }
+      function svgPlusWithWire(connectUp = false) {
+        return svgWire(`
+          <circle cx="16" cy="16" r="9" fill="white" stroke="black" stroke-width="2"/>
+          <line x1="16" y1="8" x2="16" y2="24" stroke="black" stroke-width="2"/>
+          <line x1="8" y1="16" x2="24" y2="16" stroke="black" stroke-width="2"/>
+          ${connectUp ? '<line x1="16" y1="-16" x2="16" y2="16" stroke="black" stroke-width="2"/>' : ''}
+        `);
+      }
+      function svgIWithWire(color) {
+        return svgWire(`
+          <line x1="0" y1="16" x2="32" y2="16" stroke="#000" stroke-width="2"/>
+        `, color);
+      }
       for (let row = 0; row < 4; row++) {
         for (let col = 0; col < 11; col++) {
           const cell = document.createElement('div');
@@ -1182,14 +1221,69 @@
           } else {
             if (col === 0) cell.textContent = '|0⟩';
             if (lookup[`${row},${col}`]) {
-              cell.textContent = lookup[`${row},${col}`].type;
+              const type = lookup[`${row},${col}`].type;
               cell.classList.add('gate');
               cell.dataset.color = lookup[`${row},${col}`].color;
               cell.style.background = lookup[`${row},${col}`].color;
               cell.style.color = '#222';
               cell.style.opacity = '1';
-              // 新增: type 為 '━━━' 或 '━━━➤' 時，border 顏色設為 #fffff0
-              if (lookup[`${row},${col}`].type === '━━━' || lookup[`${row},${col}`].type === '━━➤') {
+              // SVG gate化
+              if (row === 1 && col === 8) {
+                // 十字線SVG
+                cell.innerHTML = `
+                  <svg width="100%" height="100%" viewBox="-4 -8 40 48" style="overflow:visible">
+                    <line x1="-12" y1="16" x2="48" y2="16" stroke="#000" stroke-width="2"/>
+                    <line x1="16" y1="-8" x2="16" y2="40" stroke="#000" stroke-width="2"/>
+                  </svg>`;
+              } else if ((col === 9) && (row === 0 || row === 1)) {
+                // 橫線+右箭頭SVG
+                cell.innerHTML = `
+                  <svg width="100%" height="100%" viewBox="-4 -8 40 48" style="overflow:visible">
+                    <line x1="-10" y1="16" x2="48" y2="16" stroke="#000" stroke-width="2"/>
+                    <polygon points="48,16 42,12 42,20" fill="#000"/>
+                  </svg>`;
+              } else if (type === 'I' || type === '━━━' || type === '━━➤') {
+                // 只畫橫線SVG
+                cell.innerHTML = `
+                  <svg width="100%" height="100%" viewBox="-4 -8 40 48" style="overflow:visible">
+                    <line x1="-10" y1="16" x2="48" y2="16" stroke="#000" stroke-width="2"/>
+                  </svg>`;
+              } else if (type === '●') {
+                if (col !== 0 && col !== 10) {
+                  cell.innerHTML = svgDotWithWire(window.cnotCols[col] && window.cnotCols[col].dotRow === row);
+                } else {
+                  cell.innerHTML = '<svg width="32" height="32"><circle cx="16" cy="16" r="5" fill="black"/></svg>';
+                }
+              } else if (type === 'X') {
+                if (col !== 0 && col !== 10) {
+                  cell.innerHTML = svgPlusWithWire(window.cnotCols[col] && window.cnotCols[col].plusRow === row);
+                } else {
+                  cell.innerHTML = `<svg width="32" height="32">
+                    <circle cx="16" cy="16" r="9" fill="white" stroke="black" stroke-width="2"/>
+                    <line x1="16" y1="8" x2="16" y2="24" stroke="black" stroke-width="2"/>
+                    <line x1="8" y1="16" x2="24" y2="16" stroke="black" stroke-width="2"/>
+                  </svg>`;
+                }
+              } else if (type === 'I') {
+                // I gate用十字SVG（橫線+豎線，線條顏色黑色）
+                cell.innerHTML = `
+                  <svg width="100%" height="100%" viewBox="-4 -8 40 48" style="overflow:visible">
+                    <line x1="-10" y1="16" x2="48" y2="16" stroke="#000" stroke-width="2"/>
+                    <line x1="16" y1="-8" x2="16" y2="40" stroke="#000" stroke-width="2"/>
+                  </svg>`;
+              } else if (type === '━━━' || type === '━━➤') {
+                // 橫線SVG（和I gate一樣，橫線+豎線，線條顏色黑色）
+                cell.innerHTML = `
+                  <svg width="100%" height="100%" viewBox="-4 -8 40 48" style="overflow:visible">
+                    <line x1="-10" y1="16" x2="48" y2="16" stroke="#000" stroke-width="2"/>
+                    <line x1="16" y1="-8" x2="16" y2="40" stroke="#000" stroke-width="2"/>
+                  </svg>`;
+              } else {
+                // 其他 gate（如 H/U/●/X 以外）維持原本設計
+                cell.textContent = type;
+              }
+              // type 為 '━━━' 或 '━━━➤' 時，border 顏色設為 #fffff0
+              if (type === '━━━' || type === '━━➤') {
                 cell.style.borderColor = '#fffff0';
               }
             }
@@ -1214,14 +1308,23 @@
         for (let col = 0; col < 11; col++) {
           let sch = document.getElementById(`grid-sch-r${row}c${col}`);
           if (sch && sch.classList.contains('gate')) {
-            if (col === t && sch.textContent !== '━━━' && sch.textContent !== '━━➤') {
+            // 預設移除高亮
+            sch.classList.remove('highlight');
+            sch.style.background = sch.dataset.color;
+            sch.style.color = '#222';
+
+            // CNOT 高亮
+            if (col === t && window.cnotCols && window.cnotCols[col] &&
+                (row === window.cnotCols[col].dotRow || row === window.cnotCols[col].plusRow)) {
               sch.classList.add('highlight');
               sch.style.background = sch.dataset.color;
               sch.style.color = '#fff';
-            } else {
-              sch.classList.remove('highlight');
+            }
+            // H/U 高亮（H: #73C7F3, U: #f24d4d）
+            else if (col === t && sch.dataset && (sch.dataset.color === '#73C7F3' || sch.dataset.color === '#f24d4d')) {
+              sch.classList.add('highlight');
               sch.style.background = sch.dataset.color;
-              sch.style.color = '#222';
+              sch.style.color = '#fff';
             }
           }
         }
@@ -1247,6 +1350,8 @@
         }
       }
       fitGridToBlock('block2-block', 'grid-sch');
+      // 額外 log cnotCols 狀態
+      console.log('cnotCols:', window.cnotCols);
     }
     function initGridHei() {
       const grid = document.getElementById('grid-hei');
