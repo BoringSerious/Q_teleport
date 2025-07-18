@@ -636,7 +636,7 @@
 </head>
 <body>
   <div class="tabs">
-    <div class="tab active" onclick="switchTab(0)">Table 1</div>
+    <div class="tab active" onclick="switchTab(0)">Quantum Teleportation</div>
     <div class="tab" onclick="switchTab(1)">Table 2</div>
   </div>
 
@@ -644,17 +644,18 @@
   <div class="container active" id="tab0">
     <div class="block" id="block0">
       <div id="blockContent">
-        <p class="teleport-title">A simulation of Quantum Teleportation between two different Pictures!</p>
+        <p class="teleport-title"><b>Information Flow of Quantum Teleportation on Entanglement</b></p>
         <small><div class="teleport-desc">
-          • The grids show the evolution of Quantum bits(Qubits) of Schrodinger and Heisenberg's Pictures. <span class="highlight-explain">Click the "?" mark to gain further explainations.</span> Three rows of the grid represent the evolution of <i>Qubit-1</i>, <i>Qubit-2</i>, and <i>Qubit-3</i>.<br>
-        <br>•Operation Process of Teleportation: Alice prepares two entangled qubits Q2 & Q3, and a qubit Q1 embeded with state information α and β at t=3. Then she would like to use some quantum gates to "teleport" the state of Q1 to Q3. <br>
+          •This simulation aims to demonstrate the explaination of quanutm information flow in a local way, and the encryption function of entanglement.<br>
+          <br>• The grids show the evolution of Quantum bits(Qubits) of Schrodinger and Heisenberg's Pictures. <span class="highlight-explain">Click the "?" mark to gain further explainations.</span> Three rows of the grid represent the evolution of <i>Qubit-1</i>, <i>Qubit-2</i>, and <i>Qubit-3</i>.<br>
+        <br>•Operation Process of Teleportation: Alice prepares two entangled qubits Q2 & Q3, and a qubit Q1 embedded with state information α and β at t=3. Then she would like to use some quantum gates to "teleport" the state of Q1 to Q3. <br>
           <br>• In tranditional Schrödinger's way, which we learn in the Introduction of Quantum mechanics , it is a useful tool to descript the quantum state when the qubits are fully operated. However, it was hard to explain the information flow since the state of the qubits is descrtibed in nonlocal situation. <br>
         <br>• Therefore, Heisenberg Picture provide an effective and local way for the description of information flow and the role of the entanglement.
         </div></small>
       </div>
     </div>
     <div class="block" id="block1">
-      <span class="block-label">Block1</span>
+      <span class="block-label">Expecation Value of Pauli X & Z</span>
       <span class="btn-help">?</span>
       <div class="pauli-expect-block">
         <div class="pauli-row"><span class="pauli-label">Q₁</span><div class="pauli-box" id="pauli-q1-left"></div><div class="pauli-box" id="pauli-q1-right"></div></div>
@@ -664,7 +665,7 @@
     </div>
     <div class="block" id="block2-block">
       <div id="block2" class="block-inner">
-        <span class="block-label">Block 2</span>
+        <span class="block-label">Schrödinger's Picture</span>
         <!-- Schrodinger picture block start -->
         <div id="block2-schrodinger">
           <div class="grid" id="grid-sch"></div>
@@ -676,7 +677,7 @@
     </div>
     <div class="block" id="block3-block">
       <div id="block3" class="block-inner">
-        <span class="block-label">Block 3</span>
+        <span class="block-label">Quantum State</span>
         <div id="block3-quantum-state" style="color: #222;"></div>
         <span class="btn-bottom-right" onclick="toggleBlockVisibility('block3-block')" id="toggle-block3">▲</span>
         <span class="btn-help">?</span>
@@ -684,7 +685,7 @@
     </div>
     <div class="block" id="block4-block">
       <div id="block4" class="block-inner">
-        <span class="block-label">Block 4</span>
+        <span class="block-label">Heisenberg's Picture</span>
         <!-- Heisenberg picture block start -->
         <div id="block4-heisenberg">
           <div class="grid" id="grid-hei"></div>
@@ -698,7 +699,7 @@
       <span class="btn-help">?</span>
       <div class="block5-flex">
         <div class="block5-main">
-          <span class="block-label">Block 5</span>
+          <span class="block-label">•</span>
           <div class="block5-content"><p><span class="time-panel-title"><i>Time Control Panel</i></span><br><small>Try to drag the slider or click the "▷"</small></p></div>
           <div class="simple-slider-label" id="slider-t-label">t=0</div>
           <div class="simple-slider-container">
@@ -709,12 +710,13 @@
           </div>
         </div>
         <div class="block7-properties">
-          <span class="block-label">Block 7</span>
+          <span class="block-label">Supplement</span>
           <div class="block7-content">
-             <p><i><b>su(2)^(⊗n) algrebra</b></i>
-             <br>•[qₛw(0),qₜw'(0)]=0, if s≠t
-             <br>•qₛx(0)qₛy(0)=qₛz(0)
-             <br>•qₛx(0)²=qₛz(0)²=<i>I</i>
+             <p><i><b>•su(2)^(⊗n) algebra</b></i>
+             <br><i><b>•Unitary Matrix</b></i>
+             <br><i><b>•Redundancy</b></i>
+             <br><i><b>•Descriptor to State</b></i>
+             <br><i><b>•More for (σx,σz)</b></i>
              </p>
             </div>
         </div>
@@ -722,7 +724,7 @@
     </div>
     <div class="block" id="block6-block">
       <div id="block6" class="block-inner">
-        <span class="block-label">Block 6</span>
+        <span class="block-label">Descriptors</span>
         <div id="block6-descriptor"></div>
         <span class="btn-bottom-right" onclick="toggleBlockVisibility('block6-block')" id="toggle-block6">▲</span>
         <span class="btn-help">?</span>
@@ -759,7 +761,7 @@
     const blockContents = {
       block0: `This is a simulation that showing the Quantum Teleportation!`,
       block1: `<p{margin-bottom: 0.1em;} class="teleport-title">Expectaitonal Outcomes of Qubits(Q₁,Q₂,Q₃) on Pauli Operators <span class="highlight-explain">X</span>(left-hand boxes) & <span class="highlight-explain">Z</span>(right-hand boxes)<div class="teleport-desc"><small>
-               <br>• The expectational value of operator X&Z will be calculated(It's straight-forward as we encountered in basic quantum courses.):
+               <br>• The expectation value of operator X&Z will be calculated(It's straight-forward as we encountered in basic quantum courses.):
                    \\[\\langle\\psi_t|X\\otimes X\\otimes X|\\psi_t\\rangle\\, \\&\\, \\langle\\psi_t|Z\\otimes Z\\otimes Z|\\psi_t\\rangle\\]
                <br>• In Heisenberg's Picture, the expectation outcomes will be found from descriptor with the reference state |0>:
                    \\[\\langle 000|(U_i x(t), U_i z(t))|000\\rangle\\]
@@ -772,9 +774,9 @@
                </small></div></p>`,
 
       block2: `<p{margin-bottom: 0.1em;} class="teleport-title">Schrödinger's Picture <div class="teleport-desc"><small>
-               <br>• In this Picture, <b class="teleport-title">only the state of qubits will be changed by time variation</b>, and the observables/operators are constent. The quantum circuit at <i class="teleport-title">top, middle, and bottom</i> indicate the evolution of <i class="teleport-title">Qubits 1,2, and 3</i> respectively. Therefore, the observables only act at once which are highlighted at corresponding time value and only the state <b>Ψₜ</b> varied.
+               <br>• In this Picture, <b class="teleport-title"> the state evolves with time</b>, while the observables/operators remain constant.. The quantum circuit at <i class="teleport-title">top, middle, and bottom</i> indicate the evolution of <i class="teleport-title">Qubits 1,2, and 3</i> respectively. Therefore, the observables only act at once which are highlighted at corresponding time value and only the state <b>Ψₜ</b> varied.
                <br>
-               <br>• Additionaly, the line "━" in the circuit means the identity unitraty matrix "<i class="teleport-title">I</i>", which do nothing on the state variation.
+               <br>• Additionaly, the line "━" in the circuit act as the identity unitaty matrix "<i class="teleport-title">I</i>" (i.e., leaves the state unchanged)..
                <br>
                <br>• The state at the beginning represented in braket notation is shown below, which indicates the Qubit1,2,3 from left to right:
                    \\[|000\\rangle = |0\\rangle \\otimes |0\\rangle \\otimes |0\\rangle\\]
@@ -784,13 +786,13 @@
                    &|0\\rangle =\\begin{pmatrix}1 \\\\ 0\\end{pmatrix}\\, \\&\\, |1\\rangle =\\begin{pmatrix}0 \\\\ 1\\end{pmatrix}\\\\
                    \\end{align*}\\]
 
-               <br>• Each highlighted box represent an Unitrary Matrix(click the block7 "?" for more explaination). "H" is a typical unitray matrix caled <span class="highlight-explain">Hadamard Gate</span>:
+               <br>• Each highlighted box represent an Unitary Matrix(click the block7 "?" for more explaination). "H" is a typical unitray matrix caled <span class="highlight-explain">Hadamard Gate</span>:
                    \\[\\begin{align*}
                    &|\\Psi_1^{q2}\\rangle = H|\\Psi_0^{q2}\\rangle = H|0\\rangle = \\frac{1}{\\sqrt{2}}\\begin{pmatrix}1 & 1 \\\\ 1 & -1\\end{pmatrix}\\begin{pmatrix}1 \\\\ 0\\end{pmatrix}\\\\
                    &=\\frac{1}{\\sqrt{2}}\\left(|0\\rangle + |1\\rangle\\right)
                    \\end{align*}\\]
                    
-               <br>• The boxes in pair of "•" and "X" represented as a two-qubits operator(4x4 matrix) called <span class="highlight-explain">Controlled-not(Cnot) Gate</span>. Box "•" is used to check wether the first qubit is |1>, then switch the second qubit state on box "X"(like |0> → |1>, or |1> → |0>). For examples:
+               <br>•The <span class="highlight-explain">Controlled-not(Cnot) Gate</span> flips the target qubit (at "X") only when the control qubit (at "•") is in state |1⟩ (e.g.|0> → |1>, or |1> → |0>). For examples:
                    \\[Cnot\\left(|01\\rangle +|11\\rangle\\right) = |01\\rangle +|10\\rangle\\]
                </small></div></p>`,
 
@@ -814,7 +816,7 @@
                & where\\,:\\, |\\psi\\rangle = \\alpha |0\\rangle + \\beta |1\\rangle
                \\end{align*}\\]
 
-               <br>•From <b><i class="highlight-explain">t=6 to t=8</i></b>, the expansion of state Ψ₈ becomes much more complicated. However, we still can't tell the location of "α" & "β" at this moment. Therefore, some may believe that the quantum information flow in quantum teleportation might be "<i><b>nonlocal</b></i> ".
+               <br>•From <b><i class="highlight-explain">t=6 to t=8</i></b>, the expansion of state Ψ₈ becomes much more complicated. However, we still can't tell the location of "α" & "β" at this moment. Therefore, some may interpret the quantum teleportation process as exhibiting <b>nonlocality</b>, due to the entangled correlations and measurement-induced collapse.
                <br>
                <br>•At <b><i class="highlight-explain">t=9</i></b>, the teleportation seems to be completed. No matter what "0" or "1" we measure at Qubit-1 and Qubit-2, the Qubit-3 will finally become |ψ> we need.
                \\[\\frac{1}{2}\\left(|00\\rangle + |01\\rangle + |10\\rangle +|11\\rangle\\right)\\otimes |\\psi\\rangle\\]
@@ -823,7 +825,7 @@
 
       block4: `<p{margin-bottom: 0.1em;} class="teleport-title">Heisenberg's Picture <div class="teleport-desc"><small>
               <br>•The state of Qubits have no longer been decribed in this Picture. In contract, only gates are performed as the discrete time variation, called the evolution of operators. Similar to what we learn in classical relative motion, velocity and position of an object changes respected to another as in frame of reference. Here we take |000> as the <i class="highlight-explain">reference vector</i> state.
-                  Heisenberg's Picture supposes the state of Qubit as reference which remain constant, and consentrates on the evolution of operators <b class="highlight-explain">Q(t)</b>.
+                  In the Heisenberg picture, the quantum state is treated as a fixed reference (e.g., |000⟩), and all dynamics are represented as the time evolution of operators <b class="highlight-explain">Q(t)</b> instead.
                   <br>
                   <br>•At this moment, when you drag the time slider, the gates will keep highlighted which means that the operator will always be influenced by the gates before t, even identical gate will be considered. Taking the Qubit-1 at t=3 for an example:
               \\[\\begin{align*}
@@ -832,15 +834,15 @@
               \\end{align*}\\]
               <br>•So if the state is in constant, how could we describe the quantum system of each qubit? No worry, <b class="highlight-explain">descriptor</b> is perfectly applied to illustrate the system. 
                   Just like the Cartesian coordinate(x,y,z), decriptor (qx,qy,qz) is used to describe the orientation on Bloch sphere, showing how it behaves under X, Y, Z measurements.
-                  According to su(2) algebra, (qx,qz) is convenient enough for all description. 
-                  <br>•At the beginning of the Qubit-1, its descriptor is:
+                  According to su(2) algebra, (qx,qz) is convenient enough for all description(more for Redundancy on <i>Supplement</i>). 
+                  <br>•<u>At the beginning of the Qubit-1, it holds the basic Pauli matrix inside the descriptor which is</u>:
                   \\[q_1(0)=\\left(\\sigma_x(0),\\sigma_z(0)\\right)=\\left(X,Z\\right)\\]
                   and the Qubit-1 at t=3 will be:
                   \\[\\begin{align*}
                   &q_1(3)=U^{\\dagger} I^{\\dagger} I^{\\dagger} \\left(\\sigma_{1x}(0),\\sigma_{1z}(0)\\right)I\\,I\\,U\\\\
                   &=\\left(D_{1x}(0),D_{1z}(0)\\right)
                   \\end{align*}\\]
-                  <b>where "D" means the information of <span style="color:red;">α</span> and <span style="color:red;">β</span> have been stored in that descriptor</b>. More math description placed below, <u>feel free to ignore them.</u>
+                  <b>where "D" means the information of <span style="color:red;">α</span> and <span style="color:red;">β</span> have been stored in that descriptor</b>. More math description placed below.
                   <br>
                   <br>•More details of Qubit-1 at t=3:
                   \\[\\begin{align*}
@@ -849,12 +851,9 @@
                   &where\\,\\,\\,U = \\begin{pmatrix}\\alpha & -\\beta \\\\ \\beta & \\alpha\\end{pmatrix}
                   \\end{align*}\\]
                   
-                  <br>•If you are interested in converting the descriptor into classical state, you can calculate it from the equations:
-                  \\[\\begin{align*}
-                  &|\\Psi_3^{q1}\\rangle=\\cos{\\frac{\\theta}{2}}|0\\rangle + e^{i\\phi}\\sin{\\frac{\\theta}{2}}|1\\rangle\\\\
-                  &for\\,\\,\\,\\left(\\langle q_x\\rangle,\\langle q_z\\rangle\\right)= \\left(\\cos{\\theta}\\sin{\\phi}, \\cos{\\phi}\\right)
-                  \\end{align*}\\]
-
+                  <br>•If you are interested in converting the descriptor into classical state, you can check from the equations in <i>Supplement</i>.
+                  <br>
+                  
                   <br>•The operator Q(t) includes all three qubits' descriptors:
                   \\[\\begin{align*}
                   &Q(t)=\\left(q_1(t),q_2(t),q_3(t)\\right)\\\\
@@ -862,10 +861,71 @@
                   \\end{align*}\\]
               </small></div></p>`,
 
-      block5: `\( \frac{d}{dx}e^x = e^x \)`,
+      block5: `<p{margin-bottom: 0.1em;} class="teleport-title">Supplementay Contents<div class="teleport-desc"><small>
+              <br>•Properties of <b><i>su(2)^(⊗n)</i></b> algebra:
+              \\[\\begin{align*}
+              &[q_{iw}(0),q_{jw'}(t)]=0\\,\\,\\,(i≠j\\,and\\,\\forall w,w')\\\\
+              &q_{ix}(0)q_{iy}(0)=iq_{iz}(0)\\,\\,\\,(cyclic permutations)\\\\
+              &q_w(0)^2=I\\,\\,\\,(\\forall w)
+              \\end{align*}\\]
+              <br>•Unitary Matrix:
+              \\[U^{\\dagger}=U^{-1}\\,\\,\\&\\,\\, U^{\\dagger}U=I\\]
+              <br>•Redundancy on descriptor(I,qx,qy,qz):
+              <br>According to the properties of su(2) algebra
+              \\[\\begin{align*}&(I,q_x(0),q_y(0),q_z(0))\\\\
+              &=(q_x^2(0),q_x(0),-iq_z(0)q_x(0),q_z(0))\\end{align*}\\]
+              Hence I and y components can be found by x and z components for simplification (qx,qz).
+              <br>
+              <br>•Converting Descriptor to State of Qubit-1 can be calculated from the following equation:
+              \\[\\begin{align*}
+                  &|\\Psi_3^{q1}\\rangle=\\cos{\\frac{\\theta}{2}}|0\\rangle + e^{i\\phi}\\sin{\\frac{\\theta}{2}}|1\\rangle\\\\
+                  &for\\,\\,\\,\\left(\\langle q_x\\rangle,\\langle q_z\\rangle\\right)= \\left(\\cos{\\theta}\\sin{\\phi}, \\cos{\\phi}\\right)
+                  \\end{align*}\\]
+              <br>•More for (σx,σz):
+              <br>A descriptor is defined as a tuple of Pauli operators (σx, σz), representing how the qubit’s observables evolve over time. When evaluated on a reference state (like |000⟩), these yield the time-dependent expectation values ⟨qₓ(t)⟩, ⟨q_z(t)⟩.
+              </small></div></p>`,
 
       block6: `<p{margin-bottom: 0.1em;} class="teleport-title">The Evolution of Descriptors<div class="teleport-desc"><small>
-               <br>•
+               <br>•This block demonstrate the descriptors evolution of qubits. Through the application of descriptors, we can easily trace the information flow of <span style="color:red;">α</span> and <span style="color:red;">β</span> stored in D₁x and D₁z ("D"), and how the entanglement is used for encryption and decryption. 
+               <br>
+               <br>•The quantum gates act on descriptor will be quite different from the state operation:
+               <br><span class="highlight-explain">Hadamard Gate</span> on descriptor:
+               \\[(q_{x(t)},q_{z(t)})\\stackrel{H}{\\longrightarrow}(q_{z(t-1)},q_{x(t-1)})\\]
+               <span class="highlight-explain">Controlled-not Gate</span> on descriptor:
+               \\[\\begin{align*}
+               &(q_{cx(t)},q_{cz(t)})\\stackrel{•}{\\longrightarrow}(q_{cx(t-1)}q_{tx(t-1)},q_{cz(t-1)})\\\\
+               &(q_{tx(t)},q_{tz(t)})\\stackrel{X}{\\longrightarrow}(q_{tx(t-1)},q_{cz(t-1)}q_{tz(t-1)})
+               \\end{align*}\\]
+               
+               <br>•At <b><i class="highlight-explain">t=2</i></b>, Qubit-2 and Qubit-3 are entangled with each other which perform as sharing a part of descriptor to one anothor. The descriptors of Qubit-2 and Qubit-3 become correlated(<span style="color:magenta;">σ₃x</span> & <span style="color:deepskyblue;">σ₂x</span>), such that their X components are entangled and no longer independent. It reflects the underlying quantum entanglement between the two qubits.
+                   <br>•This can be seen as providing an unique key so that the expectation outcomes of Q2 and Q3 will always be zero after the measurement, because any measurement at Q2 will affect the result of Q3 and  vice versa.
+                   \\[\\begin{align*}
+                   &\\langle 00|(\\sigma_{2z} \\sigma_{3x},\\sigma_{2x})|00\\rangle = \\langle 00|(\\sigma_{3x} ,\\sigma_{3z}\\sigma_{2x})|00\\rangle \\\\
+                   &=(0,0)
+                   \\end{align*}\\]
+               <br>•At <b><i class="highlight-explain">t=3</i></b>, Alice uses an Unitary gate to encode the quantum information inside the Qubit-1, but we don't know the exact value of "α" and "β". Therefore, we use the "D" to trace that information.
+               \\[\\begin{align*}
+               &q_1(3)=U^{\\dagger} I^{\\dagger} I^{\\dagger} \\left(\\sigma_{1x}(0),\\sigma_{1z}(0)\\right)I\\,I\\,U\\\\
+               &=\\left(D_{1x}(0),D_{1z}(0)\\,\\right)
+               \\end{align*}\\]
+               <br>•At <b><i class="highlight-explain">t=4</i></b>, the z-component "D₁z" has been copied into the Qubit-2 with a key "σ₂x". Meanwhile, the key of "σ₃x" will be embedded in "D₁z" component in Qubit-1.
+                    It is because the measurement of reference vector |0> applies to Pauli X (σ_x) will be zero. By the properties of su^2 algebra, square of X is equal to <i>I</i> which can be used for "unlock" the information.
+               \\[\\langle 00|D_{x}\\sigma_x |00\\rangle =0\\\,\\,\\,\\&\\,\\,\\,\\sigma_x^2=I\\]
+                
+               <br>•At <b><i class="highlight-explain">t=5</i></b>, changing the Qubit-1 position of "D₁xσ₂zσ₃x" into the z-compnent which is for later measurement. At this momoent, "D₁zσ₂x" and "D₁xσ₂zσ₃x" are fully encrypted and thier expectation values becomes zero. 
+                   This called "Bell Measurement" which transfer the entangled correlations "σ₂zσ₃x" to Qubit-1.
+               <br>    
+               <br>•From <b><i class="highlight-explain">t=6 to t=9</i></b>, these processes called the "decryption" which unlock the keys embedded in "D". The Cnot gates transform the operators such that Qubit-3’s observable becomes functionally dependent on the originally encoded D₁x and D₁z.
+               <br>•For Cnot gate at <b><i class="highlight-explain">t=6</i></b>, "D₁z" transmittion:
+               \\[q_{3z}(6)=q_{2z}(5)q_{3z}(5)=D_{1z}\\sigma_{2x}^2\\sigma_{3z} =D_{1z}\\sigma_{3z}\\]
+               (Qubit-2 and Qubit-3 are no longer entangled at this moment, since the Qubit-2 contains nothing about correlative component of Qubit-3)
+               <br>•For Cnot gate at <b><i class="highlight-explain">t=8</i></b>, "D₁x" transmittion:
+               \\[q_{3z}(8)=q_{1z}(7)q_{3z}(7)=D_{1x}\\sigma_{2z}\\sigma_{3x}^2 =D_{1x}\\sigma_{2z}\\]
+               •"H" gates at <b><i class="highlight-explain">t=7</i></b> and <b><i class="highlight-explain">t=9</i></b> used to switch the x-z components so that the Cnot gates can transfer the information "D" to Qubit-3 properly.
+               <br>
+               <br>•Finally we can clearly see how the information "α" and "β" stored in "D" flow from Qubit-1 to Qubit-3 through Cnot and Hadamard Gates. Meanwhile, the descriptor has a well explaination on how entanglement encripts and decrypts the quantum information in the circuit.
+               And the expectation outcomes of Qubit-3 equal to the outcomes of Qubit-1 at t=3, which means the information for rebuilding target state in Qubit-3 has been successfully transfered.
+
                </small></div></p>`,
     };
     function showBlockContent(blockId) {
@@ -1074,26 +1134,26 @@
       {row:2, col:9, type:'H', color:'#73C7F3'},
     ];
     const schStates = [
-      '\\[|\\psi_0\\rangle = |000\\rangle\\]',
-      '\\[|\\psi_1\\rangle = \\frac{1}{\\sqrt{2}}\\left(|000\\rangle +|010\\rangle\\right)\\]',
-      '\\[|\\psi_2\\rangle = \\frac{1}{\\sqrt{2}}\\left(|000\\rangle +|011\\rangle\\right)\\]',
-      '\\[\\begin{align*}' +'|\\psi_3\\rangle &= \\frac{1}{\\sqrt{2}}\\Big[\\alpha |000\\rangle + \\alpha |011\\rangle \\\\ ' +
+      '\\[|\\Psi_0\\rangle = |000\\rangle\\]',
+      '\\[|\\Psi_1\\rangle = \\frac{1}{\\sqrt{2}}\\left(|000\\rangle +|010\\rangle\\right)\\]',
+      '\\[|\\Psi_2\\rangle = \\frac{1}{\\sqrt{2}}\\left(|000\\rangle +|011\\rangle\\right)\\]',
+      '\\[\\begin{align*}' +'|\\Psi_3\\rangle &= \\frac{1}{\\sqrt{2}}\\Big[\\alpha |000\\rangle + \\alpha |011\\rangle \\\\ ' +
              '&\\qquad + \\beta |100\\rangle + \\beta |111\\rangle\\Big]' + '\\end{align*}\\]',
-      '\\[\\begin{align*}' +'|\\psi_4\\rangle &= \\frac{1}{\\sqrt{2}}\\Big[\\alpha |000\\rangle + \\alpha |011\\rangle \\\\ ' +
+      '\\[\\begin{align*}' +'|\\Psi_4\\rangle &= \\frac{1}{\\sqrt{2}}\\Big[\\alpha |000\\rangle + \\alpha |011\\rangle \\\\ ' +
              '&\\qquad + \\beta |110\\rangle + \\beta |101\\rangle\\Big]' + '\\end{align*}\\]',
-      '\\[\\begin{align*}' +'|\\psi_5\\rangle &= \\frac{1}{2}\\Big[\\alpha |000\\rangle + \\alpha |100\\rangle + \\alpha |011\\rangle +\\alpha |111\\rangle \\\\ ' +
+      '\\[\\begin{align*}' +'|\\Psi_5\\rangle &= \\frac{1}{2}\\Big[\\alpha |000\\rangle + \\alpha |100\\rangle + \\alpha |011\\rangle +\\alpha |111\\rangle \\\\ ' +
              '&\\qquad + \\beta |010\\rangle - \\beta |110\\rangle + \\beta |001\\rangle - \\beta |101\\rangle\\Big]' + '\\end{align*}\\]',
-      '\\[\\begin{align*}' +'|\\psi_6\\rangle &= \\frac{1}{2}\\Big[\\alpha |000\\rangle + \\alpha |100\\rangle + \\alpha |010\\rangle +\\alpha |110\\rangle \\\\ ' +
+      '\\[\\begin{align*}' +'|\\Psi_6\\rangle &= \\frac{1}{2}\\Big[\\alpha |000\\rangle + \\alpha |100\\rangle + \\alpha |010\\rangle +\\alpha |110\\rangle \\\\ ' +
              '&\\qquad + \\beta |011\\rangle - \\beta |111\\rangle + \\beta |001\\rangle - \\beta |101\\rangle\\Big]' + '\\end{align*}\\]',
-      '\\[\\begin{align*}' +'|\\psi_7\\rangle &= \\frac{1}{2\\sqrt{2}}\\Big[\\alpha |000\\rangle + \\alpha |001\\rangle + \\alpha |100\\rangle +\\alpha |101\\rangle \\\\ ' +
+      '\\[\\begin{align*}' +'|\\Psi_7\\rangle &= \\frac{1}{2\\sqrt{2}}\\Big[\\alpha |000\\rangle + \\alpha |001\\rangle + \\alpha |100\\rangle +\\alpha |101\\rangle \\\\ ' +
              '&\\qquad + \\alpha |010\\rangle + \\alpha |011\\rangle + \\alpha |110\\rangle +\\alpha |111\\rangle \\\\ ' +
              '&\\qquad + \\beta |010\\rangle - \\beta |011\\rangle - \\beta |110\\rangle + \\beta |111\\rangle \\\\ ' +
              '&\\qquad + \\beta |000\\rangle - \\beta |001\\rangle - \\beta |100\\rangle - \\beta |101\\rangle\\Big]' + '\\end{align*}\\]',
-      '\\[\\begin{align*}' +'|\\psi_8\\rangle &= \\frac{1}{2\\sqrt{2}}\\Big[\\alpha |000\\rangle + \\alpha |001\\rangle + \\alpha |101\\rangle +\\alpha |100\\rangle \\\\ ' +
+      '\\[\\begin{align*}' +'|\\Psi_8\\rangle &= \\frac{1}{2\\sqrt{2}}\\Big[\\alpha |000\\rangle + \\alpha |001\\rangle + \\alpha |101\\rangle +\\alpha |100\\rangle \\\\ ' +
              '&\\qquad + \\alpha |010\\rangle + \\alpha |011\\rangle + \\alpha |111\\rangle +\\alpha |110\\rangle \\\\ ' +
              '&\\qquad + \\beta |010\\rangle - \\beta |011\\rangle - \\beta |111\\rangle + \\beta |110\\rangle \\\\ ' +
              '&\\qquad + \\beta |000\\rangle - \\beta |001\\rangle - \\beta |101\\rangle - \\beta |100\\rangle\\Big]' + '\\end{align*}\\]',
-      '\\[|\\psi_9\\rangle = \\frac{1}{2}\\left(|00\\rangle +|10\\rangle + |01\\rangle +|11\\rangle\\right)\\otimes \\left(\\alpha |0\\rangle +\\beta |1\\rangle\\right)\\]',
+      '\\[|\\Psi_9\\rangle = \\frac{1}{2}\\left(|00\\rangle +|10\\rangle + |01\\rangle +|11\\rangle\\right)\\otimes \\left(\\alpha |0\\rangle +\\beta |1\\rangle\\right)\\]',
     ];
     const psiInfo = [
       'Ψ₀', 'Ψ₁', 'Ψ₂', 'Ψ₃', 'Ψ₄', 'Ψ₅', 'Ψ₆', 'Ψ₇', 'Ψ₈', 'Ψ₉'
