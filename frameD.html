@@ -775,15 +775,40 @@
   <div style=\"text-align:center;margin:7px 0;\">\
     <img src=\"Alice&Bob.png\" alt=\"Alice and Bob\" style=\"max-width:90%;height:auto;border-radius:10px;box-shadow:0 2px 12px #aaa;\" id=\"alicebob-img\">\
   </div>\
-  <br>•The core of the protocal is the pair of entangled qubits shared between two locations like Alic and Bob. Suppose Alice uses an unitary gate for preparing a third qubit in an arbitraty state ∣ψ⟩=α∣0⟩+β∣1⟩ that she wishes to "teleport" to Bob. By performing Bell measurement on her two qubits, one in state ∣ψ⟩ and another entangled state shared with Bob's one. Then sending the measuremnet outcome to Bob via classical channel, and Bob's qubit will be transformed into the qubit ∣ψ⟩ accroding to the outcome resluts from Alice.<br>\
+  <br>•The core of the protocal is the pair of entangled qubits shared between two locations like Alic and Bob. Suppose Alice uses an unitary gate for preparing a third qubit in an arbitraty state ∣ψ⟩=α∣0⟩+β∣1⟩ that she wishes to \"teleport\" to Bob. By performing Bell measurement on her two qubits, one in state ∣ψ⟩ and another entangled state shared with Bob's one. Then sending the measuremnet outcome to Bob via classical channel, and Bob's qubit will be transformed into the qubit ∣ψ⟩ accroding to the outcome resluts from Alice.<br>\
   <br>The figure below is the actual quantum circuit:
   <div style=\"text-align:center;margin:7px 0;\">\
     <img src=\"figure1.jpeg\" alt=\"figure1\" style=\"max-width:90%;height:auto;border-radius:10px;box-shadow:0 2px 12px #aaa;\" id=\"alicebob-img\">\
   </div>\
   <br>•In the fact that the original quantum state is destroyed at Alice's side and reappeares at Bob's. This is so-called <b>no-cloning theorem</b> and ensuring relativistic causality. Therefore the communication of the teleportation does not permit <u>faster than light</u>.<br>\
-  <br>•To simplify the proccess in teleportation, this website concentrate on how Alice "teleport" the quantum state from the first Qubit-1 to the third Qubit-3. Bob can take a rest in this simulation.
+  <br>•To simplify the proccess in teleportation, this website concentrate on how Alice \"teleport\" the quantum state from the first Qubit-1 to the third Qubit-3. Bob can take a rest in this simulation.
   </div></small>` },
-        ]
+        ],
+        schTabs: [
+          { title: "Schrödinger", content: `<p{margin-bottom: 0.1em;} class=\"teleport-title\">Schrödinger's Picture <div class=\"teleport-desc\"><small>\n               \n           
+            <br>• In this Picture, <b class=\"teleport-title\"> the state evolves with time</b>, while the observables/operators remain constant.. The quantum circuit at <i class=\"teleport-title\">top, middle, and bottom</i> indicate the evolution of <i class=\"teleport-title\">Qubits 1,2, and 3</i> respectively. Therefore, the observables only act at once which are highlighted at corresponding time value and only the state <b>Ψₜ</b> varied.\n               <br>\n               \n          
+             <br>• Additionaly, the line "-" in the circuit act as the identity unitaty matrix "<i class=\"teleport-title\">I</i>" (i.e., leaves the state unchanged)..\n               <br>\n               \n           
+            <br>• The state at the beginning represented in braket notation is shown below, which indicates the Qubit1,2,3 from left to right:\n                   \\[|000\\rangle = |0\\rangle \\otimes |0\\rangle \\otimes |0\\rangle\\]\n               \n           
+            <br>• It is obvious to observe that the quantum <span class=\"highlight-explain\">states evolve</span> in time(t). For example at t=3 on Qubit-1:\n                   \\[\\begin{align*}\n                   &|\\Psi_3^{q1}\\rangle = UII|\\Psi_0^{q1}\\rangle = U|0\\rangle = \\alpha |0\\rangle + \\beta |1 \\rangle \\\\n                   &|0\\rangle =\\begin{pmatrix}1 \\\\ 0\\end{pmatrix}\\, \\&\\, |1\\rangle =\\begin{pmatrix}0 \\\\ 1\\end{pmatrix}\\n                   \\end{align*}\\]\n\n               \n           
+            <br>• Each highlighted box represent an Unitary Matrix(click the block7 "?" for more explaination). "H" is a typical unitray matrix caled <span class=\"highlight-explain\">Hadamard Gate</span>:\n                   \\[\\begin{align*}\n                   &|\\Psi_1^{q2}\\rangle = H|\\Psi_0^{q2}\\rangle = H|0\\rangle = \\frac{1}{\\sqrt{2}}\\begin{pmatrix}1 & 1 \\\\ 1 & -1\\end{pmatrix}\\begin{pmatrix}1 \\\\ 0\\end{pmatrix}\\n                   &=\\frac{1}{\\sqrt{2}}\\left(|0\\rangle + |1\\rangle\\right)\n                   \\end{align*}\\]\n                   \n               \n           
+            <br>•The <span class=\"highlight-explain\">Controlled-not(Cnot) Gate</span> flips the target qubit (at "X") only when the control qubit (at "•") is in state |1⟩ (e.g.|0> → |1>, or |1> → |0>). For examples:\n                   \\[Cnot\\left(|01\\rangle +|11\\rangle\\right) = |01\\rangle +|10\\rangle\\]\n               
+            </small></div></p>` },
+          
+          { title: "v.s.", content: `<p{margin-bottom: 0.1em;} class=\"teleport-title\">The Comparision between Schrödinger's and Heisenberg's Picture <div class=\"teleport-desc\"><small>\n               \n           
+            <br>•               
+            <br>        
+            </small></div></p>` },
+
+          { title: "Heisenberg", content: `<p{margin-bottom: 0.1em;} class=\"teleport-title\">Heisenberg's Picture <div class=\"teleport-desc\"><small>\n              \n            In the Heisenberg picture, the quantum state is treated as a fixed reference (e.g., |000⟩), and all dynamics are represented as the time evolution of operators <b class=\"highlight-explain\">Q(t)</b> instead.\n                  <br>\n                 \n            
+            <br>•At this moment, when you drag the time slider, the gates will keep highlighted which means that the operator will always be influenced by the gates before t, even identical gate will be considered. Taking the Qubit-1 at t=3 for an example:\n              \\[\\begin{align*}\n              &q_1(3) = U^{\\dagger}q_1(2)U = U^{\\dagger} I^{\\dagger} q_1(1)I\\,U \\\\n              &= U^{\\dagger} I^{\\dagger} I^{\\dagger} q_1(0)I\\,I\\,U\n              \\end{align*}\\]\n              \n            
+            <br>•So if the state is in constant, how could we describe the quantum system of each qubit? No worry, <b class=\"highlight-explain\">descriptor</b> is perfectly applied to illustrate the system. \n                  Just like the Cartesian coordinate(x,y,z), decriptor (qx,qy,qz) is used to describe the orientation on Bloch sphere, showing how it behaves under X, Y, Z measurements.\n                  According to su(2) algebra, (qx,qz) is convenient enough for all description(more for Redundancy on <i>Supplement</i>). \n                  \n            
+            <br>•<u>At the beginning of the Qubit-1, it holds the basic Pauli matrix inside the descriptor which is</u>:\n                  \\[q_1(0)=\\left(\\sigma_x(0),\\sigma_z(0)\\right)=\\left(X,Z\\right)\\]\n                  and the Qubit-1 at t=3 will be:\n                  \\[\\begin{align*}\n                  &q_1(3)=U^{\\dagger} I^{\\dagger} I^{\\dagger} \\left(\\sigma_{1x}(0),\\sigma_{1z}(0)\\right)I\\,I\\,U\\\\n                  &=\\left(D_{1x}(0),D_{1z}(0)\\right)\n                  \\end{align*}\\]\n                  <b>where "D" means the information of <span style=\"color:red;\">α</span> and <span style=\"color:red;\">β</span> have been stored in that descriptor</b>. More math description placed below.\n                  <br>\n                  \n            
+            <br>•More details of Qubit-1 at t=3:\n                  \\[\\begin{align*}\n                  &\\left(D_{1x}(0),D_{1z}(0)\\right) = \\left(U^{\\dagger}\\sigma_x\\,U,U^{\\dagger}\\sigma_z\\,U)\\right)\\\\n                  &= \\bigr[(2\\alpha\\beta\\sigma_z+(\\alpha^2-\\beta^2)\\sigma_x),(-2\\alpha\\beta\\sigma_x+(\\alpha^2-\\beta^2)\\sigma_z)\\bigr]\\\\n                  &where\\,\\,\\,U = \\begin{pmatrix}\\alpha & -\\beta \\\\ \\beta & \\alpha\\end{pmatrix}\n                  \\end{align*}\\]\n                  \n                  \n            
+            <br>•If you are interested in converting the descriptor into classical state, you can check from the equations in <i>Supplement</i>.\n                  <br>\n                  \n            
+            <br>•The operator Q(t) includes all three qubits' descriptors:\n                  \\[\\begin{align*}\n                  &Q(t)=\\left(q_1(t),q_2(t),q_3(t)\\right)\\n                  &= \\Bigr[ (q_{1x}(t),q_{1z}(t)),(q_{2x}(t),q_{2z}(t)),(q_{3x}(t),q_{3z}(t))\\Bigr]\n                  \\end{align*}\\]\n              
+            </small></div></p>` },
+        ],
+        // quantumTabs 先不在這裡定義
       },
       block1: `<p{margin-bottom: 0.1em;} class="teleport-title">Expectaitonal Outcomes of Qubits(Q₁,Q₂,Q₃) on Pauli Operators <span class="highlight-explain">X</span>(left-hand boxes) & <span class="highlight-explain">Z</span>(right-hand boxes)<div class="teleport-desc"><small>
                <br>• The expectation value of operator X&Z will be calculated(It's straight-forward as we encountered in basic quantum courses.):
@@ -953,10 +978,90 @@
 
                </small></div></p>`,
     };
-    function showBlockContent(blockId) {
+    // blockContents 定義後再補上 quantumTabs，避免 undefined
+    blockContents.block0.quantumTabs = [
+      { title: "Q_State", content: blockContents.block3 },
+      { title: "v.s.", content: `<p>New content for tab 5. (請填入新內容)</p>` },
+      { title: "Descriptors", content: blockContents.block6 },
+    ];
+    function showBlockContent(blockId, schTabIdx = null, quantumTabIdx = null) {
       const content = document.getElementById("blockContent");
-      if (blockId === "block0" && blockContents.block0 && blockContents.block0.tabs) {
-        // Render tabs
+      if (blockId === "block0" && blockContents.block0) {
+        // 量子三分頁
+        if (quantumTabIdx !== null && blockContents.block0.quantumTabs) {
+          let tabs = blockContents.block0.quantumTabs;
+          let tabBar = `<div id='block0-quantum-tabs' style='display:flex;gap:8px;margin-bottom:10px;'>`;
+          tabs.forEach((tab, i) => {
+            tabBar += `<div class='block0-quantum-tab' data-idx='${i}' style='padding:6px 18px;cursor:pointer;border-radius:8px 8px 0 0;background:${i===quantumTabIdx?"#fff":"#eee"};color:${i===quantumTabIdx?"#2f4f78":"#888"};font-weight:${i===quantumTabIdx?"bold":"normal"};border:1px solid #ccc;border-bottom:none;'>${tab.title}</div>`;
+          });
+          tabBar += `</div>`;
+          let tabContents = `<div id='block0-quantum-tab-content' style='min-height:60px;'>${tabs[quantumTabIdx].content}</div>`;
+          content.innerHTML = tabBar + tabContents;
+          // Tab click event
+          content.querySelectorAll('.block0-quantum-tab').forEach(tabEl => {
+            tabEl.onclick = function() {
+              let idx = +tabEl.dataset.idx;
+              content.querySelectorAll('.block0-quantum-tab').forEach((el, j) => {
+                el.style.background = (j===idx)?"#fff":"#eee";
+                el.style.color = (j===idx)?"#2f4f78":"#888";
+                el.style.fontWeight = (j===idx)?"bold":"normal";
+              });
+              content.querySelector('#block0-quantum-tab-content').innerHTML = tabs[idx].content;
+              autoFitBlock0Font();
+              if (window.MathJax && /\\\(|\\\[|\$/.test(tabs[idx].content)) {
+                MathJax.typesetPromise([content.querySelector('#block0-quantum-tab-content')]).then(() => {
+                  autoFitBlock0Font();
+                });
+              }
+            }
+          });
+          autoFitBlock0Font();
+          if (window.MathJax && /\\\(|\\\[|\$/.test(tabs[quantumTabIdx].content)) {
+            MathJax.typesetPromise([content.querySelector('#block0-quantum-tab-content')]).then(() => {
+              autoFitBlock0Font();
+            });
+          }
+          return;
+        }
+        // 檢查是否要顯示 Schrodinger tabs
+        if (schTabIdx !== null && blockContents.block0.schTabs) {
+          let tabs = blockContents.block0.schTabs;
+          let tabBar = `<div id='block0-sch-tabs' style='display:flex;gap:8px;margin-bottom:10px;'>`;
+          tabs.forEach((tab, i) => {
+            tabBar += `<div class='block0-sch-tab' data-idx='${i}' style='padding:6px 18px;cursor:pointer;border-radius:8px 8px 0 0;background:${i===schTabIdx?"#fff":"#eee"};color:${i===schTabIdx?"#2f4f78":"#888"};font-weight:${i===schTabIdx?"bold":"normal"};border:1px solid #ccc;border-bottom:none;'>${tab.title}</div>`;
+          });
+          tabBar += `</div>`;
+          let tabContents = `<div id='block0-sch-tab-content' style='min-height:60px;'>${tabs[schTabIdx].content}</div>`;
+          content.innerHTML = tabBar + tabContents;
+          // Tab click event
+          content.querySelectorAll('.block0-sch-tab').forEach(tabEl => {
+            tabEl.onclick = function() {
+              let idx = +tabEl.dataset.idx;
+              // 切換tab樣式
+              content.querySelectorAll('.block0-sch-tab').forEach((el, j) => {
+                el.style.background = (j===idx)?"#fff":"#eee";
+                el.style.color = (j===idx)?"#2f4f78":"#888";
+                el.style.fontWeight = (j===idx)?"bold":"normal";
+              });
+              // 切換內容
+              content.querySelector('#block0-sch-tab-content').innerHTML = tabs[idx].content;
+              autoFitBlock0Font();
+              if (window.MathJax && /\\\(|\\\[|\$/.test(tabs[idx].content)) {
+                MathJax.typesetPromise([content.querySelector('#block0-sch-tab-content')]).then(() => {
+                  autoFitBlock0Font();
+                });
+              }
+            }
+          });
+          autoFitBlock0Font();
+          if (window.MathJax && /\\\(|\\\[|\$/.test(tabs[schTabIdx].content)) {
+            MathJax.typesetPromise([content.querySelector('#block0-sch-tab-content')]).then(() => {
+              autoFitBlock0Font();
+            });
+          }
+          return;
+        }
+        // 原本的 Introduction/Protocol tabs
         let tabs = blockContents.block0.tabs;
         let tabBar = `<div id='block0-tabs' style='display:flex;gap:8px;margin-bottom:10px;'>`;
         tabs.forEach((tab, i) => {
@@ -1008,7 +1113,18 @@
           e.stopPropagation();
           let block = btn.closest('.block-inner') || btn.closest('.block');
           if (block && block.id && block.id !== 'block0') {
-            showBlockContent(block.id);
+            // Schrodinger/Heisenberg 問號跳到 block0 的 schTabs
+            if (block.id === 'block2' || block.id === 'block2-block') {
+              showBlockContent('block0', 0); // tab1
+            } else if (block.id === 'block4' || block.id === 'block4-block') {
+              showBlockContent('block0', 2); // Heisenberg tab (第三個)
+            } else if (block.id === 'block3' || block.id === 'block3-block') {
+              showBlockContent('block0', null, 0); // quantumTabs[0] (tab4)
+            } else if (block.id === 'block6' || block.id === 'block6-block') {
+              showBlockContent('block0', null, 2); // quantumTabs[2] (tab6)
+            } else {
+              showBlockContent(block.id);
+            }
           }
         }
       });
