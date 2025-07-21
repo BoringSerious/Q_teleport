@@ -759,7 +759,32 @@
 
     // block內容對應
     const blockContents = {
-      block0: `This is a simulation that showing the Quantum Teleportation!`,
+      block0: {
+        tabs: [
+          { title: "Introduction", content: `<p class=\"teleport-title\"><b>Information Flow of Quantum Teleportation on Entanglement</b></p>\
+<small><div class=\"teleport-desc\">\
+  •This simulation aims to demonstrate the explaination of quanutm information flow in a local way, and the encryption function of entanglement.<br>\
+  <br>• The grids show the evolution of Quantum bits(Qubits) of Schrodinger and Heisenberg's Pictures. <span class=\"highlight-explain\">Click the \"?\" mark to gain further explainations.</span> Three rows of the grid represent the evolution of <i>Qubit-1</i>, <i>Qubit-2</i>, and <i>Qubit-3</i>.<br>\
+<br>•Operation Process of Teleportation: Alice prepares two entangled qubits Q2 & Q3, and a qubit Q1 embedded with state information α and β at t=3. Then she would like to use some quantum gates to \"teleport\" the state of Q1 to Q3. <br>\
+  <br>• In tranditional Schrödinger's way, which we learn in the Introduction of Quantum mechanics , it is a useful tool to descript the quantum state when the qubits are fully operated. However, it was hard to explain the information flow since the state of the qubits is descrtibed in nonlocal situation. <br>\
+<br>• Therefore, Heisenberg Picture provide an effective and local way for the description of information flow and the role of the entanglement.\
+</div></small>` },
+          { title: "Protocol", content: `<p class=\"teleport-title\"><b>Introduction to the quantum Teleportation Protocol</b></p>\
+<small><div class=\"teleport-desc\">\
+  •The Quantum Teleportation is a fundamental protocal in quantum information science that allows for the transfer of an unknown quantum state from one location (e.g. Alice) to another location (e.g. Bob) without physically moving the qubits themselves. Instead, quantum teleportation relies on <b>Quantum entanglement</b> and <b>Classical ccommunication</b>.<br>\
+  <div style=\"text-align:center;margin:7px 0;\">\
+    <img src=\"Alice&Bob.png\" alt=\"Alice and Bob\" style=\"max-width:90%;height:auto;border-radius:10px;box-shadow:0 2px 12px #aaa;\" id=\"alicebob-img\">\
+  </div>\
+  <br>•The core of the protocal is the pair of entangled qubits shared between two locations like Alic and Bob. Suppose Alice uses an unitary gate for preparing a third qubit in an arbitraty state ∣ψ⟩=α∣0⟩+β∣1⟩ that she wishes to "teleport" to Bob. By performing Bell measurement on her two qubits, one in state ∣ψ⟩ and another entangled state shared with Bob's one. Then sending the measuremnet outcome to Bob via classical channel, and Bob's qubit will be transformed into the qubit ∣ψ⟩ accroding to the outcome resluts from Alice.<br>\
+  <br>The figure below is the actual quantum circuit:
+  <div style=\"text-align:center;margin:7px 0;\">\
+    <img src=\"figure1.jpeg\" alt=\"figure1\" style=\"max-width:90%;height:auto;border-radius:10px;box-shadow:0 2px 12px #aaa;\" id=\"alicebob-img\">\
+  </div>\
+  <br>•In the fact that the original quantum state is destroyed at Alice's side and reappeares at Bob's. This is so-called <b>no-cloning theorem</b> and ensuring relativistic causality. Therefore the communication of the teleportation does not permit <u>faster than light</u>.<br>\
+  <br>•To simplify the proccess in teleportation, this website concentrate on how Alice "teleport" the quantum state from the first Qubit-1 to the third Qubit-3. Bob can take a rest in this simulation.
+  </div></small>` },
+        ]
+      },
       block1: `<p{margin-bottom: 0.1em;} class="teleport-title">Expectaitonal Outcomes of Qubits(Q₁,Q₂,Q₃) on Pauli Operators <span class="highlight-explain">X</span>(left-hand boxes) & <span class="highlight-explain">Z</span>(right-hand boxes)<div class="teleport-desc"><small>
                <br>• The expectation value of operator X&Z will be calculated(It's straight-forward as we encountered in basic quantum courses.):
                    \\[\\langle\\psi_t|X\\otimes X\\otimes X|\\psi_t\\rangle\\, \\&\\, \\langle\\psi_t|Z\\otimes Z\\otimes Z|\\psi_t\\rangle\\]
@@ -776,7 +801,7 @@
       block2: `<p{margin-bottom: 0.1em;} class="teleport-title">Schrödinger's Picture <div class="teleport-desc"><small>
                <br>• In this Picture, <b class="teleport-title"> the state evolves with time</b>, while the observables/operators remain constant.. The quantum circuit at <i class="teleport-title">top, middle, and bottom</i> indicate the evolution of <i class="teleport-title">Qubits 1,2, and 3</i> respectively. Therefore, the observables only act at once which are highlighted at corresponding time value and only the state <b>Ψₜ</b> varied.
                <br>
-               <br>• Additionaly, the line "━" in the circuit act as the identity unitaty matrix "<i class="teleport-title">I</i>" (i.e., leaves the state unchanged)..
+               <br>• Additionaly, the line "-" in the circuit act as the identity unitaty matrix "<i class="teleport-title">I</i>" (i.e., leaves the state unchanged)..
                <br>
                <br>• The state at the beginning represented in braket notation is shown below, which indicates the Qubit1,2,3 from left to right:
                    \\[|000\\rangle = |0\\rangle \\otimes |0\\rangle \\otimes |0\\rangle\\]
@@ -930,6 +955,44 @@
     };
     function showBlockContent(blockId) {
       const content = document.getElementById("blockContent");
+      if (blockId === "block0" && blockContents.block0 && blockContents.block0.tabs) {
+        // Render tabs
+        let tabs = blockContents.block0.tabs;
+        let tabBar = `<div id='block0-tabs' style='display:flex;gap:8px;margin-bottom:10px;'>`;
+        tabs.forEach((tab, i) => {
+          tabBar += `<div class='block0-tab' data-idx='${i}' style='padding:6px 18px;cursor:pointer;border-radius:8px 8px 0 0;background:${i===0?"#fff":"#eee"};color:${i===0?"#2f4f78":"#888"};font-weight:${i===0?"bold":"normal"};border:1px solid #ccc;border-bottom:none;'>${tab.title}</div>`;
+        });
+        tabBar += `</div>`;
+        let tabContents = `<div id='block0-tab-content' style='min-height:60px;'>${tabs[0].content}</div>`;
+        content.innerHTML = tabBar + tabContents;
+        // Tab click event
+        content.querySelectorAll('.block0-tab').forEach(tabEl => {
+          tabEl.onclick = function() {
+            let idx = +tabEl.dataset.idx;
+            // 切換tab樣式
+            content.querySelectorAll('.block0-tab').forEach((el, j) => {
+              el.style.background = (j===idx)?"#fff":"#eee";
+              el.style.color = (j===idx)?"#2f4f78":"#888";
+              el.style.fontWeight = (j===idx)?"bold":"normal";
+            });
+            // 切換內容
+            content.querySelector('#block0-tab-content').innerHTML = tabs[idx].content;
+            autoFitBlock0Font();
+            if (window.MathJax && /\\\(|\\\[|\$/.test(tabs[idx].content)) {
+              MathJax.typesetPromise([content.querySelector('#block0-tab-content')]).then(() => {
+                autoFitBlock0Font();
+              });
+            }
+          }
+        });
+        autoFitBlock0Font();
+        if (window.MathJax && /\\\(|\\\[|\$/.test(tabs[0].content)) {
+          MathJax.typesetPromise([content.querySelector('#block0-tab-content')]).then(() => {
+            autoFitBlock0Font();
+          });
+        }
+        return;
+      }
       content.innerHTML = blockContents[blockId] || 'Block 0 content...';
       autoFitBlock0Font();
       if (window.MathJax && /\\\(|\\\[|\$/.test(content.innerHTML)) {
@@ -1027,6 +1090,8 @@
       try {
         bindHelpButtons();
         initSimpleSlider();
+        // Initialize block0 tabs content
+        showBlockContent('block0');
         // Initialize block2's Schrodinger picture
         initGridSch();
         updateSchrodingerGrid(0);
