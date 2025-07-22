@@ -770,7 +770,7 @@
       document.getElementById(id).classList.add('hidden');
     }
 
-    // block內容對應
+    // Block content mapping
     const blockContents = {
       block0: {
         tabs: [
@@ -1078,7 +1078,7 @@
     function showBlockContent(blockId, schTabIdx = null, quantumTabIdx = null) {
       const content = document.getElementById("blockContent");
       if (blockId === "block0" && blockContents.block0) {
-        // 量子三分頁
+        // Quantum three tabs
         if (quantumTabIdx !== null && blockContents.block0.quantumTabs) {
           let tabs = blockContents.block0.quantumTabs;
           let tabBar = `<div id='block0-quantum-tabs' style='display:flex;gap:8px;margin-bottom:10px;'>`;
@@ -1114,7 +1114,7 @@
           }
           return;
         }
-        // 檢查是否要顯示 Schrodinger tabs
+        // Check whether to show Schrodinger tabs
         if (schTabIdx !== null && blockContents.block0.schTabs) {
           let tabs = blockContents.block0.schTabs;
           let tabBar = `<div id='block0-sch-tabs' style='display:flex;gap:8px;margin-bottom:10px;'>`;
@@ -1128,13 +1128,13 @@
           content.querySelectorAll('.block0-sch-tab').forEach(tabEl => {
             tabEl.onclick = function() {
               let idx = +tabEl.dataset.idx;
-              // 切換tab樣式
+              // Switch tab style
               content.querySelectorAll('.block0-sch-tab').forEach((el, j) => {
                 el.style.background = (j===idx)?"#fff":"#eee";
                 el.style.color = (j===idx)?"#2f4f78":"#888";
                 el.style.fontWeight = (j===idx)?"bold":"normal";
               });
-              // 切換內容
+              // Switch content
               content.querySelector('#block0-sch-tab-content').innerHTML = tabs[idx].content;
               autoFitBlock0Font();
               if (window.MathJax && /\\\(|\\\[|\$/.test(tabs[idx].content)) {
@@ -1152,7 +1152,7 @@
           }
           return;
         }
-        // 原本的 Introduction/Protocol tabs
+        // Original Introduction/Protocol tabs
         let tabs = blockContents.block0.tabs;
         let tabBar = `<div id='block0-tabs' style='display:flex;gap:8px;margin-bottom:10px;'>`;
         tabs.forEach((tab, i) => {
@@ -1165,13 +1165,13 @@
         content.querySelectorAll('.block0-tab').forEach(tabEl => {
           tabEl.onclick = function() {
             let idx = +tabEl.dataset.idx;
-            // 切換tab樣式
+            // Switch tab style
             content.querySelectorAll('.block0-tab').forEach((el, j) => {
               el.style.background = (j===idx)?"#fff":"#eee";
               el.style.color = (j===idx)?"#2f4f78":"#888";
               el.style.fontWeight = (j===idx)?"bold":"normal";
             });
-            // 切換內容
+            // Switch content
             content.querySelector('#block0-tab-content').innerHTML = tabs[idx].content;
             autoFitBlock0Font();
             if (window.MathJax && /\\\(|\\\[|\$/.test(tabs[idx].content)) {
@@ -1197,18 +1197,18 @@
         });
       }
     }
-    // 問號按鈕事件綁定（可重複呼叫）
+    // Bind help button events (can be called multiple times)
     function bindHelpButtons(scope=document) {
       scope.querySelectorAll('.btn-help').forEach(btn => {
         btn.onclick = function(e) {
           e.stopPropagation();
           let block = btn.closest('.block-inner') || btn.closest('.block');
           if (block && block.id && block.id !== 'block0') {
-            // Schrodinger/Heisenberg 問號跳到 block0 的 schTabs
+            // Schrodinger/Heisenberg question mark jumps to block0's schTabs
             if (block.id === 'block2' || block.id === 'block2-block') {
               showBlockContent('block0', 0); // tab1
             } else if (block.id === 'block4' || block.id === 'block4-block') {
-              showBlockContent('block0', 2); // Heisenberg tab (第三個)
+              showBlockContent('block0', 2); // Heisenberg tab (third one)
             } else if (block.id === 'block3' || block.id === 'block3-block') {
               showBlockContent('block0', null, 0); // quantumTabs[0] (tab4)
             } else if (block.id === 'block6' || block.id === 'block6-block') {
@@ -1273,7 +1273,7 @@
         let x = e.clientX - trackRect.left;
         x = Math.max(0, Math.min(x, trackRect.width));
         let percent = x / trackRect.width;
-        // snap to 最近的 tick
+        // snap to the nearest tick
         let idx = tickPercents.reduce((prev, curr, i) => Math.abs(curr-percent)<Math.abs(tickPercents[prev]-percent)?i:prev, 0);
         setThumb(idx);
       });
@@ -1313,7 +1313,7 @@
         updateBlock3QuantumState(0);
         // Initialize block6's descriptor
         updateBlock6Descriptor(0);
-        // MathJax 渲染 block0 初始內容
+        // MathJax render block0 initial content
         autoFitBlock0Font();
         if (window.MathJax) MathJax.typesetPromise([document.getElementById('blockContent')]).then(() => {
           autoFitBlock0Font();
@@ -1444,7 +1444,7 @@
       grid.innerHTML = '';
       let lookup = {};
       schGates2.forEach(g=>{ lookup[`${g.row},${g.col}`] = g; });
-      // 預先找出每個col的CNOT組合
+      // Precompute CNOT pairs for each column
       window.cnotCols = {};
       for (let col = 0; col < 11; col++) {
         let dotRow = -1, plusRow = -1;
@@ -1499,23 +1499,23 @@
               cell.style.background = lookup[`${row},${col}`].color;
               cell.style.color = '#222';
               cell.style.opacity = '1';
-              // SVG gate化
+              // SVG gate rendering
               if (row === 1 && col === 8) {
-                // 十字線SVG
+                // Cross line SVG
                 cell.innerHTML = `
                   <svg width="100%" height="100%" viewBox="-4 -8 40 48" style="overflow:visible">
                     <line x1="-12" y1="16" x2="48" y2="16" stroke="#000" stroke-width="2"/>
                     <line x1="16" y1="-8" x2="16" y2="40" stroke="#000" stroke-width="2"/>
                   </svg>`;
               } else if ((col === 9) && (row === 0 || row === 1)) {
-                // 橫線+右箭頭SVG
+                // Horizontal line + right arrow SVG
                 cell.innerHTML = `
                   <svg width="100%" height="100%" viewBox="-4 -8 40 48" style="overflow:visible">
                     <line x1="-10" y1="16" x2="48" y2="16" stroke="#000" stroke-width="2"/>
                     <polygon points="48,16 42,12 42,20" fill="#000"/>
                   </svg>`;
               } else if (type === 'I' || type === '━━━' || type === '━━➤') {
-                // 只畫橫線SVG
+                // Only draw horizontal line SVG
                 cell.innerHTML = `
                   <svg width="100%" height="100%" viewBox="-4 -8 40 48" style="overflow:visible">
                     <line x1="-10" y1="16" x2="48" y2="16" stroke="#000" stroke-width="2"/>
@@ -1537,24 +1537,24 @@
                   </svg>`;
                 }
               } else if (type === 'I') {
-                // I gate用十字SVG（橫線+豎線，線條顏色黑色）
+                // I gate uses cross SVG (horizontal + vertical line, black color)
                 cell.innerHTML = `
                   <svg width="100%" height="100%" viewBox="-4 -8 40 48" style="overflow:visible">
                     <line x1="-10" y1="16" x2="48" y2="16" stroke="#000" stroke-width="2"/>
                     <line x1="16" y1="-8" x2="16" y2="40" stroke="#000" stroke-width="2"/>
                   </svg>`;
               } else if (type === '━━━' || type === '━━➤') {
-                // 橫線SVG（和I gate一樣，橫線+豎線，線條顏色黑色）
+                // Horizontal line SVG (same as I gate, horizontal + vertical line, black color)
                 cell.innerHTML = `
                   <svg width="100%" height="100%" viewBox="-4 -8 40 48" style="overflow:visible">
                     <line x1="-10" y1="16" x2="48" y2="16" stroke="#000" stroke-width="2"/>
                     <line x1="16" y1="-8" x2="16" y2="40" stroke="#000" stroke-width="2"/>
                   </svg>`;
               } else {
-                // 其他 gate（如 H/U/●/X 以外）維持原本設計
+                // Other gates (e.g., H/U/●/X) keep original design
                 cell.textContent = type;
               }
-              // type 為 '━━━' 或 '━━━➤' 時，border 顏色設為 #fffff0
+              // If type is '━━━' or '━━━➤', set border color to #fffff0
               if (type === '━━━' || type === '━━➤') {
                 cell.style.borderColor = '#fffff0';
               }
@@ -1580,19 +1580,19 @@
         for (let col = 0; col < 11; col++) {
           let sch = document.getElementById(`grid-sch-r${row}c${col}`);
           if (sch && sch.classList.contains('gate')) {
-            // 預設移除高亮
+            // Default remove highlight
             sch.classList.remove('highlight');
             sch.style.background = sch.dataset.color;
             sch.style.color = '#222';
 
-            // CNOT 高亮
+            // CNOT highlight
             if (col === t && window.cnotCols && window.cnotCols[col] &&
                 (row === window.cnotCols[col].dotRow || row === window.cnotCols[col].plusRow)) {
               sch.classList.add('highlight');
               sch.style.background = sch.dataset.color;
               sch.style.color = '#fff';
             }
-            // H/U 高亮（H: #73C7F3, U: #f24d4d）
+            // H/U highlight (H: #73C7F3, U: #f24d4d)
             else if (col === t && sch.dataset && (sch.dataset.color === '#73C7F3' || sch.dataset.color === '#f24d4d')) {
               sch.classList.add('highlight');
               sch.style.background = sch.dataset.color;
@@ -1622,7 +1622,7 @@
         }
       }
       fitGridToBlock('block2-block', 'grid-sch');
-      // 額外 log cnotCols 狀態
+      // Extra log for cnotCols state
       console.log('cnotCols:', window.cnotCols);
     }
     function initGridHei() {
@@ -1719,8 +1719,8 @@
       if (!isNaN(val)) {
         val = parseFloat(val);
         const strength = Math.min(1, Math.abs(val));
-        if (val > 0) return `rgba(115, 199, 243, ${strength})`;  // 藍
-        if (val < 0) return `rgba(242, 77, 77, ${strength})`;    // 紅
+        if (val > 0) return `rgba(115, 199, 243, ${strength})`;  // Blue
+        if (val < 0) return `rgba(242, 77, 77, ${strength})`;    // Red
       }
       if (typeof val === 'string') {
         if (val.includes('α') || val.includes('β')) {
@@ -1753,7 +1753,7 @@
         document.getElementById(`pauli-q${i+1}-right`).style.background = pauliValToColor(right);
       });
     }
-    // 新增：block3 quantum state 顯示
+    // Add: block3 quantum state display
     function updateBlock3QuantumState(t) {
       var el = document.getElementById('block3-quantum-state');
       if (!el) return;
@@ -2022,18 +2022,18 @@
       fitBlock6DescriptorFont();
     }
 
-    // block0 字體自動隨 block0 寬度縮放
+    // block0 font size auto scales with block0 width
     function autoFitBlock0Font() {
       const wrapper = document.getElementById('block0');
       const el = document.getElementById('blockContent');
       if (!wrapper || !el) return;
-      const minFont = 12;   // 最小字體大小（單位：px）
-      const maxFont = 36;   // 最大字體大小（單位：px）
-      const scale = 0.05;  // 字體大小與 block0 寬度的比例
+      const minFont = 12;   // Minimum font size (in px)
+      const maxFont = 36;   // Maximum font size (in px)
+      const scale = 0.05;  // Font size to block0 width ratio
       let fontSize = Math.max(minFont, Math.min(maxFont, wrapper.clientWidth * scale));
       el.style.fontSize = fontSize + 'px';
     }
-    // 初始化 observer
+    // Initialize observer
     window.addEventListener('DOMContentLoaded', () => {
       autoFitBlock0Font();
       const block0 = document.getElementById('block0');
@@ -2043,23 +2043,23 @@
       }
     });
 
-    // ====== 新增：自適應 grid 函數 ======
+    // ====== New: adaptive grid function ======
     function fitGridToBlock(blockId, gridId) {
       const block = document.getElementById(blockId);
       const grid = document.getElementById(gridId);
       if (!block || !grid) return;
-      // 取得 block 寬度
+      // Get block width
       const blockWidth = block.clientWidth;
-      // 計算 cell 大小（11 col, 4 row, gap 0.2vw）
-      const gap = blockWidth * 0.003; // 0.2vw 近似
+      // Calculate cell size (11 columns, 4 rows, gap 0.2vw)
+      const gap = blockWidth * 0.003; // Approximate 0.2vw
       const cellSize = (blockWidth - gap * 10) / 11;
-      // 設定 cell 寬高與字體
+      // Set cell width, height, and font size
       grid.querySelectorAll('.cell').forEach(cell => {
         cell.style.width = cellSize + 'px';
         cell.style.height = cellSize + 'px';
         cell.style.fontSize = Math.max(10, Math.min(24, cellSize * 0.38)) + 'px';
       });
-      // grid 高度自動
+      // grid height auto
       grid.style.height = (cellSize * 4 + gap * 3) + 'px';
     }
     function observeBlockResize(blockId, gridId) {
@@ -2074,10 +2074,13 @@
       if (content) {
         const isHidden = content.style.display === 'none';
         content.style.display = isHidden ? 'block' : 'none';
-        button.textContent = isHidden ? 'Hide Details' : 'Show Details';
-
+        // Support custom show/hide text
+        const showText = button.dataset.showText || 'Show Details';
+        const hideText = button.dataset.hideText || 'Hide Details';
+        button.textContent = isHidden ? hideText : showText;
+        // Show later, to avoid width issue caused by display:none
         if (isHidden && window.MathJax) {
-          MathJax.typesetPromise([content]);
+          setTimeout(() => MathJax.typesetPromise([content]), 50);
         }
       }
     }
