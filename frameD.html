@@ -30,7 +30,6 @@
       height: calc(100% - 40px);
       padding: 10px;
       box-sizing: border-box;
-      overflow: hidden;
     }
     .container.active {
       display: grid;
@@ -303,10 +302,10 @@
       font-size: 1.28em;
     }
     .cell.active {
-      background: #2166c2 !important;
-      color: #fff !important;
-      box-shadow: 0 0 8px 2px #73c7f3;
-      transition: background 0.15s, color 0.15s, box-shadow 0.15s;
+      background: #6f5b3e;
+      color: #fff7c9;
+      opacity: 1;
+      font-weight: bold;
     }
     .mini-cell-label {
       position: relative;
@@ -646,99 +645,6 @@
     .toggle-button:hover {
       background-color: #e0e0e0;
     }
-
-    /* Table 2: 3x3 grid blocks */
-    #tab1 {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      grid-template-rows: repeat(3, 1fr);
-      gap: 10px;
-      height: calc(100% - 40px);
-      padding: 10px;
-      background: none;
-    }
-    #tab1 .block {
-      min-height: 60px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 1.2em;
-    }
-    #tab1 .block-label {
-      position: absolute;
-      top: 8px;
-      left: 12px;
-      background: rgba(255,255,255,0.85);
-      color: #2f4f78;
-      font-size: 15px;
-      font-weight: bold;
-      padding: 1px 8px;
-      border-radius: 8px;
-      z-index: 2;
-      pointer-events: none;
-    }
-    #tab1 .block {
-      position: relative;
-    }
-    #blockA0 { background-color: #ffe9b3; }
-    #blockA1 { background-color: #b3e5fc; }
-    #blockA2 { background-color: #c8e6c9; }
-    #blockA3 { background-color: #f8bbd0; }
-    #blockA4 { background-color: #fff9c4; }
-    #blockA5 { background-color: #d1c4e9; }
-    #blockA6 { background-color: #ffccbc; }
-    #blockA7 { background-color: #b2dfdb; }
-    #blockA8 { background-color: #f0f4c3; }
-
-    /* A0 block 4 clickable cells */
-    .a0-grid {
-      display: grid;
-      grid-template-columns: repeat(2, 1fr);
-      grid-template-rows: repeat(2, 1fr);
-      gap: 2px;
-      margin-top: 18px;
-      width: 80px;
-      height: 80px;
-    }
-    .a0-cell {
-      background: #fff;
-      border: 2px solid #2f4f78;
-      border-radius: 8px;
-      cursor: pointer;
-      transition: box-shadow 0.15s, background 0.15s;
-      box-shadow: 0 1px 4px rgba(47,79,120,0.08);
-      width: 36px;
-      height: 36px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 1.2em;
-      user-select: none;
-    }
-    .a0-cell:active, .a1-cell.active {
-      background: #e0f0ff;
-      box-shadow: 0 0 0 3px #73c7f3;
-      border-color: #73c7f3;
-    }
-    #grid-a0hei .cell {
-      background: #f9e7c2 !important; /* 預設I的顏色：淺土黃色 */
-      border: 1.5px solid #948778;
-      color: #2f4f78 !important;
-      opacity: 1 !important;
-      font-weight: bold;
-      transition: background 0.18s, color 0.18s;
-    }
-    #grid-a0hei .cell.h-gate {
-      background: #4e87d1 !important; /* H的顏色：藍色 */
-      color: #fff !important;
-    }
-    #grid-a0hei .cell.q-label {
-      background: #b3b3b3 !important;
-      color: #fff !important;
-      opacity: 0.45 !important;
-      font-weight: bold;
-      pointer-events: none;
-    }
   </style>
 </head>
 <body>
@@ -841,7 +747,7 @@
 
   <!-- Table 2 -->
   <div class="container" id="tab1">
-    <!-- Table 2 內容將由 JS 動態插入 -->
+    <!-- Placeholder for future enhancement -->
   </div>
 
   <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
@@ -854,19 +760,6 @@
         tab.classList.toggle('active', i === index);
         containers[i].classList.toggle('active', i === index);
       });
-      // 動態載入/移除 Table 2 內容
-      const tab1 = document.getElementById('tab1');
-      if (index === 1) {
-        if (!tab1.innerHTML.trim()) {
-          tab1.innerHTML = table2HTML;
-          // 重新綁定事件
-          bindHelpButtons(tab1);
-          // 其他初始化（如A0/A1互動）
-          document.dispatchEvent(new Event('DOMContentLoaded'));
-        }
-      } else {
-        tab1.innerHTML = '';
-      }
       setTimeout(() => {
         fitGridToBlock('block2-block', 'grid-sch');
         fitGridToBlock('block4-block', 'grid-hei');
@@ -2212,7 +2105,7 @@
         updateBlock3QuantumState(0);
         // Initialize block6's descriptor
         updateBlock6Descriptor(0);
-        // MathJax render block0 initial content
+        // MathJax 渲染 block0 初始內容
         autoFitBlock0Font();
         if (window.MathJax) MathJax.typesetPromise([document.getElementById('blockContent')]).then(() => {
           autoFitBlock0Font();
@@ -2221,231 +2114,6 @@
         alert('JS Error: ' + e.message + '\n' + (e.stack||''));
       }
     }
-
-    // Toggle the visibility of the entire block
-    function toggleBlockVisibility(wrapperId) {
-      const wrapper = document.getElementById(wrapperId);
-      if (!wrapper) return;
-      // If already hidden, restore
-      if (wrapper.querySelector('.restore-block-btn')) {
-        wrapper.innerHTML = wrapper._originalContent;
-        bindHelpButtons(wrapper);
-        return;
-      }
-      // Save original content
-      if (!wrapper._originalContent) {
-        wrapper._originalContent = wrapper.innerHTML;
-      }
-      // Get block label
-      let label = wrapper.querySelector('.block-label')?.textContent || '';
-      wrapper.innerHTML = `<button class='restore-block-btn' onclick='toggleBlockVisibility("${wrapperId}")'>顯示${label}</button>`;
-    }
-
-    // 點擊A1 block的四個格子有active特效
-    document.addEventListener('DOMContentLoaded', function() {
-      document.querySelectorAll('#blockA1 .a1-cell').forEach(cell => {
-        cell.addEventListener('mousedown', function() {
-          cell.classList.add('active');
-        });
-        cell.addEventListener('mouseup', function() {
-          cell.classList.remove('active');
-        });
-        cell.addEventListener('mouseleave', function() {
-          cell.classList.remove('active');
-        });
-        // 可選：觸控支援
-        cell.addEventListener('touchstart', function() {
-          cell.classList.add('active');
-        });
-        cell.addEventListener('touchend', function() {
-          cell.classList.remove('active');
-        });
-        cell.addEventListener('touchcancel', function() {
-          cell.classList.remove('active');
-        });
-      });
-    });
-
-    // 防止滑鼠滾輪或觸控滑動自動切換 table
-    window.addEventListener('wheel', function(e) {
-      e.preventDefault(); // 阻止預設行為（如觸控板左右滑動切換頁籤）
-    }, { passive: false });
-    window.addEventListener('scroll', function(e) {
-      // 不做任何事
-    }, { passive: true });
-
-    // 讓A0 grid的每個cell可點擊，點擊時I變H，再點擊變I，並有active特效
-    document.addEventListener('DOMContentLoaded', function() {
-      document.querySelectorAll('#grid-a0hei .cell[data-interactive]').forEach(cell => {
-        function updateCellColor() {
-          if (cell.textContent === 'H') {
-            cell.classList.add('h-gate');
-          } else {
-            cell.classList.remove('h-gate');
-          }
-        }
-        cell.addEventListener('click', function() {
-          cell.classList.add('active');
-          setTimeout(() => cell.classList.remove('active'), 150);
-          if (cell.textContent === 'I') {
-            cell.textContent = 'H';
-          } else {
-            cell.textContent = 'I';
-          }
-          updateCellColor();
-        });
-        // 初始化顏色
-        updateCellColor();
-      });
-
-      // Run按鈕功能：推演Q1/Q2描述符
-      document.getElementById('a0-run-btn').addEventListener('click', function() {
-        // 取得上排兩格、下排兩格
-        const cells = document.querySelectorAll('#grid-a0hei .cell[data-interactive]');
-        // 順序: [右上1, 右上2, 右下1, 右下2]
-        // Q1走上排兩格
-        let q1 = ['X', 'Z'];
-        [cells[0], cells[1]].forEach(cell => {
-          if (cell.textContent === 'H') q1.reverse();
-        });
-        // Q2走下排兩格
-        let q2 = ['X', 'Z'];
-        [cells[2], cells[3]].forEach(cell => {
-          if (cell.textContent === 'H') q2.reverse();
-        });
-        // 產生下標
-        function withSub(q, idx) {
-          return q.map(v => v + (idx === 1 ? '₁' : '₂')).join(', ');
-        }
-        document.getElementById('a0-q1-desc').textContent = withSub(q1, 1);
-        document.getElementById('a0-q2-desc').textContent = withSub(q2, 2);
-      });
-    });
-
-    // 讓A1 grid的每個cell可點擊，CNOT互動：I→•→⨁→I，且同一豎只能有一對•與⨁，Run檢查配對
-    document.addEventListener('DOMContentLoaded', function() {
-      const a1Cells = document.querySelectorAll('#grid-a1cnot .a1-cell');
-      // 依照col分組
-      const cols = [
-        [a1Cells[0], a1Cells[2]], // 第一豎
-        [a1Cells[1], a1Cells[3]], // 第二豎
-      ];
-      a1Cells.forEach((cell, idx) => {
-        cell.addEventListener('click', function() {
-          // 找出同一豎的兩格
-          const colIdx = idx % 2;
-          const [cell1, cell2] = cols[colIdx];
-          // 狀態循環：I→•→⨁→I
-          if (cell.textContent === 'I') {
-            // 若同豎另一格是•，則這格只能變⨁，反之亦然
-            if (cell1.textContent === '•' || cell2.textContent === '•') {
-              cell.textContent = '⨁';
-            } else if (cell1.textContent === '⨁' || cell2.textContent === '⨁') {
-              cell.textContent = '•';
-            } else {
-              cell.textContent = '•';
-            }
-          } else if (cell.textContent === '•') {
-            cell.textContent = '⨁';
-          } else if (cell.textContent === '⨁') {
-            cell.textContent = 'I';
-          }
-          // 保證同一豎最多只有一個•和一個⨁
-          if (cell1 !== cell && cell.textContent === '•' && cell1.textContent === '•') {
-            cell1.textContent = 'I';
-          }
-          if (cell2 !== cell && cell.textContent === '•' && cell2.textContent === '•') {
-            cell2.textContent = 'I';
-          }
-          if (cell1 !== cell && cell.textContent === '⨁' && cell1.textContent === '⨁') {
-            cell1.textContent = 'I';
-          }
-          if (cell2 !== cell && cell.textContent === '⨁' && cell2.textContent === '⨁') {
-            cell2.textContent = 'I';
-          }
-        });
-      });
-      // Run 按鈕檢查配對
-      document.getElementById('a1-run-btn').addEventListener('click', function() {
-        let error = false;
-        cols.forEach(([cell1, cell2]) => {
-          const vals = [cell1.textContent, cell2.textContent];
-          // 只要有"•"或"⨁"但不是成對，就 error
-          if ((vals.includes('•') || vals.includes('⨁')) && !(vals.includes('•') && vals.includes('⨁'))) {
-            error = true;
-          }
-        });
-        const btn = document.getElementById('a1-run-btn');
-        if (error) {
-          const oldText = btn.textContent;
-          btn.style.background = '#f24d4d';
-          btn.textContent = 'error';
-          setTimeout(() => {
-            btn.style.background = '#4e87d1';
-            btn.textContent = oldText;
-          }, 200);
-        } else {
-          // 正常顯示Q1/Q2描述（可仿A0，這裡先顯示預設）
-          document.getElementById('a1-q1-desc').textContent = 'X₁, Z₁';
-          document.getElementById('a1-q2-desc').textContent = 'X₂, Z₂';
-        }
-      });
-    });
-
-    // 將 Table 2 內容存為變數
-    const table2HTML = `
-    <div class="block" id="blockA0" style="position:relative;">
-      <button id="a0-run-btn" style="position:absolute;top:10px;right:18px;padding:2px 10px;font-size:0.92em;background:#4e87d1;color:#fff;border:none;border-radius:6px;box-shadow:0 1px 4px #b3d1f7;cursor:pointer;z-index:5;">Run</button>
-      <span class="block-label">A0 Identity&Hadamard Gates</span>
-    <div class="a0-panel" style="display:flex;flex-direction:column;align-items:center;justify-content:center;width:120px;margin:64px auto 0 auto;">
-      <div id="a0-monitor" style="width:180px;margin-top:2px;margin-bottom:0;display:flex;flex-direction:column;gap:1px;">
-        <div id="a0-q1-monitor" style="width:100%;padding:4px 0 2px 10px;text-align:left;font-size:0.98em;background:#f5f7fa;border-radius:7px;box-shadow:0 1px 4px #eee;">
-          <span style="color:#2f4f78;font-weight:bold;">Q1:</span> <span id="a0-q1-desc" style="color:#4e87d1;">X₁, Z₁</span>
-        </div>
-        <div id="a0-q2-monitor" style="width:100%;padding:4px 0 2px 10px;text-align:left;font-size:0.98em;background:#f5f7fa;border-radius:7px;box-shadow:0 1px 4px #eee;margin-bottom:5px;">
-          <span style="color:#2f4f78;font-weight:bold;">Q2:</span> <span id="a0-q2-desc" style="color:#4e87d1;">X₂, Z₂</span>
-        </div>
-      </div>
-      <div class="grid" id="grid-a0hei" style="width:120px;height:80px;display:grid;grid-template-columns:1fr 1fr 1fr;grid-template-rows:1fr 1fr;gap:2px;">
-        <div class="cell q-label" style="grid-column:1;grid-row:1;">Q1</div>
-        <div class="cell q-label" style="grid-column:1;grid-row:2;">Q2</div>
-        <div class="cell" data-interactive style="grid-column:2;grid-row:1;">I</div>
-        <div class="cell" data-interactive style="grid-column:3;grid-row:1;">I</div>
-        <div class="cell" data-interactive style="grid-column:2;grid-row:2;">I</div>
-        <div class="cell" data-interactive style="grid-column:3;grid-row:2;">I</div>
-      </div>
-    </div>
-    </div>
-    <div class="block" id="blockA1" style="position:relative;">
-      <button id="a1-run-btn" style="position:absolute;top:10px;right:18px;padding:2px 10px;font-size:0.92em;background:#4e87d1;color:#fff;border:none;border-radius:6px;box-shadow:0 1px 4px #b3d1f7;cursor:pointer;z-index:5;">Run</button>
-      <span class="block-label">A1 CNOT Gates</span>
-    <div class="a0-panel" style="display:flex;flex-direction:column;align-items:center;justify-content:center;width:120px;margin:64px auto 0 auto;">
-      <div id="a1-monitor" style="width:180px;margin-top:2px;margin-bottom:0;display:flex;flex-direction:column;gap:1px;">
-        <div id="a1-q1-monitor" style="width:100%;padding:4px 0 2px 10px;text-align:left;font-size:0.98em;background:#f5f7fa;border-radius:7px;box-shadow:0 1px 4px #eee;">
-          <span style="color:#2f4f78;font-weight:bold;">Q1:</span> <span id="a1-q1-desc" style="color:#4e87d1;">X₁, Z₁</span>
-        </div>
-        <div id="a1-q2-monitor" style="width:100%;padding:4px 0 2px 10px;text-align:left;font-size:0.98em;background:#f5f7fa;border-radius:7px;box-shadow:0 1px 4px #eee;margin-bottom:5px;">
-          <span style="color:#2f4f78;font-weight:bold;">Q2:</span> <span id="a1-q2-desc" style="color:#4e87d1;">X₂, Z₂</span>
-        </div>
-      </div>
-      <div class="grid" id="grid-a1cnot" style="width:120px;height:80px;display:grid;grid-template-columns:1fr 1fr 1fr;grid-template-rows:1fr 1fr;gap:2px;">
-        <div class="cell q-label" style="grid-column:1;grid-row:1;text-align:center;padding:0;">Q1</div>
-        <div class="cell q-label" style="grid-column:1;grid-row:2;text-align:center;padding:0;">Q2</div>
-        <div class="cell a1-cell" data-col="1" data-row="1" style="grid-column:2;grid-row:1;">I</div>
-        <div class="cell a1-cell" data-col="2" data-row="1" style="grid-column:3;grid-row:1;">I</div>
-        <div class="cell a1-cell" data-col="1" data-row="2" style="grid-column:2;grid-row:2;">I</div>
-        <div class="cell a1-cell" data-col="2" data-row="2" style="grid-column:3;grid-row:2;">I</div>
-      </div>
-    </div>
-    </div>
-    <div class="block" id="blockA2"><span class="block-label">A2</span></div>
-    <div class="block" id="blockA3"><span class="block-label">A3</span></div>
-    <div class="block" id="blockA4"><span class="block-label">A4</span></div>
-    <div class="block" id="blockA5"><span class="block-label">A5</span></div>
-    <div class="block" id="blockA6"><span class="block-label">A6</span></div>
-    <div class="block" id="blockA7"><span class="block-label">A7</span></div>
-    <div class="block" id="blockA8"><span class="block-label">A8</span></div>
-    `;
   </script>
 </body>
 </html>
