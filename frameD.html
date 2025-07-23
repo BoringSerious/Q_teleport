@@ -30,6 +30,7 @@
       height: calc(100% - 40px);
       padding: 10px;
       box-sizing: border-box;
+      overflow: hidden;
     }
     .container.active {
       display: grid;
@@ -840,57 +841,7 @@
 
   <!-- Table 2 -->
   <div class="container" id="tab1">
-    <div class="block" id="blockA0" style="position:relative;">
-      <button id="a0-run-btn" style="position:absolute;top:10px;right:18px;padding:2px 10px;font-size:0.92em;background:#4e87d1;color:#fff;border:none;border-radius:6px;box-shadow:0 1px 4px #b3d1f7;cursor:pointer;z-index:5;">Run</button>
-      <span class="block-label">A0 Identity&Hadamard Gates</span>
-    <div class="a0-panel" style="display:flex;flex-direction:column;align-items:center;justify-content:center;width:120px;margin:64px auto 0 auto;">
-      <div id="a0-monitor" style="width:180px;margin-top:2px;margin-bottom:0;display:flex;flex-direction:column;gap:1px;">
-        <div id="a0-q1-monitor" style="width:100%;padding:4px 0 2px 10px;text-align:left;font-size:0.98em;background:#f5f7fa;border-radius:7px;box-shadow:0 1px 4px #eee;">
-          <span style="color:#2f4f78;font-weight:bold;">Q1:</span> <span id="a0-q1-desc" style="color:#4e87d1;">X₁, Z₁</span>
-        </div>
-        <div id="a0-q2-monitor" style="width:100%;padding:4px 0 2px 10px;text-align:left;font-size:0.98em;background:#f5f7fa;border-radius:7px;box-shadow:0 1px 4px #eee;margin-bottom:5px;">
-          <span style="color:#2f4f78;font-weight:bold;">Q2:</span> <span id="a0-q2-desc" style="color:#4e87d1;">X₂, Z₂</span>
-        </div>
-      </div>
-      <div class="grid" id="grid-a0hei" style="width:120px;height:80px;display:grid;grid-template-columns:1fr 1fr 1fr;grid-template-rows:1fr 1fr;gap:2px;">
-        <div class="cell q-label" style="grid-column:1;grid-row:1;">Q1</div>
-        <div class="cell q-label" style="grid-column:1;grid-row:2;">Q2</div>
-        <div class="cell" data-interactive style="grid-column:2;grid-row:1;">I</div>
-        <div class="cell" data-interactive style="grid-column:3;grid-row:1;">I</div>
-        <div class="cell" data-interactive style="grid-column:2;grid-row:2;">I</div>
-        <div class="cell" data-interactive style="grid-column:3;grid-row:2;">I</div>
-      </div>
-    </div>
-    </div>
-    <div class="block" id="blockA1" style="position:relative;">
-      <button id="a1-run-btn" style="position:absolute;top:10px;right:18px;padding:2px 10px;font-size:0.92em;background:#4e87d1;color:#fff;border:none;border-radius:6px;box-shadow:0 1px 4px #b3d1f7;cursor:pointer;z-index:5;">Run</button>
-      <span class="block-label">A1 CNOT Gates</span>
-    <div class="a0-panel" style="display:flex;flex-direction:column;align-items:center;justify-content:center;width:120px;margin:64px auto 0 auto;">
-      <div id="a1-monitor" style="width:180px;margin-top:2px;margin-bottom:0;display:flex;flex-direction:column;gap:1px;">
-        <div id="a1-q1-monitor" style="width:100%;padding:4px 0 2px 10px;text-align:left;font-size:0.98em;background:#f5f7fa;border-radius:7px;box-shadow:0 1px 4px #eee;">
-          <span style="color:#2f4f78;font-weight:bold;">Q1:</span> <span id="a1-q1-desc" style="color:#4e87d1;">X₁, Z₁</span>
-        </div>
-        <div id="a1-q2-monitor" style="width:100%;padding:4px 0 2px 10px;text-align:left;font-size:0.98em;background:#f5f7fa;border-radius:7px;box-shadow:0 1px 4px #eee;margin-bottom:5px;">
-          <span style="color:#2f4f78;font-weight:bold;">Q2:</span> <span id="a1-q2-desc" style="color:#4e87d1;">X₂, Z₂</span>
-        </div>
-      </div>
-      <div class="grid" id="grid-a1cnot" style="width:120px;height:80px;display:grid;grid-template-columns:1fr 1fr 1fr;grid-template-rows:1fr 1fr;gap:2px;">
-        <div class="cell q-label" style="grid-column:1;grid-row:1;text-align:center;padding:0;">Q1</div>
-        <div class="cell q-label" style="grid-column:1;grid-row:2;text-align:center;padding:0;">Q2</div>
-        <div class="cell a1-cell" data-col="1" data-row="1" style="grid-column:2;grid-row:1;">I</div>
-        <div class="cell a1-cell" data-col="2" data-row="1" style="grid-column:3;grid-row:1;">I</div>
-        <div class="cell a1-cell" data-col="1" data-row="2" style="grid-column:2;grid-row:2;">I</div>
-        <div class="cell a1-cell" data-col="2" data-row="2" style="grid-column:3;grid-row:2;">I</div>
-      </div>
-    </div>
-    </div>
-    <div class="block" id="blockA2"><span class="block-label">A2</span></div>
-    <div class="block" id="blockA3"><span class="block-label">A3</span></div>
-    <div class="block" id="blockA4"><span class="block-label">A4</span></div>
-    <div class="block" id="blockA5"><span class="block-label">A5</span></div>
-    <div class="block" id="blockA6"><span class="block-label">A6</span></div>
-    <div class="block" id="blockA7"><span class="block-label">A7</span></div>
-    <div class="block" id="blockA8"><span class="block-label">A8</span></div>
+    <!-- Table 2 內容將由 JS 動態插入 -->
   </div>
 
   <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
@@ -903,6 +854,19 @@
         tab.classList.toggle('active', i === index);
         containers[i].classList.toggle('active', i === index);
       });
+      // 動態載入/移除 Table 2 內容
+      const tab1 = document.getElementById('tab1');
+      if (index === 1) {
+        if (!tab1.innerHTML.trim()) {
+          tab1.innerHTML = table2HTML;
+          // 重新綁定事件
+          bindHelpButtons(tab1);
+          // 其他初始化（如A0/A1互動）
+          document.dispatchEvent(new Event('DOMContentLoaded'));
+        }
+      } else {
+        tab1.innerHTML = '';
+      }
       setTimeout(() => {
         fitGridToBlock('block2-block', 'grid-sch');
         fitGridToBlock('block4-block', 'grid-hei');
@@ -2427,6 +2391,61 @@
         }
       });
     });
+
+    // 將 Table 2 內容存為變數
+    const table2HTML = `
+    <div class="block" id="blockA0" style="position:relative;">
+      <button id="a0-run-btn" style="position:absolute;top:10px;right:18px;padding:2px 10px;font-size:0.92em;background:#4e87d1;color:#fff;border:none;border-radius:6px;box-shadow:0 1px 4px #b3d1f7;cursor:pointer;z-index:5;">Run</button>
+      <span class="block-label">A0 Identity&Hadamard Gates</span>
+    <div class="a0-panel" style="display:flex;flex-direction:column;align-items:center;justify-content:center;width:120px;margin:64px auto 0 auto;">
+      <div id="a0-monitor" style="width:180px;margin-top:2px;margin-bottom:0;display:flex;flex-direction:column;gap:1px;">
+        <div id="a0-q1-monitor" style="width:100%;padding:4px 0 2px 10px;text-align:left;font-size:0.98em;background:#f5f7fa;border-radius:7px;box-shadow:0 1px 4px #eee;">
+          <span style="color:#2f4f78;font-weight:bold;">Q1:</span> <span id="a0-q1-desc" style="color:#4e87d1;">X₁, Z₁</span>
+        </div>
+        <div id="a0-q2-monitor" style="width:100%;padding:4px 0 2px 10px;text-align:left;font-size:0.98em;background:#f5f7fa;border-radius:7px;box-shadow:0 1px 4px #eee;margin-bottom:5px;">
+          <span style="color:#2f4f78;font-weight:bold;">Q2:</span> <span id="a0-q2-desc" style="color:#4e87d1;">X₂, Z₂</span>
+        </div>
+      </div>
+      <div class="grid" id="grid-a0hei" style="width:120px;height:80px;display:grid;grid-template-columns:1fr 1fr 1fr;grid-template-rows:1fr 1fr;gap:2px;">
+        <div class="cell q-label" style="grid-column:1;grid-row:1;">Q1</div>
+        <div class="cell q-label" style="grid-column:1;grid-row:2;">Q2</div>
+        <div class="cell" data-interactive style="grid-column:2;grid-row:1;">I</div>
+        <div class="cell" data-interactive style="grid-column:3;grid-row:1;">I</div>
+        <div class="cell" data-interactive style="grid-column:2;grid-row:2;">I</div>
+        <div class="cell" data-interactive style="grid-column:3;grid-row:2;">I</div>
+      </div>
+    </div>
+    </div>
+    <div class="block" id="blockA1" style="position:relative;">
+      <button id="a1-run-btn" style="position:absolute;top:10px;right:18px;padding:2px 10px;font-size:0.92em;background:#4e87d1;color:#fff;border:none;border-radius:6px;box-shadow:0 1px 4px #b3d1f7;cursor:pointer;z-index:5;">Run</button>
+      <span class="block-label">A1 CNOT Gates</span>
+    <div class="a0-panel" style="display:flex;flex-direction:column;align-items:center;justify-content:center;width:120px;margin:64px auto 0 auto;">
+      <div id="a1-monitor" style="width:180px;margin-top:2px;margin-bottom:0;display:flex;flex-direction:column;gap:1px;">
+        <div id="a1-q1-monitor" style="width:100%;padding:4px 0 2px 10px;text-align:left;font-size:0.98em;background:#f5f7fa;border-radius:7px;box-shadow:0 1px 4px #eee;">
+          <span style="color:#2f4f78;font-weight:bold;">Q1:</span> <span id="a1-q1-desc" style="color:#4e87d1;">X₁, Z₁</span>
+        </div>
+        <div id="a1-q2-monitor" style="width:100%;padding:4px 0 2px 10px;text-align:left;font-size:0.98em;background:#f5f7fa;border-radius:7px;box-shadow:0 1px 4px #eee;margin-bottom:5px;">
+          <span style="color:#2f4f78;font-weight:bold;">Q2:</span> <span id="a1-q2-desc" style="color:#4e87d1;">X₂, Z₂</span>
+        </div>
+      </div>
+      <div class="grid" id="grid-a1cnot" style="width:120px;height:80px;display:grid;grid-template-columns:1fr 1fr 1fr;grid-template-rows:1fr 1fr;gap:2px;">
+        <div class="cell q-label" style="grid-column:1;grid-row:1;text-align:center;padding:0;">Q1</div>
+        <div class="cell q-label" style="grid-column:1;grid-row:2;text-align:center;padding:0;">Q2</div>
+        <div class="cell a1-cell" data-col="1" data-row="1" style="grid-column:2;grid-row:1;">I</div>
+        <div class="cell a1-cell" data-col="2" data-row="1" style="grid-column:3;grid-row:1;">I</div>
+        <div class="cell a1-cell" data-col="1" data-row="2" style="grid-column:2;grid-row:2;">I</div>
+        <div class="cell a1-cell" data-col="2" data-row="2" style="grid-column:3;grid-row:2;">I</div>
+      </div>
+    </div>
+    </div>
+    <div class="block" id="blockA2"><span class="block-label">A2</span></div>
+    <div class="block" id="blockA3"><span class="block-label">A3</span></div>
+    <div class="block" id="blockA4"><span class="block-label">A4</span></div>
+    <div class="block" id="blockA5"><span class="block-label">A5</span></div>
+    <div class="block" id="blockA6"><span class="block-label">A6</span></div>
+    <div class="block" id="blockA7"><span class="block-label">A7</span></div>
+    <div class="block" id="blockA8"><span class="block-label">A8</span></div>
+    `;
   </script>
 </body>
 </html>
