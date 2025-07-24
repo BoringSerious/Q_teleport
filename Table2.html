@@ -1,0 +1,874 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Table 2</title>
+  <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@400;700&display=swap" rel="stylesheet">
+  <style>
+    html, body {
+      margin: 0;
+      height: 100%;
+      font-family: 'Segoe UI', sans-serif;
+      box-sizing: border-box;
+      background: #f5f7fa;
+    }
+    .table2-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      grid-template-rows: repeat(3, 1fr);
+      gap: 5px;
+      width: 100vw;
+      height: min(calc(100vw * 2 / 3), 100vh);
+      max-height: 100vh;
+      background: #f5f7fa;
+      padding: 10px;
+      box-sizing: border-box;
+    }
+    .block {
+      position: relative;
+      border-radius: 1px;
+      box-shadow: 0 4px 16px 0 rgba(0,0,0,0.10), 0 1.5px 4px 0 rgba(0,0,0,0.08);
+      min-height: 60px;
+      min-width: 60px;
+      box-sizing: border-box;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      justify-content: flex-start;
+      padding: 12px 12px 12px 12px;
+      font-size: 1.1em;
+      background: #fff;
+      aspect-ratio: 3 / 2;
+      width: 100%;
+      height: 100%;
+    }
+    #blockA0 { background-color: #ffe9b3; }
+    #blockA1 { background-color: #ffe9b3; }
+    #blockA2 { background-color: #ffe9b3; }
+    #blockA3 { background-color: #ffe9b3; }
+    #blockA4 { background-color: #ffe9b3; }
+    #blockA5 { background-color: #ffe9b3; }
+    #blockA6 { background-color: #ffe9b3; }
+    #blockA7 { background-color: #ffe9b3; }
+    #blockA8 { background-color: #ffe9b3; }
+    .block-label {
+      position: absolute;
+      top: 10px;
+      left: 12px;
+      background: rgba(255,255,255,0.85);
+      color: #2f4f78;
+      font-size: 15px;
+      font-weight: bold;
+      padding: 1px 8px;
+      border-radius: 8px;
+      z-index: 2;
+      pointer-events: none;
+    }
+    /* 內容區塊微調 */
+    .a0-panel, .a1-panel {
+      margin-top: 25px;
+      width: 100%;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: flex-start;
+    }
+    #a0-monitor, #a1-monitor {
+      width: 90%;
+      margin-bottom: 0;
+      display: flex;
+      flex-direction: column;
+      gap: 1px;
+      background: none;
+    }
+    #a0-q1-monitor, #a0-q2-monitor, #a1-q1-monitor, #a1-q2-monitor {
+      width: 100%;
+      padding: 4px 0 2px 10px;
+      text-align: left;
+      font-size: 0.8em;
+      background: #f5f7fa;
+      border-radius: 7px;
+      box-shadow: 0 1px 4px #eee;
+      margin-bottom: 2px;
+    }
+    #a0-q2-monitor, #a1-q2-monitor { margin-bottom: 5px; }
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      grid-template-rows: repeat(2, 1fr);
+      gap: 2px;
+      width: 40%;
+      height: 80%;
+      aspect-ratio: 3 / 2;
+      margin: auto;
+      margin-top: 2px;
+    }
+    .cell, .a1-cell {
+      width: 100%;
+      height: 100%;
+      background: #fff;
+      border: 2px solid #2f4f78;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: box-shadow 0.15s, background 0.15s;
+      box-shadow: 0 1px 4px rgba(47,79,120,0.08);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1em;
+      user-select: none;
+      min-width: 28px;
+      min-height: 28px;
+    }
+    .cell.q-label {
+      background: #b3b3b3 !important;
+      color: #fff !important;
+      opacity: 0.45 !important;
+      font-weight: bold;
+      pointer-events: none;
+    }
+    .a1-cell:active, .cell:active {
+      background: #e0f0ff;
+      box-shadow: 0 0 0 3px #73c7f3;
+      border-color: #73c7f3;
+    }
+    .cell.h-gate {
+      background: #4e87d1 !important;
+      color: #fff !important;
+    }
+    .cell.cnot-pair {
+      background: #ffe066 !important;
+      color: #222 !important;
+    }
+    /* Run 按鈕 */
+    #a0-run-btn, #a1-run-btn, #a2-run-btn {
+      position: absolute;
+      top: 10px;
+      right: 18px;
+      padding: 2px 10px;
+      font-size: 0.92em;
+      background: #4e87d1;
+      color: #fff;
+      border: none;
+      border-radius: 6px;
+      box-shadow: 0 1px 4px #b3d1f7;
+      cursor: pointer;
+      z-index: 5;
+    }
+    .monitor-bold {
+      font-weight: bold;
+    }
+    .a2-panel {
+      margin-top: 25px;
+      width: 100%;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: flex-start;
+    }
+    #a2-monitor {
+      width: 90%;
+      margin-bottom: 0;
+      display: flex;
+      flex-direction: column;
+      gap: 1px;
+      background: none;
+    }
+    #a2-q1-monitor, #a2-q2-monitor {
+      width: 100%;
+      padding: 4px 0 2px 10px;
+      text-align: left;
+      font-size: 0.8em;
+      background: #f5f7fa;
+      border-radius: 7px;
+      box-shadow: 0 1px 4px #eee;
+      margin-bottom: 2px;
+    }
+    #a2-q2-monitor { margin-bottom: 5px; }
+    .desc-x1z1 { color: #4e87d1; font-weight: bold; }
+    .desc-x2z2 { color: #e573b3; font-weight: bold; }
+    .monitor-success {
+      background: #f5f7fa !important;
+      border-radius: 7px !important;
+      box-shadow: 0 0 6px 1px #98f29899 !important;
+      border: 1.5px solid #6bd06b !important;
+      z-index: 10;
+    }
+    .help-btn {
+      position: absolute;
+      right: 14px;
+      bottom: 12px;
+      width: 28px;
+      height: 28px;
+      background: #43c943;
+      color: #fff;
+      border: none;
+      border-radius: 50%;
+      font-size: 1.2em;
+      font-weight: bold;
+      box-shadow: 0 1px 4px #b3eec7;
+      cursor: pointer;
+      z-index: 20;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: background 0.2s;
+    }
+    .help-btn:hover {
+      background: #2ea82e;
+    }
+    .hint-block {
+      display: none;
+      position: absolute;
+      left: 0; top: 0; right: 0; bottom: 0;
+      width: 100%; height: 100%;
+      background: rgba(255,255,255,0.98);
+      border-radius: 14px;
+      box-shadow: 0 4px 16px 0 rgba(0,0,0,0.10);
+      z-index: 30;
+      padding: 32px 24px 24px 24px;
+      font-size: 1.1em;
+      color: #2f4f78;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+    }
+    .a3-white-block {
+      min-height: 12px;
+      min-width: 10px;
+      background: #e3f2fd;
+      border-radius: 8px;
+      box-shadow: 0 1px 4px #eee;
+      margin-left: 6px;
+      margin-right: 2px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+  </style>
+</head>
+<body>
+  <div class="table2-grid">
+    <div class="block" id="blockA0">
+      <span class="block-label">A0 Identity&Hadamard Gates</span>
+      <button id="a0-run-btn">Run</button>
+      <button class="help-btn" id="help-a0">?</button>
+      <div class="hint-block" id="hint-a0">A0 提示內容</div>
+      <div class="a0-panel">
+        <div id="a0-monitor">
+          <div id="a0-q1-monitor"><span style="color:#2f4f78;font-weight:bold;">Q1:</span> <span id="a0-q1-desc" class="monitor-bold">X₁, Z₁</span></div>
+          <div id="a0-q2-monitor"><span style="color:#2f4f78;font-weight:bold;">Q2:</span> <span id="a0-q2-desc" class="monitor-bold">X₂, Z₂</span></div>
+  </div>
+        <div class="grid" id="grid-a0hei">
+          <div class="cell q-label" style="grid-column:1;grid-row:1;">Q1</div>
+          <div class="cell q-label" style="grid-column:1;grid-row:2;">Q2</div>
+          <div class="cell" data-interactive style="grid-column:2;grid-row:1;">I</div>
+          <div class="cell" data-interactive style="grid-column:3;grid-row:1;">I</div>
+          <div class="cell" data-interactive style="grid-column:2;grid-row:2;">I</div>
+          <div class="cell" data-interactive style="grid-column:3;grid-row:2;">I</div>
+      </div>
+    </div>
+      </div>
+    <div class="block" id="blockA1">
+      <span class="block-label">A1 CNOT Gates</span>
+      <button id="a1-run-btn">Run</button>
+      <button class="help-btn" id="help-a1">?</button>
+      <div class="hint-block" id="hint-a1">A1 提示內容</div>
+      <div class="a1-panel">
+        <div id="a1-monitor">
+          <div id="a1-q1-monitor"><span style="color:#2f4f78;font-weight:bold;">Q1:</span> <span id="a1-q1-desc" class="monitor-bold">X₁, Z₁</span></div>
+          <div id="a1-q2-monitor"><span style="color:#2f4f78;font-weight:bold;">Q2:</span> <span id="a1-q2-desc" class="monitor-bold">X₂, Z₂</span></div>
+    </div>
+        <div class="grid" id="grid-a1cnot">
+          <div class="cell q-label" style="grid-column:1;grid-row:1;text-align:center;padding:0;">Q1</div>
+          <div class="cell q-label" style="grid-column:1;grid-row:2;text-align:center;padding:0;">Q2</div>
+          <div class="cell a1-cell" data-col="1" data-row="1" style="grid-column:2;grid-row:1;">I</div>
+          <div class="cell a1-cell" data-col="2" data-row="1" style="grid-column:3;grid-row:1;">I</div>
+          <div class="cell a1-cell" data-col="1" data-row="2" style="grid-column:2;grid-row:2;">I</div>
+          <div class="cell a1-cell" data-col="2" data-row="2" style="grid-column:3;grid-row:2;">I</div>
+        </div>
+      </div>
+    </div>
+    <div class="block" id="blockA2">
+      <span class="block-label">A2 Bell State</span>
+      <button id="a2-run-btn">Run</button>
+      <button class="help-btn" id="help-a2">?</button>
+      <div class="hint-block" id="hint-a2">A2 提示內容</div>
+      <div class="a2-panel">
+        <div id="a2-monitor">
+          <div id="a2-q1-monitor"><span style="color:#2f4f78;font-weight:bold;">Q1:</span> <span id="a2-q1-desc" class="monitor-bold">X₁, Z₁</span></div>
+          <div id="a2-q2-monitor"><span style="color:#2f4f78;font-weight:bold;">Q2:</span> <span id="a2-q2-desc" class="monitor-bold">X₂, Z₂</span></div>
+        </div>
+        <div class="grid" id="grid-a2">
+          <div class="cell q-label" style="grid-column:1;grid-row:1;">Q1</div>
+          <div class="cell q-label" style="grid-column:1;grid-row:2;">Q2</div>
+          <div class="cell a2-cell" data-col="1" data-row="1" style="grid-column:2;grid-row:1;">I</div>
+          <div class="cell a2-cell" data-col="2" data-row="1" style="grid-column:3;grid-row:1;">I</div>
+          <div class="cell a2-cell" data-col="1" data-row="2" style="grid-column:2;grid-row:2;">I</div>
+          <div class="cell a2-cell" data-col="2" data-row="2" style="grid-column:3;grid-row:2;">I</div>
+        </div>
+      </div>
+    </div>
+    <div class="block" id="blockA3">
+      <span class="block-label">A3</span>
+      <button id="a3-run-btn" style="position:absolute;top:10px;right:18px;padding:2px 10px;font-size:0.92em;background:#4e87d1;color:#fff;border:none;border-radius:6px;box-shadow:0 1px 4px #b3d1f7;cursor:pointer;z-index:5;">Run</button>
+      <div class="a3-panel" style="margin-top:25px;width:100%;display:flex;flex-direction:column;align-items:center;justify-content:flex-start;">
+        <div style="width:90%; display: flex; flex-direction: row; justify-content: space-between; align-items: flex-start; margin-bottom: 0;">
+          <div id="a3-monitor-left" style="display:flex;flex-direction:column;gap:1px;width:44%;min-width:110px;max-width:180px;">
+            <div id="a3-q1-monitor" style="width:100%;padding:4px 0 2px 10px;text-align:left;font-size:0.8em;background:#f5f7fa;border-radius:7px;box-shadow:0 1px 4px #eee;margin-bottom:2px;">
+              <span style="color:#2f4f78;font-weight:bold;">Q1:</span> <span id="a3-q1-desc" class="monitor-bold">X₁, Z₁</span>
+            </div>
+            <div id="a3-q2-monitor" style="width:100%;padding:4px 0 2px 10px;text-align:left;font-size:0.8em;background:#f5f7fa;border-radius:7px;box-shadow:0 1px 4px #eee;margin-bottom:5px;">
+              <span style="color:#2f4f78;font-weight:bold;">Q2:</span> <span id="a3-q2-desc" class="monitor-bold">X₂, Z₂</span>
+            </div>
+          </div>
+          <div id="a3-monitor-right" style="display:flex;flex-direction:column;gap:1px;width:44%;min-width:110px;max-width:180px;">
+            <div id="a3-q1-monitor-r" style="width:100%;padding:4px 0 2px 10px;text-align:left;font-size:0.8em;background:#e3f2fd;border-radius:7px;box-shadow:0 1px 4px #eee;margin-bottom:2px;">
+              &lt;Q1&gt;=...
+            </div>
+            <div id="a3-q2-monitor-r" style="width:100%;padding:4px 0 2px 10px;text-align:left;font-size:0.8em;background:#e3f2fd;border-radius:7px;box-shadow:0 1px 4px #eee;margin-bottom:5px;">
+              &lt;Q2&gt;=...
+            </div>
+          </div>
+        </div>
+        <div class="grid" id="grid-a3">
+          <div class="cell q-label" style="grid-column:1;grid-row:1;">Q1</div>
+          <div class="cell q-label" style="grid-column:1;grid-row:2;">Q2</div>
+          <div class="cell a3-cell" data-col="1" data-row="1" style="grid-column:2;grid-row:1;">I</div>
+          <div class="cell a3-m-cell" style="grid-column:3;grid-row:1;background:#b3b3b3;color:#fff;font-weight:bold;pointer-events:none;">M</div>
+          <div class="cell a3-cell" data-col="1" data-row="2" style="grid-column:2;grid-row:2;">I</div>
+          <div class="cell a3-m-cell" style="grid-column:3;grid-row:2;background:#b3b3b3;color:#fff;font-weight:bold;pointer-events:none;">M</div>
+        </div>
+      </div>
+    </div>
+    <div class="block" id="blockA4" style="grid-column: 2 / span 2;"><span class="block-label">A4</span></div>
+    <div class="block" id="blockA5" style="display:none"></div>
+    <div class="block" id="blockA6" style="grid-column: 1 / span 2;"><span class="block-label">A6</span></div>
+    <div class="block" id="blockA7" style="display:none"></div>
+    <div class="block" id="blockA8"><span class="block-label">A8</span></div>
+  </div>
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+  <script>
+    function colorizeDescriptor(str) {
+      return str
+        .replace(/X₁|Z₁/g, m => `<span class="desc-x1z1">${m}</span>`)
+        .replace(/X₂|Z₂/g, m => `<span class="desc-x2z2">${m}</span>`);
+    }
+    document.addEventListener('DOMContentLoaded', function() {
+      // 初始化monitor顏色
+      document.getElementById('a0-q1-desc').innerHTML = colorizeDescriptor('X₁, Z₁');
+      document.getElementById('a0-q2-desc').innerHTML = colorizeDescriptor('X₂, Z₂');
+      document.getElementById('a1-q1-desc').innerHTML = colorizeDescriptor('X₁, Z₁');
+      document.getElementById('a1-q2-desc').innerHTML = colorizeDescriptor('X₂, Z₂');
+      document.getElementById('a2-q1-desc').innerHTML = colorizeDescriptor('X₁, Z₁');
+      document.getElementById('a2-q2-desc').innerHTML = colorizeDescriptor('X₂, Z₂');
+    });
+    // 點擊A0 block的四個格子有active特效
+    document.addEventListener('DOMContentLoaded', function() {
+      document.querySelectorAll('#blockA0 .cell[data-interactive]').forEach(cell => {
+        function updateCellColor() {
+          if (cell.textContent === 'H') {
+            cell.classList.add('h-gate');
+          } else {
+            cell.classList.remove('h-gate');
+          }
+        }
+        cell.addEventListener('click', function() {
+          cell.classList.add('active');
+          setTimeout(() => cell.classList.remove('active'), 150);
+          if (cell.textContent === 'I') {
+            cell.textContent = 'H';
+          } else {
+            cell.textContent = 'I';
+          }
+          updateCellColor();
+        });
+        // 初始化顏色
+        updateCellColor();
+      });
+      // Run按鈕功能：推演Q1/Q2描述符
+      document.getElementById('a0-run-btn').addEventListener('click', function() {
+        // 取得上排兩格、下排兩格
+        const cells = document.querySelectorAll('#grid-a0hei .cell[data-interactive]');
+        // 順序: [右上1, 右上2, 右下1, 右下2]
+        // Q1走上排兩格
+        let q1 = ['X', 'Z'];
+        [cells[0], cells[1]].forEach(cell => {
+          if (cell.textContent === 'H') q1.reverse();
+        });
+        // Q2走下排兩格
+        let q2 = ['X', 'Z'];
+        [cells[2], cells[3]].forEach(cell => {
+          if (cell.textContent === 'H') q2.reverse();
+        });
+        // 產生下標
+        function withSub(q, idx) {
+          return q.map(v => v + (idx === 1 ? '₁' : '₂')).join(', ');
+        }
+        document.getElementById('a0-q1-desc').innerHTML = colorizeDescriptor(withSub(q1, 1));
+        document.getElementById('a0-q2-desc').innerHTML = colorizeDescriptor(withSub(q2, 2));
+        // 成功特效：Q1 (Z₁, X₁)，Q2 (Z₂, X₂)
+        const q1Success = withSub(q1, 1) === 'Z₁, X₁';
+        const q2Success = withSub(q2, 2) === 'Z₂, X₂';
+        document.getElementById('a0-q1-monitor').classList.toggle('monitor-success', q1Success);
+        document.getElementById('a0-q2-monitor').classList.toggle('monitor-success', q2Success);
+      });
+    });
+    // 讓A1 grid的每個cell可點擊，CNOT互動：I→•→⨁→I，且同一豎只能有一對•與⨁，Run檢查配對
+    document.addEventListener('DOMContentLoaded', function() {
+      const a1Cells = document.querySelectorAll('#grid-a1cnot .a1-cell');
+      // 依照col分組
+      const cols = [
+        [a1Cells[0], a1Cells[2]], // 第一豎
+        [a1Cells[1], a1Cells[3]], // 第二豎
+      ];
+      function updateCnotPairHighlight() {
+        cols.forEach(([cell1, cell2]) => {
+          if (
+            (cell1.textContent === '•' && cell2.textContent === '⨁') ||
+            (cell1.textContent === '⨁' && cell2.textContent === '•')
+          ) {
+            cell1.classList.add('cnot-pair');
+            cell2.classList.add('cnot-pair');
+          } else {
+            cell1.classList.remove('cnot-pair');
+            cell2.classList.remove('cnot-pair');
+          }
+        });
+      }
+      function simplifyDescriptor(descriptor) {
+        const matches = descriptor.match(/X₁|X₂|Z₁|Z₂/g);
+        if (!matches) return descriptor;
+        const count = {};
+        matches.forEach(sym => {
+          count[sym] = (count[sym] || 0) + 1;
+        });
+        const result = [];
+        ['X₁','X₂','Z₁','Z₂'].forEach(sym => {
+          if (count[sym] && count[sym] % 2 === 1) result.push(sym);
+        });
+        return result.length ? result.join('') : 'I';
+      }
+      function updateA1MonitorByCnot() {
+        let q1left = 'X₁', q1right = 'Z₁';
+        let q2left = 'X₂', q2right = 'Z₂';
+        cols.forEach(([cell1, cell2], idx) => {
+          if (cell1.textContent === '•' && cell2.textContent === '⨁') {
+            q1left = q1left + q2left;
+            q2right = q2right + q1right;
+          } else if (cell1.textContent === '⨁' && cell2.textContent === '•') {
+            q1right = q1right + q2right;
+            q2left = q2left + q1left;
+          }
+        });
+        q1left = simplifyDescriptor(q1left);
+        q1right = simplifyDescriptor(q1right);
+        q2left = simplifyDescriptor(q2left);
+        q2right = simplifyDescriptor(q2right);
+        document.getElementById('a1-q1-desc').innerHTML = `(${colorizeDescriptor(q1left)}, ${colorizeDescriptor(q1right)})`;
+        document.getElementById('a1-q2-desc').innerHTML = `(${colorizeDescriptor(q2left)}, ${colorizeDescriptor(q2right)})`;
+        // 成功特效：Q1=(X₂, Z₁Z₂)或(X₁X₂, Z₂)，Q2=(X₁, Z₁Z₂)或(X₁X₂, Z₁)
+        const q1Success =
+          (q1left === 'X₂' && q1right === 'Z₁Z₂') ||
+          (q1left === 'X₁X₂' && q1right === 'Z₂');
+        const q2Success =
+          (q2left === 'X₁' && q2right === 'Z₁Z₂') ||
+          (q2left === 'X₁X₂' && q2right === 'Z₁');
+        document.getElementById('a1-q1-monitor').classList.toggle('monitor-success', q1Success);
+        document.getElementById('a1-q2-monitor').classList.toggle('monitor-success', q2Success);
+      }
+      function isA1Error() {
+        let error = false;
+        cols.forEach(([cell1, cell2]) => {
+          const vals = [cell1.textContent, cell2.textContent];
+          if ((vals.includes('•') || vals.includes('⨁')) && !(vals.includes('•') && vals.includes('⨁'))) {
+            error = true;
+          }
+        });
+        return error;
+      }
+      a1Cells.forEach((cell, idx) => {
+        cell.addEventListener('click', function() {
+          // 找出同一豎的兩格
+          const colIdx = idx % 2;
+          const [cell1, cell2] = cols[colIdx];
+          // 狀態循環：I→•→⨁→I
+          if (cell.textContent === 'I') {
+            if (cell1.textContent === '•' || cell2.textContent === '•') {
+              cell.textContent = '⨁';
+            } else if (cell1.textContent === '⨁' || cell2.textContent === '⨁') {
+              cell.textContent = '•';
+            } else {
+              cell.textContent = '•';
+            }
+          } else if (cell.textContent === '•') {
+            cell.textContent = '⨁';
+          } else if (cell.textContent === '⨁') {
+            cell.textContent = 'I';
+          }
+          // 保證同一豎最多只有一個•和一個⨁
+          if (cell1 !== cell && cell.textContent === '•' && cell1.textContent === '•') {
+            cell1.textContent = 'I';
+          }
+          if (cell2 !== cell && cell.textContent === '•' && cell2.textContent === '•') {
+            cell2.textContent = 'I';
+          }
+          if (cell1 !== cell && cell.textContent === '⨁' && cell1.textContent === '⨁') {
+            cell1.textContent = 'I';
+          }
+          if (cell2 !== cell && cell.textContent === '⨁' && cell2.textContent === '⨁') {
+            cell2.textContent = 'I';
+          }
+          updateCnotPairHighlight();
+          // 不再重設monitor內容
+        });
+      });
+      document.getElementById('a1-run-btn').addEventListener('click', function() {
+        let error = isA1Error();
+        const btn = document.getElementById('a1-run-btn');
+        if (error) {
+          const oldText = btn.textContent;
+          btn.style.background = '#f24d4d';
+          btn.textContent = 'error';
+          setTimeout(() => {
+            btn.style.background = '#4e87d1';
+            btn.textContent = oldText;
+          }, 200);
+          document.getElementById('a1-q1-desc').textContent = 'X₁, Z₁';
+          document.getElementById('a1-q2-desc').textContent = 'X₂, Z₂';
+        } else {
+          updateA1MonitorByCnot();
+        }
+        updateCnotPairHighlight();
+      });
+    });
+    // 讓A2 grid的每個cell可點擊，I→H→•→⨁→I，Run時H反轉XZ，CNOT配對
+    document.addEventListener('DOMContentLoaded', function() {
+      const a2Cells = document.querySelectorAll('#grid-a2 .a2-cell');
+      // 依照col分組
+      const cols = [
+        [a2Cells[0], a2Cells[2]], // 第一豎
+        [a2Cells[1], a2Cells[3]], // 第二豎
+      ];
+      function updateCnotPairHighlightA2() {
+        cols.forEach(([cell1, cell2]) => {
+          if (
+            (cell1.textContent === '•' && cell2.textContent === '⨁') ||
+            (cell1.textContent === '⨁' && cell2.textContent === '•')
+          ) {
+            cell1.classList.add('cnot-pair');
+            cell2.classList.add('cnot-pair');
+          } else {
+            cell1.classList.remove('cnot-pair');
+            cell2.classList.remove('cnot-pair');
+          }
+        });
+      }
+      function updateHStyleA2() {
+        a2Cells.forEach(cell => {
+          if (cell.textContent === 'H') {
+            cell.classList.add('h-gate');
+          } else {
+            cell.classList.remove('h-gate');
+          }
+        });
+      }
+      function simplifyDescriptorA2(descriptor) {
+        const matches = descriptor.match(/X₁|X₂|Z₁|Z₂/g);
+        if (!matches) return descriptor;
+        const count = {};
+        matches.forEach(sym => {
+          count[sym] = (count[sym] || 0) + 1;
+        });
+        const result = [];
+        ['X₁','X₂','Z₁','Z₂'].forEach(sym => {
+          if (count[sym] && count[sym] % 2 === 1) result.push(sym);
+        });
+        return result.length ? result.join('') : 'I';
+      }
+      function updateA2MonitorByCnotAndH() {
+        // 初始描述符
+        let q1 = ['X₁', 'Z₁'];
+        let q2 = ['X₂', 'Z₂'];
+        // 逐層運算：每一豎先做H再做CNOT
+        for (let colIdx = 0; colIdx < 2; colIdx++) {
+          // 取得這一豎的 cell
+          const [cell1, cell2] = cols[colIdx]; // cell1: 上, cell2: 下
+          // 先做 H
+          if (cell1.textContent === 'H') q1 = [q1[1], q1[0]];
+          if (cell2.textContent === 'H') q2 = [q2[1], q2[0]];
+          // 再做 CNOT
+          if (cell1.textContent === '•' && cell2.textContent === '⨁') {
+            q1[0] = q1[0] + q2[0];
+            q2[1] = q2[1] + q1[1];
+          } else if (cell1.textContent === '⨁' && cell2.textContent === '•') {
+            q1[1] = q1[1] + q2[1];
+            q2[0] = q2[0] + q1[0];
+          }
+          // 這一層做完後，簡化描述符
+          q1[0] = simplifyDescriptorA2(q1[0]);
+          q1[1] = simplifyDescriptorA2(q1[1]);
+          q2[0] = simplifyDescriptorA2(q2[0]);
+          q2[1] = simplifyDescriptorA2(q2[1]);
+        }
+        document.getElementById('a2-q1-desc').innerHTML = `(${colorizeDescriptor(q1[0])}, ${colorizeDescriptor(q1[1])})`;
+        document.getElementById('a2-q2-desc').innerHTML = `(${colorizeDescriptor(q2[0])}, ${colorizeDescriptor(q2[1])})`;
+        // 成功特效：同時滿足下列其中一組時Q1/Q2都高亮
+        const cond1 = (q1[0] === 'Z₁' && q1[1] === 'X₁X₂' && q2[0] === 'X₂' && q2[1] === 'Z₁Z₂');
+        const cond2 = (q1[0] === 'X₁' && q1[1] === 'Z₁Z₂' && q2[0] === 'Z₂' && q2[1] === 'X₁X₂');
+        const success = cond1 || cond2;
+        document.getElementById('a2-q1-monitor').classList.toggle('monitor-success', success);
+        document.getElementById('a2-q2-monitor').classList.toggle('monitor-success', success);
+      }
+      function isA2Error() {
+        let error = false;
+        cols.forEach(([cell1, cell2]) => {
+          const vals = [cell1.textContent, cell2.textContent];
+          // 只要有•或⨁但不是成對就error
+          if ((vals.includes('•') || vals.includes('⨁')) && !(vals.includes('•') && vals.includes('⨁'))) {
+            error = true;
+          }
+        });
+        return error;
+      }
+      a2Cells.forEach((cell, idx) => {
+        cell.addEventListener('click', function() {
+          // 狀態循環：I→H→•→⨁→I
+          if (cell.textContent === 'I') {
+            cell.textContent = 'H';
+          } else if (cell.textContent === 'H') {
+            cell.textContent = '•';
+          } else if (cell.textContent === '•') {
+            cell.textContent = '⨁';
+          } else if (cell.textContent === '⨁') {
+            cell.textContent = 'I';
+          }
+          // 保證同一豎最多只有一個•和一個⨁
+          const colIdx = idx % 2;
+          const [cell1, cell2] = cols[colIdx];
+          if (cell1 !== cell && cell.textContent === '•' && cell1.textContent === '•') {
+            cell1.textContent = 'I';
+          }
+          if (cell2 !== cell && cell.textContent === '•' && cell2.textContent === '•') {
+            cell2.textContent = 'I';
+          }
+          if (cell1 !== cell && cell.textContent === '⨁' && cell1.textContent === '⨁') {
+            cell1.textContent = 'I';
+          }
+          if (cell2 !== cell && cell.textContent === '⨁' && cell2.textContent === '⨁') {
+            cell2.textContent = 'I';
+          }
+          updateCnotPairHighlightA2();
+          updateHStyleA2();
+          // 不再重設monitor內容
+        });
+      });
+      document.getElementById('a2-run-btn').addEventListener('click', function() {
+        let error = isA2Error();
+        const btn = document.getElementById('a2-run-btn');
+        if (error) {
+          const oldText = btn.textContent;
+          btn.style.background = '#f24d4d';
+          btn.textContent = 'error';
+          setTimeout(() => {
+            btn.style.background = '#4e87d1';
+            btn.textContent = oldText;
+          }, 200);
+          document.getElementById('a2-q1-desc').textContent = 'X₁, Z₁';
+          document.getElementById('a2-q2-desc').textContent = 'X₂, Z₂';
+        } else {
+          updateA2MonitorByCnotAndH();
+        }
+        updateCnotPairHighlightA2();
+        updateHStyleA2();
+      });
+      // 初始化H樣式
+      updateHStyleA2();
+    });
+    // 讓A3第二豎的每個cell可點擊，I→H→•→⨁→I，且同一豎只能有一對•與⨁，H有高亮
+    document.addEventListener('DOMContentLoaded', function() {
+      // 取得A3第二豎的兩個cell
+      const a3Cells = [
+        document.querySelector('#grid-a3 .a3-cell[data-col="1"][data-row="1"]'),
+        document.querySelector('#grid-a3 .a3-cell[data-col="1"][data-row="2"]')
+      ];
+      function updateCnotPairHighlightA3() {
+        const [cell1, cell2] = a3Cells;
+        if (
+          (cell1.textContent === '•' && cell2.textContent === '⨁') ||
+          (cell1.textContent === '⨁' && cell2.textContent === '•')
+        ) {
+          cell1.classList.add('cnot-pair');
+          cell2.classList.add('cnot-pair');
+        } else {
+          cell1.classList.remove('cnot-pair');
+          cell2.classList.remove('cnot-pair');
+        }
+      }
+      function updateHStyleA3() {
+        a3Cells.forEach(cell => {
+          if (cell.textContent === 'H') {
+            cell.classList.add('h-gate');
+          } else {
+            cell.classList.remove('h-gate');
+          }
+        });
+      }
+      a3Cells.forEach((cell, idx) => {
+        cell.addEventListener('click', function() {
+          // 狀態循環：I→H→•→⨁→I
+          if (cell.textContent === 'I') {
+            cell.textContent = 'H';
+          } else if (cell.textContent === 'H') {
+            cell.textContent = '•';
+          } else if (cell.textContent === '•') {
+            cell.textContent = '⨁';
+          } else if (cell.textContent === '⨁') {
+            cell.textContent = 'I';
+          }
+          // 保證同一豎最多只有一個•和一個⨁
+          const [cell1, cell2] = a3Cells;
+          if (cell1 !== cell && cell.textContent === '•' && cell1.textContent === '•') {
+            cell1.textContent = 'I';
+          }
+          if (cell2 !== cell && cell.textContent === '•' && cell2.textContent === '•') {
+            cell2.textContent = 'I';
+          }
+          if (cell1 !== cell && cell.textContent === '⨁' && cell1.textContent === '⨁') {
+            cell1.textContent = 'I';
+          }
+          if (cell2 !== cell && cell.textContent === '⨁' && cell2.textContent === '⨁') {
+            cell2.textContent = 'I';
+          }
+          updateCnotPairHighlightA3();
+          updateHStyleA3();
+        });
+      });
+      // 初始化H樣式
+      updateHStyleA3();
+    });
+    // 讓A3左側monitor根據第二豎兩格的狀態，運算邏輯和A2一樣（H反轉、CNOT配對、描述符簡化），只做這一層，並在點擊時自動更新monitor。
+    function simplifyDescriptorA3(descriptor) {
+      const matches = descriptor.match(/X₁|X₂|Z₁|Z₂/g);
+      if (!matches) return descriptor;
+      const count = {};
+      matches.forEach(sym => {
+        count[sym] = (count[sym] || 0) + 1;
+      });
+      const result = [];
+      ['X₁','X₂','Z₁','Z₂'].forEach(sym => {
+        if (count[sym] && count[sym] % 2 === 1) result.push(sym);
+      });
+      return result.length ? result.join('') : 'I';
+    }
+    function updateA3MonitorByCnotAndH() {
+      // 初始描述符
+      let q1 = ['X₁', 'Z₁'];
+      let q2 = ['X₂', 'Z₂'];
+      // 取得A3第二豎的兩個cell
+      const a3Cells = [
+        document.querySelector('#grid-a3 .a3-cell[data-col="1"][data-row="1"]'),
+        document.querySelector('#grid-a3 .a3-cell[data-col="1"][data-row="2"]')
+      ];
+      // 先做 H
+      if (a3Cells[0].textContent === 'H') q1 = [q1[1], q1[0]];
+      if (a3Cells[1].textContent === 'H') q2 = [q2[1], q2[0]];
+      // 再做 CNOT
+      if (a3Cells[0].textContent === '•' && a3Cells[1].textContent === '⨁') {
+        q1[0] = q1[0] + q2[0];
+        q2[1] = q2[1] + q1[1];
+      } else if (a3Cells[0].textContent === '⨁' && a3Cells[1].textContent === '•') {
+        q1[1] = q1[1] + q2[1];
+        q2[0] = q2[0] + q1[0];
+      }
+      // 簡化
+      q1[0] = simplifyDescriptorA3(q1[0]);
+      q1[1] = simplifyDescriptorA3(q1[1]);
+      q2[0] = simplifyDescriptorA3(q2[0]);
+      q2[1] = simplifyDescriptorA3(q2[1]);
+      document.getElementById('a3-q1-desc').innerHTML = `(${colorizeDescriptor(q1[0])}, ${colorizeDescriptor(q1[1])})`;
+      document.getElementById('a3-q2-desc').innerHTML = `(${colorizeDescriptor(q2[0])}, ${colorizeDescriptor(q2[1])})`;
+    }
+    // 綁定A3互動格子的點擊時自動更新monitor
+    document.addEventListener('DOMContentLoaded', function() {
+      // 頁面載入時初始化monitor
+      updateA3MonitorByCnotAndH();
+    });
+    // A3 Run按鈕功能：error checking + 運算monitor
+    document.addEventListener('DOMContentLoaded', function() {
+      const btn = document.getElementById('a3-run-btn');
+      const a3Cells = [
+        document.querySelector('#grid-a3 .a3-cell[data-col="1"][data-row="1"]'),
+        document.querySelector('#grid-a3 .a3-cell[data-col="1"][data-row="2"]')
+      ];
+      function isA3Error() {
+        const vals = [a3Cells[0].textContent, a3Cells[1].textContent];
+        // 只要有•或⨁但不是成對就error
+        if ((vals.includes('•') || vals.includes('⨁')) && !(vals.includes('•') && vals.includes('⨁'))) {
+          return true;
+        }
+        return false;
+      }
+      btn.addEventListener('click', function() {
+        let error = isA3Error();
+        if (error) {
+          const oldText = btn.textContent;
+          btn.style.background = '#f24d4d';
+          btn.textContent = 'error';
+          setTimeout(() => {
+            btn.style.background = '#4e87d1';
+            btn.textContent = oldText;
+          }, 200);
+          document.getElementById('a3-q1-desc').textContent = 'X₁, Z₁';
+          document.getElementById('a3-q2-desc').textContent = 'X₂, Z₂';
+          document.getElementById('a3-q1-monitor-r').innerHTML = '&lt;Q1&gt;=...';
+          document.getElementById('a3-q2-monitor-r').innerHTML = '&lt;Q2&gt;=...';
+        } else {
+          updateA3MonitorByCnotAndH();
+          // expectation運算
+          // 取得Q1/Q2 monitor right部分
+          const q1desc = document.getElementById('a3-q1-desc').textContent;
+          const q2desc = document.getElementById('a3-q2-desc').textContent;
+          // 解析 (left, right)
+          function getRight(desc) {
+            const match = desc.match(/\(([^,]+),\s*([^\)]+)\)/);
+            return match ? match[2] : desc;
+          }
+          function getExpectation(right) {
+            // 有X就0，只有Z就1
+            if (/X[₁₂]/.test(right)) return '0';
+            if (/Z[₁₂]/.test(right)) return '1';
+            return '...';
+          }
+          const q1right = getRight(q1desc);
+          const q2right = getRight(q2desc);
+          document.getElementById('a3-q1-monitor-r').innerHTML = '&lt;Q1&gt;=' + getExpectation(q1right);
+          document.getElementById('a3-q2-monitor-r').innerHTML = '&lt;Q2&gt;=' + getExpectation(q2right);
+        }
+      });
+    });
+    // 強制初始化所有hint-block為隱藏
+    document.addEventListener('DOMContentLoaded', function() {
+      ['a0','a1','a2'].forEach(id => {
+        document.getElementById('hint-' + id).style.display = 'none';
+      });
+      // 問號按鈕顯示/隱藏提示區塊
+      function bindHelpBtn(blockId) {
+        const btn = document.getElementById('help-' + blockId);
+        const hint = document.getElementById('hint-' + blockId);
+        btn.addEventListener('click', function(e) {
+          e.stopPropagation();
+          hint.style.display = (hint.style.display === 'flex') ? 'none' : 'flex';
+        });
+        // 點擊提示區塊本身也可關閉
+        hint.addEventListener('click', function() {
+          hint.style.display = 'none';
+        });
+      }
+      ['a0','a1','a2'].forEach(bindHelpBtn);
+    });
+  </script>
+</body>
+</html>
