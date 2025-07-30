@@ -1,0 +1,2481 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Btt-flip error detection - Level 5</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', sans-serif;
+            background-color: #f0f0f0;
+            height: 1vh;
+            overflow: hidden;
+        }
+
+        .container {
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .content {
+            flex: 1;
+            padding: 2px;
+            background: none;
+            overflow: hidden;
+        }
+
+        .block {
+            display: none;
+            height: 100%;
+            border: 1px solid #ccc;
+            box-shadow: 0 4px 16px 0 rgba(0,0,0,0.15), 0 1.5px 4px 0 rgba(0,0,0,0.10);
+            background-color: #fffff0;
+            overflow: hidden;
+        }
+
+        .block.active {
+            display: block;
+        }
+
+        .block h2 {
+            color: #2f4f78;
+            margin: 10px;
+            font-size: 18px;
+            font-weight: bold;
+            background: rgba(255,255,255,0.85);
+            padding: 5px 10px;
+            border-radius: 5px;
+            display: inline-block;
+        }
+
+        .block-content {
+            padding: 10px;
+            height: calc(100% - 50px);
+            overflow: hidden;
+        }
+
+        .highlight {
+            background: #ffe9b3;
+            color: #333;
+            padding: 10px;
+            border: 1px solid #ccc;
+            margin: 10px 0;
+            text-align: center;
+            font-weight: bold;
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 10px;
+            margin: 10px 0;
+        }
+
+        .card {
+            background: #fffff0;
+            padding: 10px;
+            border: 1px solid #ccc;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .card h3 {
+            color: #2f4f78;
+            margin-bottom: 5px;
+            font-size: 14px;
+        }
+
+        .card p {
+            color: #333;
+            font-size: 12px;
+        }
+
+        /* Block 1 佈局 */
+        .block1-layout {
+            display: flex;
+            gap: 5px;
+            height: 100%;
+            width: 100%;
+        }
+
+        /* 左側區域 */
+        .left-panel {
+            width: 66.67%;
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+            flex-shrink: 0;
+        }
+
+        /* Monitor 區域 */
+        #monitor {
+            height: 25%;
+            background: #fffff0;
+            border: 1px solid #ccc;
+            padding: 10px;
+            overflow-y: auto;
+            flex-shrink: 0;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        
+        /* Monitor 內部佈局 */
+        .monitor-layout {
+            display: flex;
+            gap: 10px;
+            width: 100%;
+            height: 100%;
+            overflow-y: auto;
+        }
+        
+        /* 左側 Descriptor 區域 */
+        .descriptor-panel {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            gap: 0.1px;
+        }
+        
+        /* 右側 Expectation Value 區域 */
+        .expectation-panel {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            gap: 0.1px;
+        }
+        
+        /* Monitor 子區塊樣式 */
+        .monitor-block {
+            flex: 1;
+            background: rgba(255, 255, 255, 0.8);
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            padding: 1px;
+            display: flex;
+            flex-direction: column;
+            position: relative;
+        }
+        
+        .monitor-block h4 {
+            margin: 0 0 3px 0;
+            font-size: 10px;
+            color: #2f4f78;
+            font-weight: bold;
+        }
+        
+        .monitor-block .content {
+            flex: 1;
+            font-size: 12px;
+            color: #333;
+            overflow-y: auto;
+        }
+        
+        /* Run Button 樣式 */
+        .run-button {
+            background: #4CAF50;
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: bold;
+            transition: background-color 0.3s;
+            margin-left: 10px;
+            flex-shrink: 0;
+        }
+        
+        .run-button:hover {
+            background: #45a049;
+        }
+        
+        .run-button:active {
+            background: #3d8b40;
+        }
+        
+        /* Monitor 內容區域 */
+        .monitor-content {
+            flex: 1;
+            overflow-y: auto;
+        }
+
+        /* Three.js 容器樣式 */
+        #game-container {
+            height: 75%;
+            background: #f0f0f0;
+            border: 1px solid #ccc;
+            overflow: hidden;
+            position: relative;
+            flex-shrink: 0;
+        }
+
+        #game-canvas {
+            width: 100%;
+            height: 100%;
+            display: block;
+        }
+
+        /* 文字內容區域 */
+        #text-content {
+            width: 33.33%;
+            background: #ffe9b3;
+            border: 1px solid #ccc;
+            padding: 10px;
+            overflow-y: auto;
+            flex-shrink: 0;
+            transition: all 0.3s ease;
+        }
+        
+        #text-content.collapsed {
+            width: 50px;
+            overflow: hidden;
+        }
+        
+        #text-content.collapsed .content-label {
+            transform: rotate(90deg);
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%) rotate(90deg);
+        }
+        
+        /* 切換按鈕樣式 */
+        .toggle-button {
+            position: absolute;
+            top: 5px;
+            right: 5px;
+            background: #0b538f;
+            color: white;
+            border: none;
+            padding: 4px 8px;
+            border-radius: 3px;
+            cursor: pointer;
+            font-size: 10px;
+            font-weight: bold;
+            transition: background-color 0.3s;
+            z-index: 15;
+        }
+        
+        .toggle-button:hover {
+            background: #094076;
+        }
+        
+        /* 區域標籤樣式 */
+        .area-label {
+            position: absolute;
+            top: 5px;
+            left: 5px;
+            background: rgba(47, 79, 120, 0.9);
+            color: white;
+            padding: 3px 8px;
+            border-radius: 3px;
+            font-size: 12px;
+            font-weight: bold;
+            z-index: 10;
+        }
+
+        .content-label {
+            position: absolute;
+            top: 5px;
+            left: 5px;
+            background: rgba(47, 79, 120, 0.9);
+            color: white;
+            padding: 3px 8px;
+            border-radius: 3px;
+            font-size: 12px;
+            font-weight: bold;
+            z-index: 10;
+        }
+        
+        /* Reset Button 樣式 */
+        .reset-button {
+            position: absolute;
+            top: 5px;
+            right: 5px;
+            background: #f44336;
+            color: white;
+            border: none;
+            padding: 6px 12px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 12px;
+            font-weight: bold;
+            transition: background-color 0.3s;
+            z-index: 10;
+        }
+        
+        .reset-button:hover {
+            background: #d32f2f;
+        }
+        
+        .reset-button:active {
+            background: #b71c1c;
+        }
+        
+        /* Time Step Display 樣式 */
+        .time-step-display {
+            position: absolute;
+            top: 5px;
+            right: 70px;
+            background: #2196F3;
+            color: white;
+            border: none;
+            padding: 6px 12px;
+            border-radius: 4px;
+            font-size: 12px;
+            font-weight: bold;
+            z-index: 10;
+            min-width: 50px;
+            text-align: center;
+        }
+        
+        /* 攝影機控制條樣式 */
+        .camera-control {
+            position: absolute;
+            bottom: 10px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 300px;
+            height: 20px;
+            background: rgba(255, 255, 255, 0.9);
+            border: 2px solid #333;
+            border-radius: 10px;
+            z-index: 10;
+            cursor: pointer;
+        }
+        
+        .camera-slider {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 20px;
+            height: 30px;
+            background: #2196F3;
+            border: 2px solid #1976D2;
+            border-radius: 5px;
+            cursor: grab;
+            z-index: 11;
+            transition: background-color 0.2s;
+        }
+        
+        .camera-slider:hover {
+            background: #1976D2;
+        }
+        
+        .camera-slider:active {
+            cursor: grabbing;
+            background: #0D47A1;
+        }
+        
+        .camera-label {
+            position: absolute;
+            bottom: 35px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(0, 0, 0, 0.7);
+            color: white;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 12px;
+            font-weight: bold;
+            z-index: 12;
+            white-space: nowrap;
+        }
+        
+        /* 隨機值顯示區塊樣式 */
+        .random-values-container {
+            position: absolute;
+            bottom: 10px;
+            right: 10px;
+            display: flex;
+            gap: 5px;
+            z-index: 15;
+        }
+        
+        .random-value-block {
+            background: rgba(255, 255, 255, 0.9);
+            border: 2px solid #333;
+            border-radius: 6px;
+            padding: 8px 12px;
+            min-width: 60px;
+            text-align: center;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+        }
+        
+        .random-value-label {
+            font-size: 10px;
+            font-weight: bold;
+            color: #333;
+            margin-bottom: 2px;
+        }
+        
+        .random-value-number {
+            font-size: 16px;
+            font-weight: bold;
+            color: #2196F3;
+        }
+        
+        /* 調整容器為相對定位以支持絕對定位的標籤 */
+        #monitor, #game-container, #text-content {
+            position: relative;
+        }
+        
+        /* 提示方框樣式 */
+        .correction-popup {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
+        
+        .correction-popup-content {
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+            text-align: center;
+            max-width: 400px;
+            animation: popupFadeIn 0.3s ease-out;
+        }
+        
+        .correction-popup-content p {
+            font-size: 18px;
+            color: #333;
+            margin-bottom: 20px;
+            line-height: 1.4;
+        }
+        
+        .correction-popup-close {
+            background: #4CAF50;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+        
+        .correction-popup-close:hover {
+            background: #45a049;
+        }
+        
+        @keyframes popupFadeIn {
+            from {
+                opacity: 0;
+                transform: scale(0.8);
+            }
+            to {
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
+    </style>
+    <!-- Three.js CDN -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+</head>
+<body>
+    <div class="container">
+        <div class="content">
+            <div class="block active" id="block0">
+                <h2 style="font-family: Georgia, serif; font-size: 20px;">Level 5 - <span style="background: linear-gradient(45deg, #e837fc, #0e8eff); color: white; padding: 4px 8px; border-radius: 6px; font-weight: bold; text-shadow: 1px 1px 2px rgba(0,0,0,0.3); box-shadow: 0 2px 4px rgba(0,0,0,0.2);">Master Challenge!</span> Bit-flip Error Detection and Correction</h2>
+                <div class="block-content">
+                    <div class="block1-layout">
+                        <div class="left-panel">
+                            <div id="monitor">
+                                <div class="area-label">Monitor</div>
+                                <div class="monitor-layout">
+                                    <div class="descriptor-panel">
+                                        <div class="monitor-block">
+                                            <div class="content">
+                                                <!-- Descriptor 1 內容 -->
+                                                <p>
+                                                  Q1 = (X1,Z1)
+                                                </p>
+                                            </div>
+                                        </div>
+                                        <div class="monitor-block">
+                                            <div class="content">
+                                                <!-- Descriptor 2 內容 -->
+                                                <p>
+                                                  Q2 = (X2,Z2)
+                                                </p>
+                                            </div>
+                                        </div>
+                                        <div class="monitor-block">
+                                            <div class="content">
+                                                <!-- Descriptor 3 內容 -->
+                                                <p>
+                                                  Q3 = (X3,Z3)
+                                                </p>
+                                            </div>
+                                        </div>
+                                        <div class="monitor-block">
+                                            <div class="content">
+                                                <!-- Descriptor 4 內容 -->
+                                                <p>
+                                                  Q4 = (X4,Z4)
+                                                </p>
+                                            </div>
+                                        </div>
+                                        <div class="monitor-block">
+                                            <div class="content">
+                                                <!-- Descriptor 5 內容 -->
+                                                <p>
+                                                  Q5 = (X5,Z5)
+                                                </p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="expectation-panel">
+                                        <div class="monitor-block">
+                                            <div class="content">
+                                                <!-- Expectation Value 1 內容 -->
+                                                <p>
+                                                  Exc.X(Q1) = 0,    Exc.Z(Q1) = 1
+                                                </p>
+                                            </div>
+                                        </div>
+                                        <div class="monitor-block">
+                                            <div class="content">
+                                                <!-- Expectation Value 2 內容 -->
+                                                <p>
+                                                  Exc.X(Q2) = 0,    Exc.Z(Q2) = 1
+                                                </p>
+                                            </div>
+                                        </div>
+                                        <div class="monitor-block">
+                                            <div class="content">
+                                                <!-- Expectation Value 3 內容 -->
+                                                <p>
+                                                  Exc.X(Q3) = 0,    Exc.Z(Q3) = 1
+                                                </p>
+                                            </div>
+                                        </div>
+                                        <div class="monitor-block">
+                                            <div class="content">
+                                                <!-- Expectation Value 4 內容 -->
+                                                <p>
+                                                  Exc.X(Q4) = 0,    Exc.Z(Q4) = 1
+                                                </p>
+                                            </div>
+                                        </div>
+                                        <div class="monitor-block">
+                                            <div class="content">
+                                                <!-- Expectation Value 5 內容 -->
+                                                <p>
+                                                  Exc.X(Q5) = 0,    Exc.Z(Q5) = 1
+                                                </p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <button class="run-button" onclick="runSimulation()">Run</button>
+                            </div>
+                            <div id="game-container">
+                                <div class="area-label">Game Area</div>
+                                <div class="time-step-display" id="time-step-display">t = 0</div>
+                                <button class="reset-button" onclick="resetSimulation()">Reset</button>
+                                <canvas id="game-canvas"></canvas>
+                                
+                                <!-- 攝影機控制條 -->
+                                <div class="camera-control" id="camera-control">
+                                    <div class="camera-slider" id="camera-slider"></div>
+                                    <div class="camera-label" id="camera-label">Camera X: 0</div>
+                                </div>
+                                
+                                <!-- 隨機值顯示區塊 -->
+                                <!--
+                                <div class="random-values-container" id="random-values-container">
+                                    <div class="random-value-block">
+                                        <div class="random-value-label">i (σxⁱ)</div>
+                                        <div class="random-value-number" id="random-i">0</div>
+                                    </div>
+                                    <div class="random-value-block">
+                                        <div class="random-value-label">j (σxʲ)</div>
+                                        <div class="random-value-number" id="random-j">0</div>
+                                    </div>
+                                    <div class="random-value-block">
+                                        <div class="random-value-label">k (σxᵏ)</div>
+                                        <div class="random-value-number" id="random-k">0</div>
+                                    </div>
+                                </div>
+                                -->
+                                
+                                <!-- Check 按鈕 -->
+                                <button class="check-button" onclick="checkAnswer()" style="position: absolute; bottom: 10px; right: 10px; background: #d4af37; color: white; border: none; padding: 10px 20px; border-radius: 6px; cursor: pointer; font-size: 14px; font-weight: bold; transition: background-color 0.3s; z-index: 15;" onmouseover="this.style.background='#c19b2e'" onmouseout="this.style.background='#d4af37'">Check</button>
+                            </div>
+                        </div>
+                        <div id="text-content" class="collapsed">
+                            <div class="content-label">Text Content</div>
+                            <button class="toggle-button" onclick="toggleTextContent()">Show</button>
+                            <div class="text-content-inner" style="margin-top: 40px; padding: 10px; display: none;">
+                                <h3 style="color: #2f4f78; margin-bottom: 15px;">Level 1 - Interactive Visualization</h3>
+                                
+                                <p style="margin-bottom: 10px; line-height: 1.5;">
+                                    This is Level 1 of the interactive visualization. Here you can explore 
+                                    the basic concepts and interactions.
+                                </p>
+                                
+                                <h4 style="color: #2f4f78; margin: 15px 0 8px 0;">Instructions:</h4>
+                                <ul style="margin-left: 20px; line-height: 1.4;">
+                                    <li>Click "Run" to start the simulation</li>
+                                    <li>Click "Reset" to return to initial state</li>
+                                    <li>Use the toggle button to show/hide this content panel</li>
+                                    <li>Monitor the descriptor and expectation values</li>
+                                </ul>
+                                
+                                <h4 style="color: #2f4f78; margin: 15px 0 8px 0;">Features:</h4>
+                                <ul style="margin-left: 20px; line-height: 1.4;">
+                                    <li>3D coordinate system visualization</li>
+                                    <li>Real-time descriptor updates</li>
+                                    <li>Expectation value calculations</li>
+                                    <li>Interactive controls</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- 提示方框 -->
+    <div id="correction-popup" class="correction-popup" style="display: none;">
+        <div class="correction-popup-content">
+            <p>Now do correction based on the results of "M4" & "M5".</p>
+            <button class="correction-popup-close" onclick="closeCorrectionPopup()">OK</button>
+        </div>
+    </div>
+
+    <script>
+        function showBlock(blockIndex) {
+            // 隱藏所有區塊
+            const blocks = document.querySelectorAll('.block');
+            blocks.forEach(block => {
+                block.classList.remove('active');
+            });
+
+            // 移除所有tab的active狀態
+            const tabs = document.querySelectorAll('.tab');
+            tabs.forEach(tab => {
+                tab.classList.remove('active');
+            });
+
+            // 顯示選中的區塊
+            document.getElementById(`block${blockIndex}`).classList.add('active');
+            
+            // 激活選中的tab
+            tabs[blockIndex].classList.add('active');
+        }
+        
+        // 切換 Text Content 顯示/隱藏
+        function toggleTextContent() {
+            const textContent = document.getElementById('text-content');
+            const textContentInner = textContent.querySelector('.text-content-inner');
+            const toggleButton = textContent.querySelector('.toggle-button');
+            
+            if (textContent.classList.contains('collapsed')) {
+                // 展開
+                textContent.classList.remove('collapsed');
+                textContentInner.style.display = 'block';
+                toggleButton.textContent = 'Hide';
+            } else {
+                // 收起
+                textContent.classList.add('collapsed');
+                textContentInner.style.display = 'none';
+                toggleButton.textContent = 'Show';
+            }
+        }
+
+        // Three.js 遊戲初始化
+        let scene, camera, renderer, boxes = [];
+        let raycaster, mouse;
+        let animationId;
+        let t = 0; // 當前時間步，默認0
+        
+        // 攝影機控制變數
+        let cameraX = -7; // 攝影機X軸位置，初始為-7
+        let isDragging = false; // 是否正在拖拽
+        let dragStartX = 0; // 拖拽開始位置
+        let sliderStartX = 0; // 滑塊開始位置
+        
+        function initGame() {
+            const container = document.getElementById('game-container');
+            const canvas = document.getElementById('game-canvas');
+            
+            // 創建場景
+            scene = new THREE.Scene();
+            scene.background = new THREE.Color(0xf0f0f0);
+            
+            // 創建相機 - 使用長焦鏡頭實現平面3D效果，從正方形頂點看向原點
+            const aspect = container.clientWidth / container.clientHeight;
+            camera = new THREE.PerspectiveCamera(2, aspect, 0.1, 1000); // 15度視角 = 長焦
+            camera.position.set(-57, 180, 190); // 調整位置以適應更大的佈局，初始X為-57（-50-7）
+            camera.lookAt(-7, 0, 0); // 初始看向x=-7的位置
+            
+            // 創建渲染器
+            renderer = new THREE.WebGLRenderer({ 
+                canvas: canvas,
+                antialias: true,
+                alpha: true,
+                preserveDrawingBuffer: false
+            });
+            renderer.setSize(container.clientWidth, container.clientHeight);
+            renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2)); // 限制像素比以避免性能問題
+            renderer.setClearColor(0xf0f0f0, 1);
+            
+            // 添加環境光
+            const ambientLight = new THREE.AmbientLight(0xffffff, 0.6);
+            scene.add(ambientLight);
+            
+            // 添加方向光
+            const directionalLight = new THREE.DirectionalLight(0xffffff, 0.8);
+            directionalLight.position.set(10, 10, 5);
+            scene.add(directionalLight);
+            
+            // 添加坐標軸
+            createAxes();
+            
+            // 創建boxes
+            createBoxes();
+            
+            // 創建底部bars
+            createBottomBars();
+            
+            // 初始化互動
+            initInteraction();
+            
+            // 初始化攝影機控制
+            initCameraControl();
+            
+            // 開始渲染循環
+            animate();
+        }
+        
+
+        
+        function createAxes() {
+            // 創建坐標軸
+            const axesHelper = new THREE.AxesHelper(3);
+            axesHelper.position.set(0, 0, 0); // 放在四個格子的中心
+            scene.add(axesHelper);
+        }
+        
+        function createBottomBars() {
+            // 定義每行的顏色
+            const rowColors = [
+                0xff0000, // A行 - 紅色
+                0x0000ff, // B行 - 藍色
+                0x61C93C, // C行 - 綠色
+                0xff00ff, // D行 - 紫色
+                0xE0C007  // E行 - 黃色
+            ];
+            
+            const barWidth = 20.6; // 寬度（覆蓋11列）
+            const barLength = 0.3; // 長度
+            const barHeight = 0.01; // 厚度
+            
+            // 創建每行的bar
+            for (let row = 0; row < 5; row++) {
+                const barGeometry = new THREE.BoxGeometry(barWidth, barHeight, barLength);
+                const barMaterial = new THREE.MeshLambertMaterial({ 
+                    color: rowColors[row],
+                    transparent: true,
+                    opacity: 1
+                });
+                
+                const bar = new THREE.Mesh(barGeometry, barMaterial);
+                // 計算每行的z位置
+                const zPos = -4.4 + row * 2.2; // 從-4.4開始，每行間隔2.2
+                bar.position.set(0, 0, zPos);
+                scene.add(bar);
+            }
+        }
+        
+        function createBoxes() {
+            const boxWidth = 2;
+            const defaultBoxHeight = 0.4;
+            const qBoxHeight = 0.9;
+            const boxDepth = 2;
+            const spacing = 0.2;
+            
+            // 計算總寬度和總深度
+            const totalWidth = 11 * boxWidth + 10 * spacing;
+            const totalDepth = 5 * boxDepth + 4 * spacing;
+            
+            // 計算起始位置，使boxes居中
+            const startX = -totalWidth / 2 + boxWidth / 2;
+            const startZ = -totalDepth / 2 + boxDepth / 2;
+            
+            // 定義行名
+            const rowNames = ['A', 'B', 'C', 'D', 'E'];
+            
+            // 創建五行十一列的boxes
+            for (let row = 0; row < 5; row++) {
+                for (let col = 0; col < 11; col++) {
+                    // 決定高度
+                    let boxHeight = (col === 0) ? qBoxHeight : defaultBoxHeight;
+                    // 創建box幾何體
+                    const geometry = new THREE.BoxGeometry(boxWidth, boxHeight, boxDepth);
+                    
+                    // 創建材質 - 根據是否為固定box設置不同材質
+                    let material;
+                    if (col === 0) {
+                        // 第0列：淺色半透明
+                        material = new THREE.MeshLambertMaterial({
+                            color: 0xcccccc, // 淺灰色
+                            transparent: true,
+                            opacity: 0.85
+                        });
+                    } else if (col === 8 && (row === 3 || row === 4)) {
+                        // D8、E8：M4、M5，與第0列類似的顏色
+                        material = new THREE.MeshLambertMaterial({
+                            color: 0xb8b8b8, // 比第0列深一些的灰色
+                            transparent: true,
+                            opacity: 0.85
+                        });
+                    } else if ((col === 9 || col === 10) && (row === 3 || row === 4)) {
+                        // D9、D10、E9、E10：空白透明
+                        material = new THREE.MeshLambertMaterial({
+                            color: 0xffffff, // 白色
+                            transparent: true,
+                            opacity: 0.1 // 幾乎透明
+                        });
+                    } else if (col === 9 && (row === 0 || row === 1 || row === 2)) {
+                        // A9、B9、C9：普通可互動boxes
+                        material = new THREE.MeshLambertMaterial({
+                            color: 0xA1A1A1, // 淺灰色
+                            transparent: true,
+                            opacity: 1
+                        });
+                    } else if (col === 10) {
+                        // 第10列：M1-M3，與第0列類似的顏色
+                        material = new THREE.MeshLambertMaterial({
+                            color: 0xb8b8b8, // 比第0列深一些的灰色
+                            transparent: true,
+                            opacity: 0.85
+                        });
+                    } else if (col === 3 && row < 3) {
+                        // A3、B3、C3：淡紅色（與level4一致）
+                        material = new THREE.MeshLambertMaterial({
+                            color: 0xFA6D3E, // 淡紅色
+                            transparent: true,
+                            opacity: 1
+                        });
+                    } else if ((row === 3 && (col === 1 || col === 2 || col === 3)) || 
+                               (row === 4 && (col === 1 || col === 2 || col === 3)) ||
+                               (col === 8 && (row === 0 || row === 1 || row === 2))) {
+                        // D1、D2、D3和E1、E2、E3，以及A8、B8、C8：淺灰色
+                        material = new THREE.MeshLambertMaterial({
+                            color: 0xA1A1A1, // 淺灰色
+                            transparent: true,
+                            opacity: 1
+                        });
+                    } else {
+                        // 其他boxes：深灰色不透明
+                        material = new THREE.MeshLambertMaterial({
+                            color: 0x808080,
+                            transparent: true,
+                            opacity: 1
+                        });
+                    }
+                    
+                    // 創建mesh
+                    const box = new THREE.Mesh(geometry, material);
+                    
+                    // 計算位置
+                    const x = startX + col * (boxWidth + spacing);
+                    const y = boxHeight / 2; // 讓box底部貼地
+                    const z = startZ + row * (boxDepth + spacing);
+                    
+                    box.position.set(x, y, z);
+                    
+                    // 創建邊線並作為box的子物件
+                    const edges = new THREE.EdgesGeometry(geometry);
+                    let lineMaterial;
+                    if ((col === 9 || col === 10) && (row === 3 || row === 4)) {
+                        // D9、D10、E9、E10使用透明邊線
+                        lineMaterial = new THREE.LineBasicMaterial({ 
+                            color: 0x000000,
+                            transparent: true,
+                            opacity: 0.1 // 幾乎透明
+                        });
+                    } else {
+                        // 其他boxes使用正常邊線
+                        lineMaterial = new THREE.LineBasicMaterial({ color: 0x000000 });
+                    }
+                    const wireframe = new THREE.LineSegments(edges, lineMaterial);
+                    box.add(wireframe); // 作為子物件添加到box
+                    
+                    // 創建位置標籤（右上角）並作為box的子物件
+                    const positionLabel = createLabel(`${rowNames[row]}${col}`);
+                    positionLabel.position.set(boxWidth/2 - 0.3, boxHeight/2 + 0.01, -boxDepth/2 + 0.3);
+                    box.add(positionLabel); // 作為子物件添加到box
+                    
+                    // 創建狀態標籤（頂面中央）並作為box的子物件
+                    let centerText = "I";
+                    let isFixedI = false;
+                    if (col === 0) {
+                        // 第0列使用Q1-Q5
+                        centerText = `Q${row + 1}`;
+                    } else if (col === 8 && (row === 3 || row === 4)) {
+                        // D8、E8使用M4、M5
+                        centerText = row === 3 ? "M4" : "M5";
+                    } else if ((col === 9 || col === 10) && (row === 3 || row === 4)) {
+                        // D9、D10、E9、E10空白
+                        centerText = "";
+                    } else if (col === 9 && (row === 0 || row === 1 || row === 2)) {
+                        // A9、B9、C9：σx和I的互動，默認顯示"I"
+                        centerText = "I";
+                        isFixedI = false; // A9、B9、C9的I字體為淺灰色，和其他可互動I一樣
+                    } else if (col === 10) {
+                        // 第10列：M1-M3
+                        centerText = `M${row + 1}`;
+                    } else if (col === 3) {
+                        // 第3列（A3、B3、C3）使用σxⁱ、σxʲ、σxᵏ
+                        if (row === 0) {
+                            centerText = "σxⁱ";
+                        } else if (row === 1) {
+                            centerText = "σxʲ";
+                        } else if (row === 2) {
+                            centerText = "σxᵏ";
+                        } else {
+                            centerText = "I"; // D3、E3保持為I
+                            isFixedI = true; // D3、E3的I是固定的
+                        }
+                    } else if ((row === 3 && (col === 1 || col === 2 || col === 3)) || 
+                               (row === 4 && (col === 1 || col === 2 || col === 3)) ||
+                               (col === 8 && (row === 0 || row === 1 || row === 2))) {
+                        // D1、D2、D3和E1、E2、E3，以及A8、B8、C8固定為"I"
+                        centerText = "I";
+                        isFixedI = true;
+                    }
+                    const stateLabel = createLabel(centerText, isFixedI);
+                    stateLabel.position.set(0, boxHeight/2 + 0.02, 0);
+                    stateLabel.rotation.x = -Math.PI / 2; // 旋轉90度平貼在頂面
+                    box.add(stateLabel); // 作為子物件添加到box
+                    
+                    // 添加用戶數據
+                    box.userData = { 
+                        state: centerText, // 使用實際顯示的文字作為狀態
+                        wireframe: wireframe,
+                        positionLabel: positionLabel,
+                        stateLabel: stateLabel,
+                        isFixed: col === 0 || col === 10 || 
+                                ((row === 3 && (col === 1 || col === 2 || col === 3)) || 
+                                 (row === 4 && (col === 1 || col === 2 || col === 3))) || 
+                                (col === 3 && (row === 3 || row === 4)) || 
+                                (col === 3 && row < 3) || 
+                                (col === 8 && (row === 3 || row === 4)) ||
+                                (col === 8 && (row === 0 || row === 1 || row === 2)), // 第0列、第10列、D1D2D3、E1E2E3、D3、E3、A3、B3、C3、D8、E8、A8、B8、C8為固定不可互動（A9B9C9可互動）
+                        boxHeight: boxHeight
+                    };
+                    
+                    // 只添加box到場景和boxes數組
+                    scene.add(box);
+                    boxes.push(box);
+                }
+            }
+        }
+        
+        function createLabel(text, isFixedI = false) {
+            // 創建Canvas來繪製文字
+            const canvas = document.createElement('canvas');
+            const context = canvas.getContext('2d');
+            canvas.width = 256;
+            canvas.height = 256;
+            
+            // 清除Canvas背景，確保透明
+            context.clearRect(0, 0, canvas.width, canvas.height);
+            
+            // 如果text為空，創建完全透明的標籤
+            if (!text || text === '') {
+                const texture = new THREE.CanvasTexture(canvas);
+                texture.premultiplyAlpha = false;
+                texture.generateMipmaps = false;
+                texture.minFilter = THREE.LinearFilter;
+                texture.magFilter = THREE.LinearFilter;
+                
+                const material = new THREE.MeshBasicMaterial({
+                    map: texture,
+                    transparent: true,
+                    opacity: 0, // 完全透明
+                    side: THREE.DoubleSide,
+                    depthWrite: false,
+                    depthTest: false
+                });
+                
+                const geometry = new THREE.PlaneGeometry(0.8, 0.8);
+                const label = new THREE.Mesh(geometry, material);
+                label.rotation.x = -Math.PI / 2;
+                return label;
+            }
+            
+            // 判斷是否為狀態標籤（I、H、•、⨁、Q1-Q5、M1-M5、σxⁱ、σxʲ、σxᵏ、σx）
+            const isStateLabel = text === 'I' || text === 'H' || text === '•' || text === '⨁' || 
+                                text.match(/^Q[1-5]$/) || text.match(/^M[1-5]$/) || 
+                                text === 'σxⁱ' || text === 'σxʲ' || text === 'σxᵏ' || text === 'σx';
+            
+            // 設置文字樣式
+            if (isStateLabel) {
+                if (text.match(/^Q[1-5]$/) || text.match(/^M[1-5]$/)) {
+                    // Q1-Q5、M1-M5：深色
+                    context.fillStyle = '#333333'; // 深灰色
+                } else if (text === 'σxⁱ' || text === 'σxʲ' || text === 'σxᵏ' || text === 'σx') {
+                    // σxⁱ、σxʲ、σxᵏ、σx：深色
+                    context.fillStyle = '#333333'; // 深灰色
+                } else if (text === 'I' && isFixedI) {
+                    // 固定的I：黑色（用於D1D2D3、E1E2E3的固定I）
+                    context.fillStyle = '#000000'; // 黑色
+                } else if (text === 'I') {
+                    // 可互動的I：淺色
+                    context.fillStyle = '#E0E0E0'; // 淺灰色
+                } else {
+                    // H、•、⨁：淺色
+                    context.fillStyle = '#E0E0E0'; // 淺灰色
+                }
+                context.font = 'bold 180px Georgia';
+            } else {
+                // 位置標籤：根據內容設置顏色
+                if (text.match(/^[A-E]0$/)) {
+                    // A0-E0：根據行設置顏色
+                    const rowColors = {
+                        'A0': '#ff0000', // 紅色
+                        'B0': '#0000ff', // 藍色
+                        'C0': '#61C93C', // 綠色
+                        'D0': '#ff00ff', // 紫色
+                        'E0': '#E0C007'  // 黃色
+                    };
+                    context.fillStyle = rowColors[text] || '#000000';
+                } else {
+                    context.fillStyle = '#000000'; // 其他位置標籤保持黑色
+                }
+                context.font = 'bold 100px Arial';
+            }
+            
+            context.textAlign = 'center';
+            context.textBaseline = 'middle';
+            
+            // 繪製文字
+            context.fillText(text, canvas.width / 2, canvas.height / 2);
+            
+            // 創建材質 - 啟用透明通道並優化渲染
+            const texture = new THREE.CanvasTexture(canvas);
+            texture.premultiplyAlpha = false;
+            texture.generateMipmaps = false; // 禁用mipmap以減少閃爍
+            texture.minFilter = THREE.LinearFilter; // 使用線性過濾
+            texture.magFilter = THREE.LinearFilter;
+            
+            const material = new THREE.MeshBasicMaterial({
+                map: texture,
+                transparent: true,
+                alphaTest: 0.1, // 設置alpha測試閾值
+                side: THREE.DoubleSide,
+                depthWrite: false, // 禁用深度寫入以避免z-fighting
+                depthTest: false // 禁用深度測試以避免閃爍
+            });
+            
+            // 創建平面幾何體作為標籤
+            const geometry = new THREE.PlaneGeometry(0.8, 0.8);
+            const label = new THREE.Mesh(geometry, material);
+            
+            // 讓標籤朝向Y方向（垂直向上）
+            label.rotation.x = -Math.PI / 2; // 旋轉90度，讓標籤垂直向上
+            
+            return label;
+        }
+        
+
+        
+        function animate() {
+            animationId = requestAnimationFrame(animate);
+            
+            // 優化渲染以避免文字閃爍
+            renderer.autoClear = false;
+            renderer.clear();
+            renderer.render(scene, camera);
+        }
+        
+        function initInteraction() {
+            // 初始化射線檢測器和滑鼠
+            raycaster = new THREE.Raycaster();
+            mouse = new THREE.Vector2();
+            
+            // 添加點擊事件監聽器
+            const canvas = document.getElementById('game-canvas');
+            canvas.addEventListener('click', onMouseClick);
+        }
+        
+        // 初始化攝影機控制
+        function initCameraControl() {
+            const slider = document.getElementById('camera-slider');
+            const control = document.getElementById('camera-control');
+            const label = document.getElementById('camera-label');
+            
+            // 設置初始滑塊位置（對應cameraX = -7）
+            const initialSliderPosition = 50 + (cameraX / 0.26); // 將cameraX映射回滑塊位置
+            slider.style.left = initialSliderPosition + '%';
+            label.textContent = `Camera X: ${Math.round(cameraX)}`;
+            
+            // 滑塊拖拽事件
+            slider.addEventListener('mousedown', function(e) {
+                e.preventDefault();
+                isDragging = true;
+                dragStartX = e.clientX;
+                sliderStartX = parseFloat(slider.style.left) || initialSliderPosition;
+                
+                // 添加拖拽樣式
+                slider.style.cursor = 'grabbing';
+            });
+            
+            // 滑塊拖拽移動
+            document.addEventListener('mousemove', function(e) {
+                if (!isDragging) return;
+                
+                const deltaX = e.clientX - dragStartX;
+                const controlRect = control.getBoundingClientRect();
+                const controlWidth = controlRect.width;
+                const sliderWidth = 20;
+                
+                // 計算新的滑塊位置
+                let newLeft = sliderStartX + (deltaX / controlWidth) * 100;
+                newLeft = Math.max(0, Math.min(100, newLeft)); // 限制在0-100範圍內
+                
+                // 更新滑塊位置
+                slider.style.left = newLeft + '%';
+                
+                // 計算攝影機X位置 (-13 到 13)
+                cameraX = (newLeft - 50) * 0.26; // 將0-100映射到-13到13
+                
+                // 更新攝影機位置
+                updateCameraPosition();
+                
+                // 更新標籤
+                label.textContent = `Camera X: ${Math.round(cameraX)}`;
+            });
+            
+            // 滑塊拖拽結束
+            document.addEventListener('mouseup', function() {
+                if (isDragging) {
+                    isDragging = false;
+                    slider.style.cursor = 'grab';
+                }
+            });
+            
+            // 控制條點擊事件（直接跳轉到點擊位置）
+            control.addEventListener('click', function(e) {
+                if (e.target === slider) return; // 如果點擊的是滑塊，不處理
+                
+                const controlRect = control.getBoundingClientRect();
+                const clickX = e.clientX - controlRect.left;
+                const controlWidth = controlRect.width;
+                
+                // 計算新的滑塊位置
+                let newLeft = (clickX / controlWidth) * 100;
+                newLeft = Math.max(0, Math.min(100, newLeft));
+                
+                // 更新滑塊位置
+                slider.style.left = newLeft + '%';
+                
+                // 計算攝影機X位置 (-13 到 13)
+                cameraX = (newLeft - 50) * 0.26;
+                
+                // 更新攝影機位置
+                updateCameraPosition();
+                
+                // 更新標籤
+                label.textContent = `Camera X: ${Math.round(cameraX)}`;
+            });
+        }
+        
+        // 更新攝影機位置
+        function updateCameraPosition() {
+            if (camera) {
+                // 保持Y和Z位置不變，只更新X位置
+                camera.position.x = -50 + cameraX;
+                camera.position.y = 180; // 保持原始Y位置
+                camera.position.z = 190; // 保持原始Z位置
+                // 讓攝影機看向與自己相同X軸位置，但Y和Z保持原點
+                camera.lookAt(cameraX, 0, 0);
+            }
+        }
+        
+        function onMouseClick(event) {
+            const canvas = document.getElementById('game-canvas');
+            const rect = canvas.getBoundingClientRect();
+            
+            // 計算滑鼠在畫布中的標準化座標
+            mouse.x = ((event.clientX - rect.left) / rect.width) * 2 - 1;
+            mouse.y = -((event.clientY - rect.top) / rect.height) * 2 + 1;
+            
+            // 更新射線
+            raycaster.setFromCamera(mouse, camera);
+            
+            // 檢測與 boxes 的相交
+            const intersects = raycaster.intersectObjects(boxes);
+            
+            if (intersects.length > 0) {
+                const clickedBox = intersects[0].object;
+                // 檢查是否為固定box，如果是則不執行點擊效果
+                if (!clickedBox.userData.isFixed) {
+                    changeBoxColor(clickedBox);
+                }
+            }
+        }
+        
+        function changeBoxColor(box) {
+            // 檢查是否為A9、B9、C9（σx和I的互動）
+            const boxIndex = boxes.indexOf(box);
+            const row = Math.floor(boxIndex / 11);
+            const col = boxIndex % 11;
+            const isA9B9C9 = col === 9 && (row === 0 || row === 1 || row === 2);
+            
+            if (isA9B9C9) {
+                // A9、B9、C9：只能有一個σx
+                if (box.userData.state === "I") {
+                    // 從 "I" 變成 "σx"，需要先將其他σx變成I
+                    // 找到A9、B9、C9中當前是σx的box
+                    const a9Box = boxes[0 * 11 + 9]; // A9
+                    const b9Box = boxes[1 * 11 + 9]; // B9
+                    const c9Box = boxes[2 * 11 + 9]; // C9
+                    
+                    // 將所有A9、B9、C9重置為I
+                    if (a9Box.userData.state === "σx") {
+                        a9Box.userData.state = "I";
+                        a9Box.material.color.setHex(0xA1A1A1);
+                        updateStateLabel(a9Box, "I");
+                    }
+                    if (b9Box.userData.state === "σx") {
+                        b9Box.userData.state = "I";
+                        b9Box.material.color.setHex(0xA1A1A1);
+                        updateStateLabel(b9Box, "I");
+                    }
+                    if (c9Box.userData.state === "σx") {
+                        c9Box.userData.state = "I";
+                        c9Box.material.color.setHex(0xA1A1A1);
+                        updateStateLabel(c9Box, "I");
+                    }
+                    
+                    // 將當前box設為σx
+                    box.userData.state = "σx";
+                    box.material.color.setHex(0xFA6D3E); // 淡紅色，與A3B3C3一致
+                    updateStateLabel(box, "σx");
+                } else {
+                    // 從 "σx" 變回 "I"
+                    box.userData.state = "I";
+                    box.material.color.setHex(0xA1A1A1); // 淺灰色
+                    updateStateLabel(box, "I");
+                }
+            } else {
+                // 其他boxes：按照 I → H → • → ⨁ 的順序循環
+                if (box.userData.state === "I") {
+                    // 從 "I" 變成 "H"
+                    box.userData.state = "H";
+                    box.material.color.setHex(0x3498db); // 藍色
+                    updateStateLabel(box, "H");
+                } else if (box.userData.state === "H") {
+                    // 從 "H" 變成 "•"
+                    box.userData.state = "•";
+                    box.material.color.setHex(0x808080); // 灰色，與I相同
+                    updateStateLabel(box, "•");
+                } else if (box.userData.state === "•") {
+                    // 從 "•" 變成 "⨁"
+                    box.userData.state = "⨁";
+                    box.material.color.setHex(0x808080); // 灰色，與I相同
+                    updateStateLabel(box, "⨁");
+                } else {
+                    // 從 "⨁" 變回 "I"
+                    box.userData.state = "I";
+                    box.material.color.setHex(0x808080); // 灰色
+                    updateStateLabel(box, "I");
+                }
+            }
+            
+            // 觸發果凍抖動特效
+            triggerJellyEffect(box);
+            
+            // 檢查CNOT gate規則並更新顏色
+            checkAndUpdateCNOTColors();
+        }
+        
+        function updateStateLabel(box, text) {
+            // 移除舊的狀態標籤
+            box.remove(box.userData.stateLabel);
+            
+            // 檢查是否為A9、B9、C9的I狀態
+            const boxIndex = boxes.indexOf(box);
+            const row = Math.floor(boxIndex / 11);
+            const col = boxIndex % 11;
+            const isA9B9C9 = col === 9 && (row === 0 || row === 1 || row === 2);
+            
+            // 判斷是否為固定I（黑色字體）
+            // 固定I包括：D1D2D3、E1E2E3、A8B8C8
+            const isFixedI = text === "I" && (
+                (row === 3 && (col === 1 || col === 2 || col === 3)) || // D1D2D3
+                (row === 4 && (col === 1 || col === 2 || col === 3)) || // E1E2E3
+                (row <= 2 && col === 8) // A8B8C8
+            );
+            
+            // 創建新的狀態標籤
+            const newStateLabel = createLabel(text, isFixedI);
+            newStateLabel.position.copy(box.userData.stateLabel.position);
+            newStateLabel.rotation.copy(box.userData.stateLabel.rotation);
+            
+            // 更新用戶數據
+            box.userData.stateLabel = newStateLabel;
+            
+            // 作為子物件添加到box
+            box.add(newStateLabel);
+        }
+        
+        function triggerJellyEffect(box) {
+            // 保存原始位置
+            const originalY = box.position.y;
+            
+            // 抖動參數
+            const duration = 700; // 0.7秒
+            const amplitude = 0.15; // 抖動幅度
+            const frequency = 9; // 抖動頻率
+            const startTime = Date.now();
+            
+            function jellyAnimation() {
+                const elapsed = Date.now() - startTime;
+                const progress = elapsed / duration;
+                
+                if (progress < 1) {
+                    // 使用衰減的正弦波創建果凍效果
+                    const decay = Math.exp(-progress * 3); // 衰減因子
+                    const oscillation = Math.sin(progress * frequency * Math.PI) * decay;
+                    
+                    // 只有上下抖動，不改變大小
+                    box.position.y = originalY + oscillation * amplitude;
+                    
+                    requestAnimationFrame(jellyAnimation);
+                } else {
+                    // 恢復原始位置
+                    box.position.y = originalY;
+                }
+            }
+            
+            jellyAnimation();
+        }
+        
+        // Q1-Q5描述子狀態
+        let q1Left = 'X1', q1Right = 'Z1';
+        let q2Left = 'X2', q2Right = 'Z2';
+        let q3Left = 'X3', q3Right = 'Z3';
+        let q4Left = 'X4', q4Right = 'Z4';
+        let q5Left = 'X5', q5Right = 'Z5';
+        
+        // 隨機生成的i、j、k值（用於σxⁱ、σxʲ、σxᵏ運算）
+        let randomI = 0;
+        let randomJ = 0;
+        let randomK = 0;
+        
+        // 提示方框控制變數
+        let correctionPopupShown = false; // 追蹤提示是否已經顯示過
+        
+        // 成功特效控制變數
+        let hasTriggeredCelebration = false;
+        let hasCheckedAfterM1M2M3 = false; // 追蹤是否在M1M2M3發光後已經點擊過Check
+        let hasCheckedOnce = false; // 追蹤是否已經點擊過Check（防止重複點擊）
+        let successCount = 0; // 累積成功次數
+        let hasShownTsundereModal = false; // 追蹤是否已經顯示過傲嬌提示
+        
+        // 更新時間步顯示
+        function updateTimeStepDisplay() {
+            const timeStepDisplay = document.getElementById('time-step-display');
+            if (timeStepDisplay) {
+                timeStepDisplay.textContent = `t = ${t}`;
+            }
+        }
+        
+        // 生成符合要求的ijk隨機數
+        function generateIJKRandom() {
+            // 生成0-3的隨機數，對應4種情況
+            const randomValue = Math.floor(Math.random() * 4); // 0, 1, 2, 3
+            
+            switch (randomValue) {
+                case 0:
+                    // 全部都是0，機率1/4
+                    randomI = 0;
+                    randomJ = 0;
+                    randomK = 0;
+                    break;
+                case 1:
+                    // 只有i=1，機率1/4
+                    randomI = 1;
+                    randomJ = 0;
+                    randomK = 0;
+                    break;
+                case 2:
+                    // 只有j=1，機率1/4
+                    randomI = 0;
+                    randomJ = 1;
+                    randomK = 0;
+                    break;
+                case 3:
+                    // 只有k=1，機率1/4
+                    randomI = 0;
+                    randomJ = 0;
+                    randomK = 1;
+                    break;
+            }
+            
+            console.log(`生成ijk隨機數：i=${randomI}, j=${randomJ}, k=${randomK}`);
+        }
+        
+        // 更新隨機值顯示
+        function updateRandomValuesDisplay() {
+            const randomIElement = document.getElementById('random-i');
+            const randomJElement = document.getElementById('random-j');
+            const randomKElement = document.getElementById('random-k');
+            
+            if (randomIElement) {
+                randomIElement.textContent = randomI;
+            }
+            if (randomJElement) {
+                randomJElement.textContent = randomJ;
+            }
+            if (randomKElement) {
+                randomKElement.textContent = randomK;
+            }
+        }
+        
+        // 顯示提示方框
+        function showCorrectionPopup() {
+            if (!correctionPopupShown) {
+                const popup = document.getElementById('correction-popup');
+                if (popup) {
+                    popup.style.display = 'flex';
+                    correctionPopupShown = true;
+                }
+            }
+        }
+        
+        // 關閉提示方框
+        function closeCorrectionPopup() {
+            const popup = document.getElementById('correction-popup');
+            if (popup) {
+                popup.style.display = 'none';
+            }
+        }
+        
+        // Check按鈕功能
+        function checkAnswer() {
+            console.log('Check button clicked!');
+            
+            // 檢查是否在M1M2M3觸發後點擊Check（t=10時M1M2M3才觸發）
+            if (t >= 10) {
+                // 如果已經觸發過成功特效，顯示傲嬌提示
+                if (hasTriggeredCelebration) {
+                    console.log('Success celebration already triggered in this simulation');
+                    showTsundereModal();
+                    return;
+                }
+                
+                // 檢查期望值是否正確
+                const isSuccess = checkExpectationValues();
+                
+                if (isSuccess) {
+                    hasTriggeredCelebration = true;
+                    successCount++;
+                    setTimeout(() => {
+                        if (window.confetti) {
+                            confetti({
+                                particleCount: 120,
+                                spread: 90,
+                                origin: { y: 0.7 }
+                            });
+                        }
+                        // 只有在 successCount <= 5 時才顯示成功提示方框
+                        if (successCount <= 5) {
+                            showSuccessModal();
+                        }
+                    }, 200);
+                } else {
+                    // 答錯時顯示失敗提示方框（不重置成功次數，不累積失敗）
+                    showFailureModal();
+                }
+                
+                // 重新激活M1、M2、M3的發光效果
+                setTimeout(() => {
+                    reactivateM1M2M3Glow(); // 重新為M1、M2、M3添加發光效果
+                }, 100);
+                
+            } else if (t === 9) {
+                // t=9時，M1M2M3還沒觸發，顯示等待提示
+                showWaitingModal();
+            } else if (t < 9) {
+                // 如果還沒到M1M2M3發光，顯示特殊提示
+                showEarlyModal();
+            }
+        }
+        
+        // 檢查期望值是否正確
+        function checkExpectationValues() {
+            // 檢查Q1、Q2、Q3的期望值是否都為 Exc.X = 0, Exc.Z = 1
+            const q1ExpectElem = document.querySelector('.expectation-panel .monitor-block:nth-child(1) .content p');
+            const q2ExpectElem = document.querySelector('.expectation-panel .monitor-block:nth-child(2) .content p');
+            const q3ExpectElem = document.querySelector('.expectation-panel .monitor-block:nth-child(3) .content p');
+            
+            if (!q1ExpectElem || !q2ExpectElem || !q3ExpectElem) {
+                console.log('期望值元素未找到');
+                return false;
+            }
+            
+            // 提取期望值
+            const q1Text = q1ExpectElem.innerHTML;
+            const q2Text = q2ExpectElem.innerHTML;
+            const q3Text = q3ExpectElem.innerHTML;
+            
+            console.log('Q1期望值:', q1Text);
+            console.log('Q2期望值:', q2Text);
+            console.log('Q3期望值:', q3Text);
+            
+            // 使用更寬鬆的檢查方式，只要包含正確的數值即可
+            const q1Correct = q1Text.includes('>0<') && q1Text.includes('>1<');
+            const q2Correct = q2Text.includes('>0<') && q2Text.includes('>1<');
+            const q3Correct = q3Text.includes('>0<') && q3Text.includes('>1<');
+            
+            console.log('Q1正確:', q1Correct, 'Q2正確:', q2Correct, 'Q3正確:', q3Correct);
+            
+            return q1Correct && q2Correct && q3Correct;
+        }
+        
+        // 顯示失敗提示方框
+        function showFailureModal() {
+            createModal('❌ Wrong Expectation Values!', 'Please Try Again! My Friend.', '#f44336');
+        }
+        
+        // 顯示早期提示方框（還沒到檢查時機）
+        function showEarlyModal() {
+            createModal('⏰ Not the right time!', 'Wait until t=10 when M1, M2, M3 are active!', '#FF9800');
+        }
+        
+        // 顯示等待提示方框（M1M2M3還沒觸發）
+        function showWaitingModal() {
+            createModal('⏳ Almost there!', 'M1, M2, M3 will be active at t=10. Run one more step!', '#2196F3');
+        }
+        
+        // 顯示傲嬌提示方框
+        function showTsundereModal() {
+            // 如果已經顯示過傲嬌提示，直接返回
+            if (hasShownTsundereModal) {
+                return;
+            }
+            
+            // 如果 successCount > 5，不顯示任何提示
+            if (successCount > 5) {
+                return;
+            }
+            
+            hasShownTsundereModal = true;
+            
+            if (successCount >= 5) {
+                createModal('😤 Fine, fine. I get it.', 'You\'re the best, alright.', '#4CAF50');
+            } else if (successCount >= 4) {
+                createModal('Tch! Final chance!', 'I\'m waiting for your mistake.', '#FF6B35');
+            } else if (successCount >= 3) {
+                createModal('😤 Hmph, show me what you\'ve got!', 'I\'m dying to see you mess up.', '#FF6B35');
+            } else {
+                createModal('😒 Try Again.', 'Prove to me you\'re not guessing.', '#FF9800');
+            }
+        }
+        
+        // 顯示成功提示方框（傲嬌版本）
+        function showSuccessModal() {
+            let title, message, color;
+            
+            switch (successCount) {
+                case 1:
+                    title = '🎉 Congrats! But who knows if you just got a lucky guess?🙄';
+                    message = '1/5✅ ';
+                    color = '#FF9800';
+                    break;
+                case 2:
+                    title = '😒 Tch! Twice correct?! You\'re annoyingly lucky.';
+                    message = '2/5✅ ✅ ';
+                    color = '#FF9800';
+                    break;
+                case 3:
+                    title = '😤 Hump, no more than three! You\'ll definitely mess up next time.';
+                    message = '3/5✅ ✅ ✅ ';
+                    color = '#FF9800';
+                    break;
+                case 4:
+                    title = '🤨 Just some clever little tricks! Guess I underestimated you.';
+                    message = '4/5✅ ✅ ✅ ✅ ';
+                    color = '#FF9800';
+                    break;
+                case 5:
+                    title = '😮‍💨 Alright, I\'ll admit—you\'ve got some brains';
+                    message = 'You\'ve mastered this challenge!👑';
+                    color = '#4CAF50';
+                    break;
+                default:
+                    if (successCount > 5) {
+                        title = '😤 You\'re still going?! Fine, you\'re unstoppable!';
+                        message = `${successCount}/5 - You\'ve mastered this beyond perfection!👑`;
+                        color = '#9C27B0'; // 紫色，表示超越完美
+                    } else {
+                        title = '🎉 Congrats! But who knows if you just got a lucky guess?';
+                        message = `${successCount}/5`;
+                        color = '#FF9800';
+                    }
+                    break;
+            }
+            
+            createModal(title, message, color);
+        }
+        
+        // 通用創建提示方框函數
+        function createModal(title, message, color) {
+            // 創建遮罩層
+            const overlay = document.createElement('div');
+            overlay.id = 'failure-overlay';
+            overlay.style.cssText = `
+                position: fixed;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 100%;
+                background: rgba(0, 0, 0, 0.7);
+                z-index: 1000;
+                display: flex;
+                justify-content: center;
+                align-items: center;
+            `;
+            
+            // 創建提示方框
+            const modal = document.createElement('div');
+            modal.style.cssText = `
+                background: white;
+                padding: 30px;
+                border-radius: 10px;
+                text-align: center;
+                box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+                max-width: 400px;
+                cursor: pointer;
+                transition: transform 0.2s;
+            `;
+            
+            modal.innerHTML = `
+                <h3 style="color: ${color}; margin-bottom: 15px; font-size: 20px;">${title}</h3>
+                <p style="color: #333; margin-bottom: 20px; font-size: 16px;">${message}</p>
+            `;
+            
+            // 點擊方框時關閉
+            modal.addEventListener('click', () => {
+                document.body.removeChild(overlay);
+            });
+            
+            // 添加hover效果
+            modal.addEventListener('mouseenter', () => {
+                modal.style.transform = 'scale(1.05)';
+            });
+            
+            modal.addEventListener('mouseleave', () => {
+                modal.style.transform = 'scale(1)';
+            });
+            
+            overlay.appendChild(modal);
+            document.body.appendChild(overlay);
+        }
+
+        // Run 按鈕功能
+        function runSimulation() {
+            console.log('Simulation started!');
+            
+            // 檢查每一列是否有多組CNOT gate
+            const cnotCheck = checkCNOTGateCount();
+            if (!cnotCheck.isValid) {
+                console.log(`Multiple CNOT gates detected in column ${cnotCheck.column}! Showing error...`);
+                showMultipleCNOTError(cnotCheck.column, cnotCheck.controlCount, cnotCheck.targetCount);
+                return; // 阻止模擬運行
+            }
+            
+            // 檢查是否有無效的CNOT gate
+            if (checkInvalidCNOTGates()) {
+                console.log('Invalid CNOT gate detected! Showing error...');
+                showErrorEffect();
+                return; // 阻止模擬運行
+            }
+            
+            if (t >= 10) {
+                console.log('Simulation completed, cannot run further');
+                return;
+            }
+            
+            t++;
+            updateTimeStepDisplay(); // 更新時間步顯示
+            addGlowEffectToColumn(t);
+
+            // CNOT descriptor 運算
+            executeCNOTLogicForColumn(t);
+
+            // 檢查每行當前t列box狀態
+            for (let row = 0; row < 5; row++) {
+                const box = boxes[row * 11 + t]; // 每行第t列的box
+                if (box.userData.state === 'H') {
+                    // 根據行數更新對應的Q描述子
+                    switch(row) {
+                        case 0: [q1Left, q1Right] = [q1Right, q1Left]; break;
+                        case 1: [q2Left, q2Right] = [q2Right, q2Left]; break;
+                        case 2: [q3Left, q3Right] = [q3Right, q3Left]; break;
+                        case 3: [q4Left, q4Right] = [q4Right, q4Left]; break;
+                        case 4: [q5Left, q5Right] = [q5Right, q5Left]; break;
+                    }
+                } else if (box.userData.state === 'σxⁱ' && row === 0) {
+                    // A3的σxⁱ邏輯：Q1 = (left, (-1)^i right)
+                    // 生成符合要求的ijk隨機數
+                    generateIJKRandom();
+                    console.log(`A3 σxⁱ發光，隨機選擇：i=${randomI}, j=${randomJ}, k=${randomK}`);
+                    if (q1Right.startsWith('X')) {
+                        q1Right = '(-1)^(i)X' + q1Right.substring(1);
+                    } else if (q1Right.startsWith('Z')) {
+                        q1Right = '(-1)^(i)Z' + q1Right.substring(1);
+                    }
+                } else if (box.userData.state === 'σxʲ' && row === 1) {
+                    // B3的σxʲ邏輯：Q2 = (left, (-1)^j right)
+                    // 生成符合要求的ijk隨機數
+                    generateIJKRandom();
+                    console.log(`B3 σxʲ發光，隨機選擇：i=${randomI}, j=${randomJ}, k=${randomK}`);
+                    if (q2Right.startsWith('X')) {
+                        q2Right = '(-1)^(j)X' + q2Right.substring(1);
+                    } else if (q2Right.startsWith('Z')) {
+                        q2Right = '(-1)^(j)Z' + q2Right.substring(1);
+                    }
+                } else if (box.userData.state === 'σxᵏ' && row === 2) {
+                    // C3的σxᵏ邏輯：Q3 = (left, (-1)^k right)
+                    // 生成符合要求的ijk隨機數
+                    generateIJKRandom();
+                    console.log(`C3 σxᵏ發光，隨機選擇：i=${randomI}, j=${randomJ}, k=${randomK}`);
+                    if (q3Right.startsWith('X')) {
+                        q3Right = '(-1)^(k)X' + q3Right.substring(1);
+                    } else if (q3Right.startsWith('Z')) {
+                        q3Right = '(-1)^(k)Z' + q3Right.substring(1);
+                    }
+                } else if (box.userData.state === 'σx' && row === 0 && t === 9) {
+                    // A9的σx邏輯：Q1 = (left, -right)
+                    console.log(`A9 σx發光，Q1右側變負號`);
+                    if (q1Right.startsWith('(-1)^(i)')) {
+                        q1Right = '-(-1)^(i)' + q1Right.substring(8);
+                    } else if (q1Right.startsWith('(-1)^(j)')) {
+                        q1Right = '-(-1)^(j)' + q1Right.substring(8);
+                    } else if (q1Right.startsWith('(-1)^(k)')) {
+                        q1Right = '-(-1)^(k)' + q1Right.substring(8);
+                    } else if (q1Right.startsWith('X')) {
+                        q1Right = '-X' + q1Right.substring(1);
+                    } else if (q1Right.startsWith('Z')) {
+                        q1Right = '-Z' + q1Right.substring(1);
+                    }
+                } else if (box.userData.state === 'σx' && row === 1 && t === 9) {
+                    // B9的σx邏輯：Q2 = (left, -right)
+                    console.log(`B9 σx發光，Q2右側變負號`);
+                    if (q2Right.startsWith('(-1)^(i)')) {
+                        q2Right = '-(-1)^(i)' + q2Right.substring(8);
+                    } else if (q2Right.startsWith('(-1)^(j)')) {
+                        q2Right = '-(-1)^(j)' + q2Right.substring(8);
+                    } else if (q2Right.startsWith('(-1)^(k)')) {
+                        q2Right = '-(-1)^(k)' + q2Right.substring(8);
+                    } else if (q2Right.startsWith('X')) {
+                        q2Right = '-X' + q2Right.substring(1);
+                    } else if (q2Right.startsWith('Z')) {
+                        q2Right = '-Z' + q2Right.substring(1);
+                    }
+                } else if (box.userData.state === 'σx' && row === 2 && t === 9) {
+                    // C9的σx邏輯：Q3 = (left, -right)
+                    console.log(`C9 σx發光，Q3右側變負號`);
+                    if (q3Right.startsWith('(-1)^(i)')) {
+                        q3Right = '-(-1)^(i)' + q3Right.substring(8);
+                    } else if (q3Right.startsWith('(-1)^(j)')) {
+                        q3Right = '-(-1)^(j)' + q3Right.substring(8);
+                    } else if (q3Right.startsWith('(-1)^(k)')) {
+                        q3Right = '-(-1)^(k)' + q3Right.substring(8);
+                    } else if (q3Right.startsWith('X')) {
+                        q3Right = '-X' + q3Right.substring(1);
+                    } else if (q3Right.startsWith('Z')) {
+                        q3Right = '-Z' + q3Right.substring(1);
+                    }
+                } else if (box.userData.state === 'M4' && row === 3 && t === 8) {
+                    // D8的M4邏輯：在t=8時發光
+                    console.log(`D8 M4發光`);
+                    // 顯示提示方框
+                    setTimeout(showCorrectionPopup, 500); // 延遲500ms顯示，讓發光效果先出現
+                } else if (box.userData.state === 'M5' && row === 4 && t === 8) {
+                    // E8的M5邏輯：在t=8時發光
+                    console.log(`E8 M5發光`);
+                    // 提示方框已經在M4發光時顯示了，這裡不需要重複顯示
+                } else if (box.userData.state === 'M1' && row === 0 && t === 10) {
+                    // A10的M1邏輯：在t=10時發光
+                    console.log(`A10 M1發光`);
+                } else if (box.userData.state === 'M2' && row === 1 && t === 10) {
+                    // B10的M2邏輯：在t=10時發光
+                    console.log(`B10 M2發光`);
+                } else if (box.userData.state === 'M3' && row === 2 && t === 10) {
+                    // C10的M3邏輯：在t=10時發光
+                    console.log(`C10 M3發光`);
+                }
+            }
+            updateDescriptor();
+            updateRandomValuesDisplay(); // 更新隨機值顯示
+
+            // 移除 t=10 時的 Check 功能，Run 按鈕保持原樣
+
+            if (t >= 10) {
+                const runButton = document.querySelector('.run-button');
+                runButton.disabled = true;
+                runButton.style.background = '#cccccc';
+                runButton.style.cursor = 'not-allowed';
+            }
+            console.log(`Time step: t = ${t}`);
+        }
+
+        // 更新monitor內的descriptor顯示
+        function updateDescriptor() {
+            const qStates = [
+                { left: q1Left, right: q1Right, num: 1 },
+                { left: q2Left, right: q2Right, num: 2 },
+                { left: q3Left, right: q3Right, num: 3 },
+                { left: q4Left, right: q4Right, num: 4 },
+                { left: q5Left, right: q5Right, num: 5 }
+            ];
+            
+            const colors = ['#ff0000', '#0000ff', '#61C93C', '#ff00ff', '#E0C007'];
+            
+            qStates.forEach((qState, index) => {
+                const elem = document.querySelector(`.descriptor-panel .monitor-block:nth-child(${index + 1}) .content p`);
+                if (elem) {
+                    let html = `Q${qState.num} = (<span>${qState.left}</span>,<span>${qState.right}</span>)`;
+                    
+                    // 為每個X和Z運算符添加顏色
+                    for (let i = 1; i <= 5; i++) {
+                        const color = colors[i - 1];
+                        html = html.replace(new RegExp(`X${i}|Z${i}`, 'g'), `<span style="color:${color};font-weight:bold;">$&</span>`);
+                    }
+                    
+                    // 為(-1)^(i)、(-1)^(j)、(-1)^(k)格式添加顏色
+                    html = html.replace(/\(-1\)\^\(i\)X\d|\(-1\)\^\(i\)Z\d/g, '<span style="color:#ff0000;font-weight:bold;">$&</span>')
+                               .replace(/\(-1\)\^\(j\)X\d|\(-1\)\^\(j\)Z\d/g, '<span style="color:#0000ff;font-weight:bold;">$&</span>')
+                               .replace(/\(-1\)\^\(k\)X\d|\(-1\)\^\(k\)Z\d/g, '<span style="color:#61C93C;font-weight:bold;">$&</span>')
+                               .replace(/-X\d|-Z\d/g, '<span style="color:#ff6600;font-weight:bold;">$&</span>') // A9、B9、C9的σx，橙色
+                               .replace(/-\(-1\)\^\(i\)X\d|-\(-1\)\^\(i\)Z\d/g, '<span style="color:#ff6600;font-weight:bold;">$&</span>') // -(-1)^(i)格式，橙色
+                               .replace(/-\(-1\)\^\(j\)X\d|-\(-1\)\^\(j\)Z\d/g, '<span style="color:#ff6600;font-weight:bold;">$&</span>') // -(-1)^(j)格式，橙色
+                               .replace(/-\(-1\)\^\(k\)X\d|-\(-1\)\^\(k\)Z\d/g, '<span style="color:#ff6600;font-weight:bold;">$&</span>'); // -(-1)^(k)格式，橙色
+                    
+                    elem.innerHTML = html;
+                }
+            });
+            
+            // 更新Expectation Values
+            updateExpectationValues();
+        }
+        
+        // 更新Expectation Values
+        function updateExpectationValues() {
+            const qStates = [
+                { left: q1Left, right: q1Right, num: 1 },
+                { left: q2Left, right: q2Right, num: 2 },
+                { left: q3Left, right: q3Right, num: 3 },
+                { left: q4Left, right: q4Right, num: 4 },
+                { left: q5Left, right: q5Right, num: 5 }
+            ];
+            
+            // 檢查M1-M5是否發光（t=8時M4、M5發光，t=10時M1-M3發光）
+            if (t < 8) {
+                // 如果還沒到M4、M5發光的時候，顯示等待狀態
+                qStates.forEach((qState, index) => {
+                    const elem = document.querySelector(`.expectation-panel .monitor-block:nth-child(${index + 1}) .content p`);
+                    if (elem) {
+                        elem.textContent = `Exc.X(Q${qState.num}) = ?,    Exc.Z(Q${qState.num}) = ?`;
+                    }
+                });
+                return;
+            }
+            
+            // 只有在M1-M5發光時才計算Expectation Values
+            // t=8時計算Q4、Q5，t=10時計算Q1、Q2、Q3，並保持Q4、Q5的結果
+            qStates.forEach((qState, index) => {
+                // 根據時間步決定是否計算該Q的期望值
+                if ((t === 8 || t === 9 || t === 10) && (index === 3 || index === 4)) {
+                    // t=8、t=9、t=10時都計算Q4、Q5（對應M4、M5）
+                    let excX = qState.left.includes('X') ? 0 : 1;
+                    let excZ = qState.right.includes('X') ? 0 : 1;
+                    
+                    // 處理(-1)^(i)、(-1)^(j)、(-1)^(k)格式，使用實際的i、j、k值
+                    // 處理左側descriptor
+                    let leftMultiplier = 1;
+                    // 優先處理 -(-1)^ 格式，避免重複計算
+                    if (qState.left.includes('-(-1)^(i)')) {
+                        leftMultiplier *= -1 * Math.pow(-1, randomI);
+                    } else if (qState.left.includes('(-1)^(i)')) {
+                        leftMultiplier *= Math.pow(-1, randomI);
+                    }
+                    if (qState.left.includes('-(-1)^(j)')) {
+                        leftMultiplier *= -1 * Math.pow(-1, randomJ);
+                    } else if (qState.left.includes('(-1)^(j)')) {
+                        leftMultiplier *= Math.pow(-1, randomJ);
+                    }
+                    if (qState.left.includes('-(-1)^(k)')) {
+                        leftMultiplier *= -1 * Math.pow(-1, randomK);
+                    } else if (qState.left.includes('(-1)^(k)')) {
+                        leftMultiplier *= Math.pow(-1, randomK);
+                    }
+                    if (qState.left.startsWith('-') && !qState.left.includes('(-1)^')) {
+                        leftMultiplier *= -1; // A9、B9、C9的σx，直接負號
+                    }
+                    excX = leftMultiplier * excX;
+                    
+                    // 處理右側descriptor
+                    let rightMultiplier = 1;
+                    // 優先處理 -(-1)^ 格式，避免重複計算
+                    if (qState.right.includes('-(-1)^(i)')) {
+                        rightMultiplier *= -1 * Math.pow(-1, randomI);
+                    } else if (qState.right.includes('(-1)^(i)')) {
+                        rightMultiplier *= Math.pow(-1, randomI);
+                    }
+                    if (qState.right.includes('-(-1)^(j)')) {
+                        rightMultiplier *= -1 * Math.pow(-1, randomJ);
+                    } else if (qState.right.includes('(-1)^(j)')) {
+                        rightMultiplier *= Math.pow(-1, randomJ);
+                    }
+                    if (qState.right.includes('-(-1)^(k)')) {
+                        rightMultiplier *= -1 * Math.pow(-1, randomK);
+                    } else if (qState.right.includes('(-1)^(k)')) {
+                        rightMultiplier *= Math.pow(-1, randomK);
+                    }
+                    if (qState.right.startsWith('-') && !qState.right.includes('(-1)^')) {
+                        rightMultiplier *= -1; // A9、B9、C9的σx，直接負號
+                    }
+                    excZ = rightMultiplier * excZ;
+                    
+                    const elem = document.querySelector(`.expectation-panel .monitor-block:nth-child(${index + 1}) .content p`);
+                    if (elem) {
+                        elem.innerHTML = `Exc.X(Q${qState.num}) = <strong><span style="background-color: yellow; padding: 2px 4px; border-radius: 3px;">${excX}</span></strong>,    Exc.Z(Q${qState.num}) = <strong><span style="background-color: yellow; padding: 2px 4px; border-radius: 3px;">${excZ}</span></strong>`;
+                    }
+                } else if (t === 10 && (index === 0 || index === 1 || index === 2)) {
+                    // t=10時計算Q1、Q2、Q3（對應A10、B10、C10的M1、M2、M3）
+                    let excX = qState.left.includes('X') ? 0 : 1;
+                    let excZ = qState.right.includes('X') ? 0 : 1;
+                    
+                    // 處理(-1)^(i)、(-1)^(j)、(-1)^(k)格式，使用實際的i、j、k值
+                    // 處理左側descriptor
+                    let leftMultiplier = 1;
+                    // 優先處理 -(-1)^ 格式，避免重複計算
+                    if (qState.left.includes('-(-1)^(i)')) {
+                        leftMultiplier *= -1 * Math.pow(-1, randomI);
+                    } else if (qState.left.includes('(-1)^(i)')) {
+                        leftMultiplier *= Math.pow(-1, randomI);
+                    }
+                    if (qState.left.includes('-(-1)^(j)')) {
+                        leftMultiplier *= -1 * Math.pow(-1, randomJ);
+                    } else if (qState.left.includes('(-1)^(j)')) {
+                        leftMultiplier *= Math.pow(-1, randomJ);
+                    }
+                    if (qState.left.includes('-(-1)^(k)')) {
+                        leftMultiplier *= -1 * Math.pow(-1, randomK);
+                    } else if (qState.left.includes('(-1)^(k)')) {
+                        leftMultiplier *= Math.pow(-1, randomK);
+                    }
+                    if (qState.left.startsWith('-') && !qState.left.includes('(-1)^')) {
+                        leftMultiplier *= -1; // A9、B9、C9的σx，直接負號
+                    }
+                    excX = leftMultiplier * excX;
+                    
+                    // 處理右側descriptor
+                    let rightMultiplier = 1;
+                    // 優先處理 -(-1)^ 格式，避免重複計算
+                    if (qState.right.includes('-(-1)^(i)')) {
+                        rightMultiplier *= -1 * Math.pow(-1, randomI);
+                    } else if (qState.right.includes('(-1)^(i)')) {
+                        rightMultiplier *= Math.pow(-1, randomI);
+                    }
+                    if (qState.right.includes('-(-1)^(j)')) {
+                        rightMultiplier *= -1 * Math.pow(-1, randomJ);
+                    } else if (qState.right.includes('(-1)^(j)')) {
+                        rightMultiplier *= Math.pow(-1, randomJ);
+                    }
+                    if (qState.right.includes('-(-1)^(k)')) {
+                        rightMultiplier *= -1 * Math.pow(-1, randomK);
+                    } else if (qState.right.includes('(-1)^(k)')) {
+                        rightMultiplier *= Math.pow(-1, randomK);
+                    }
+                    if (qState.right.startsWith('-') && !qState.right.includes('(-1)^')) {
+                        rightMultiplier *= -1; // A9、B9、C9的σx，直接負號
+                    }
+                    excZ = rightMultiplier * excZ;
+                    
+                    const elem = document.querySelector(`.expectation-panel .monitor-block:nth-child(${index + 1}) .content p`);
+                    if (elem) {
+                        elem.innerHTML = `Exc.X(Q${qState.num}) = <strong><span style="background-color: yellow; padding: 2px 4px; border-radius: 3px;">${excX}</span></strong>,    Exc.Z(Q${qState.num}) = <strong><span style="background-color: yellow; padding: 2px 4px; border-radius: 3px;">${excZ}</span></strong>`;
+                    }
+                } else if ((t === 8 || t === 9) && (index === 0 || index === 1 || index === 2)) {
+                    // t=8、t=9時Q1、Q2、Q3顯示等待狀態
+                    const elem = document.querySelector(`.expectation-panel .monitor-block:nth-child(${index + 1}) .content p`);
+                    if (elem) {
+                        elem.textContent = `Exc.X(Q${qState.num}) = ?,    Exc.Z(Q${qState.num}) = ?`;
+                    }
+                }
+            });
+            return;
+        }
+
+        // 為指定列的boxes添加發光效果
+        function addGlowEffectToColumn(columnIndex) {
+            boxes.forEach((box, index) => {
+                const row = Math.floor(index / 11); // 0, 1, 2, 3, 4
+                const col = index % 11; // 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10
+                
+                if (col === columnIndex) {
+                    // 為該列的boxes添加發光效果
+                    addGlowEffect(box);
+                }
+            });
+        }
+        
+        // 重新激活M1、M2、M3的發光效果
+        function reactivateM1M2M3Glow() {
+            // 為A10、B10、C10（M1、M2、M3）重新添加發光效果
+            const m1Box = boxes[10]; // A10
+            const m2Box = boxes[21]; // B10
+            const m3Box = boxes[32]; // C10
+            
+            if (m1Box && m1Box.userData.state === 'M1') {
+                addGlowEffect(m1Box);
+            }
+            if (m2Box && m2Box.userData.state === 'M2') {
+                addGlowEffect(m2Box);
+            }
+            if (m3Box && m3Box.userData.state === 'M3') {
+                addGlowEffect(m3Box);
+            }
+        }
+        
+        // 為單個box添加發光效果
+        function addGlowEffect(box) {
+            // 如果已經有發光效果，先清除
+            if (box.userData.originalMaterial) {
+                box.material = box.userData.originalMaterial;
+                delete box.userData.originalMaterial;
+            }
+            
+            // 保存原始材質
+            const originalMaterial = box.material;
+            
+            // 創建發光材質
+            const glowMaterial = originalMaterial.clone();
+            
+            // 根據box的狀態設置發光顏色
+            if (box.userData.state === 'σxⁱ' || box.userData.state === 'σxʲ' || box.userData.state === 'σxᵏ' || box.userData.state === 'σx') {
+                // σxⁱ、σxʲ、σxᵏ、σx使用特殊的發光顏色
+                glowMaterial.emissive = new THREE.Color(0xFF6026); // 亮紅色發光
+                glowMaterial.emissiveIntensity = 0.6; // 較強的發光強度
+            } else if (box.userData.state === 'M1' || box.userData.state === 'M2' || box.userData.state === 'M3') {
+                // M1、M2、M3使用特殊的發光顏色
+                glowMaterial.emissive = new THREE.Color(0x00FF00); // 亮綠色發光
+                glowMaterial.emissiveIntensity = 0.6; // 較強的發光強度
+            } else if (box.userData.state === 'M4' || box.userData.state === 'M5') {
+                // M4、M5使用特殊的發光顏色
+                glowMaterial.emissive = new THREE.Color(0x00FF00); // 亮綠色發光
+                glowMaterial.emissiveIntensity = 0.6; // 較強的發光強度
+            } else {
+                // 其他boxes使用與box相同的顏色
+                const originalColor = originalMaterial.color;
+                glowMaterial.emissive = originalColor.clone();
+                glowMaterial.emissiveIntensity = 0.4; // 適中的發光強度
+            }
+            
+            // 應用發光材質
+            box.material = glowMaterial;
+            
+            // 保存原始材質以便後續恢復
+            box.userData.originalMaterial = originalMaterial;
+            
+            // 添加高度增高效果
+            addHeightEffect(box);
+        }
+        
+        // 為box添加高度增高效果
+        function addHeightEffect(box) {
+            // 保存原始Y位置
+            const originalY = box.position.y;
+            const targetY = originalY + 0.5; // 增高0.2
+            
+            // 動畫參數
+            const duration = 500; // 0.5秒
+            const startTime = Date.now();
+            
+            function heightAnimation() {
+                const elapsed = Date.now() - startTime;
+                const progress = elapsed / duration;
+                
+                if (progress < 1) {
+                    // 使用緩動函數讓動畫更自然
+                    const easeProgress = 1 - Math.pow(1 - progress, 3); // easeOutCubic
+                    
+                    // 計算新的Y位置
+                    const newY = originalY + (targetY - originalY) * easeProgress;
+                    box.position.y = newY;
+                    
+                    requestAnimationFrame(heightAnimation);
+                } else {
+                    // 動畫結束，設置到目標位置
+                    box.position.y = targetY;
+                }
+            }
+            
+            heightAnimation();
+        }
+        
+        // 清除所有boxes的發光效果
+        function clearAllGlowEffects() {
+            boxes.forEach(box => {
+                if (box.userData.originalMaterial) {
+                    box.material = box.userData.originalMaterial;
+                    delete box.userData.originalMaterial;
+                }
+            });
+        }
+        
+        // Reset 功能
+        function resetSimulation() {
+            console.log('Simulation reset!');
+            t = 0;
+            updateTimeStepDisplay(); // 更新時間步顯示
+            clearAllGlowEffects();
+            // 重置Q1-Q5描述子
+            q1Left = 'X1'; q1Right = 'Z1';
+            q2Left = 'X2'; q2Right = 'Z2';
+            q3Left = 'X3'; q3Right = 'Z3';
+            q4Left = 'X4'; q4Right = 'Z4';
+            q5Left = 'X5'; q5Right = 'Z5';
+            
+            // 重置隨機i、j、k值
+            randomI = 0;
+            randomJ = 0;
+            randomK = 0;
+            
+            // 重置成功特效狀態（但保持成功次數累積）
+            hasTriggeredCelebration = false;
+            hasCheckedAfterM1M2M3 = false;
+            hasCheckedOnce = false;
+            hasShownTsundereModal = false; // 重置傲嬌提示狀態
+            // 注意：不重置successCount，讓成功次數在Reset後繼續累積
+            updateDescriptor();
+            updateRandomValuesDisplay(); // 更新隨機值顯示
+            boxes.forEach((box, idx) => {
+                const currentState = box.userData.state;
+                const isFixed = box.userData.isFixed;
+                const col = idx % 11;
+                if (col !== 0) {
+                    box.position.y = box.userData.boxHeight / 2;
+                }
+                box.userData.state = currentState;
+                box.userData.isFixed = isFixed;
+            });
+            
+            // 不重置攝影機位置，保持當前視角
+            
+            const runButton = document.querySelector('.run-button');
+            runButton.disabled = false;
+            runButton.style.background = '#4CAF50'; // 恢復原始顏色
+            runButton.style.color = 'white'; // 恢復原始文字顏色
+            runButton.style.cursor = 'pointer';
+            console.log('Simulation reset to t = 0');
+        }
+        
+        // 重置攝影機位置
+        function resetCameraPosition() {
+            cameraX = -7; // 重置到初始位置
+            const slider = document.getElementById('camera-slider');
+            const label = document.getElementById('camera-label');
+            
+            if (slider) {
+                const resetSliderPosition = 50 + (cameraX / 0.26);
+                slider.style.left = resetSliderPosition + '%';
+            }
+            if (label) {
+                label.textContent = `Camera X: ${Math.round(cameraX)}`;
+            }
+            
+            updateCameraPosition();
+        }
+        
+        // 檢查並更新CNOT gate顏色
+        function checkAndUpdateCNOTColors() {
+            // 定義11列的佈局
+            // 第0列：boxes[0], boxes[11], boxes[22], boxes[33], boxes[44] (A0, B0, C0, D0, E0) - 固定boxes
+            // 第1列：boxes[1], boxes[12], boxes[23], boxes[34], boxes[45] (A1, B1, C1, D1, E1) - 可互動boxes
+            // ...
+            // 第10列：boxes[10], boxes[21], boxes[32], boxes[43], boxes[54] (A10, B10, C10, D10, E10) - 固定boxes
+            
+            // 檢查每一列
+            for (let col = 0; col < 11; col++) {
+                const columnBoxes = [];
+                for (let row = 0; row < 5; row++) {
+                    columnBoxes.push(boxes[row * 11 + col]);
+                }
+                checkColumnForCNOT(columnBoxes);
+            }
+        }
+        
+        // --- CNOT descriptor 運算與抵銷 ---
+        function cancelIdenticalOperators(expression) {
+            if (!expression || expression === '1') return '1';
+            
+            // 匹配所有operators，包括-(-1)^(i)、-(-1)^(j)、-(-1)^(k)、(-1)^(i)、(-1)^(j)、(-1)^(k)、X1-X5、Z1-Z5
+            const operators = expression.match(/(-\(-1\)\^\([ijk]\)|\(-1\)\^\([ijk]\)|X\d|Z\d)/g) || [];
+            if (operators.length === 0) return '1';
+            
+            const operatorCount = {};
+            operators.forEach(op => {
+                operatorCount[op] = (operatorCount[op] || 0) + 1;
+            });
+            
+            const remainingOperators = [];
+            Object.keys(operatorCount).forEach(op => {
+                // 只對X1-X5、Z1-Z5進行抵銷邏輯
+                if (op.match(/^X\d$|^Z\d$/)) {
+                    if (operatorCount[op] % 2 === 1) {
+                        remainingOperators.push(op);
+                    }
+                } else {
+                    // 對於-(-1)^(i)、-(-1)^(j)、-(-1)^(k)、(-1)^(i)、(-1)^(j)、(-1)^(k)，直接保留
+                    remainingOperators.push(op);
+                }
+            });
+            
+            if (remainingOperators.length === 0) return '1';
+            return remainingOperators.join('');
+        }
+
+        function executeCNOTLogicForColumn(colIdx) {
+            // 取得該列的所有boxes
+            const columnBoxes = [];
+            for (let row = 0; row < 5; row++) {
+                columnBoxes.push(boxes[row * 11 + colIdx]);
+            }
+            
+            // 檢查是否有CNOT gate（•和⨁同時存在且為土黃色）
+            let dotBox = null;
+            let xorBox = null;
+            let dotRow = -1;
+            let xorRow = -1;
+            
+            for (let row = 0; row < 5; row++) {
+                const box = columnBoxes[row];
+                if (box.userData.state === '•' && box.material.color.getHex() === 0xd4af37) {
+                    dotBox = box;
+                    dotRow = row;
+                } else if (box.userData.state === '⨁' && box.material.color.getHex() === 0xd4af37) {
+                    xorBox = box;
+                    xorRow = row;
+                }
+            }
+            
+            // 如果沒有找到有效的CNOT gate，直接返回
+            if (!dotBox || !xorBox) return;
+            
+            // 取得對應的Q描述子
+            const qStates = [
+                { left: q1Left, right: q1Right },
+                { left: q2Left, right: q2Right },
+                { left: q3Left, right: q3Right },
+                { left: q4Left, right: q4Right },
+                { left: q5Left, right: q5Right }
+            ];
+            
+            // 執行CNOT運算
+            const dotQ = qStates[dotRow];
+            const xorQ = qStates[xorRow];
+            
+            // 更新描述子
+            const newDotLeft = dotQ.left + xorQ.left;
+            const newXorRight = dotQ.right + xorQ.right;
+            
+            // 抵銷相同運算符
+            const finalDotLeft = cancelIdenticalOperators(newDotLeft);
+            const finalXorRight = cancelIdenticalOperators(newXorRight);
+            
+            // 更新對應的描述子
+            switch(dotRow) {
+                case 0: q1Left = finalDotLeft; break;
+                case 1: q2Left = finalDotLeft; break;
+                case 2: q3Left = finalDotLeft; break;
+                case 3: q4Left = finalDotLeft; break;
+                case 4: q5Left = finalDotLeft; break;
+            }
+            
+            switch(xorRow) {
+                case 0: q1Right = finalXorRight; break;
+                case 1: q2Right = finalXorRight; break;
+                case 2: q3Right = finalXorRight; break;
+                case 3: q4Right = finalXorRight; break;
+                case 4: q5Right = finalXorRight; break;
+            }
+            
+            updateDescriptor();
+        }
+
+        // 檢查每一列的CNOT gate數量
+        function checkCNOTGateCount() {
+            // 檢查每一列的CNOT gate數量
+            for (let col = 0; col < 11; col++) {
+                let controlCount = 0;
+                let targetCount = 0;
+                
+                // 檢查這一列的所有行
+                for (let row = 0; row < 5; row++) {
+                    const box = boxes[row * 11 + col];
+                    if (box.userData.state === '•') {
+                        controlCount++;
+                    } else if (box.userData.state === '⨁') {
+                        targetCount++;
+                    }
+                }
+                
+                // 檢查是否有多組CNOT gate（多於一組"•" "⨁"）
+                if (controlCount > 1 || targetCount > 1) {
+                    console.log(`Column ${col}: Multiple CNOT gates detected - Control: ${controlCount}, Target: ${targetCount}`);
+                    return {
+                        isValid: false,
+                        column: col,
+                        controlCount: controlCount,
+                        targetCount: targetCount
+                    };
+                }
+            }
+            return { isValid: true }; // 所有列都只有一組或沒有CNOT gate
+        }
+        
+        // 檢查是否有無效的CNOT gate
+        function checkInvalidCNOTGates() {
+            // 檢查每一列是否有無效的CNOT gate
+            for (let col = 0; col < 11; col++) {
+                const columnBoxes = [];
+                for (let row = 0; row < 5; row++) {
+                    columnBoxes.push(boxes[row * 11 + col]);
+                }
+                if (checkColumnForCNOT(columnBoxes)) {
+                    return true; // 找到無效的CNOT gate
+                }
+            }
+            return false;
+        }
+        
+        function checkColumnForCNOT(columnBoxes) {
+            let hasDot = false;
+            let hasXOR = false;
+            let dotBox = null;
+            let xorBox = null;
+            
+            // 檢查這一列是否有"•"和"⨁"
+            for (let box of columnBoxes) {
+                if (box.userData.state === "•") {
+                    hasDot = true;
+                    dotBox = box;
+                } else if (box.userData.state === "⨁") {
+                    hasXOR = true;
+                    xorBox = box;
+                }
+            }
+            
+            // 如果同時存在"•"和"⨁"，將它們變成黃色
+            if (hasDot && hasXOR) {
+                console.log("CNOT gate detected! Changing • and ⨁ to yellow");
+                
+                // 將"•"變成土黃色
+                dotBox.material.color.setHex(0xd4af37); // 土黃色
+                
+                // 將"⨁"變成土黃色
+                xorBox.material.color.setHex(0xd4af37); // 土黃色
+                
+            } else {
+                // 如果沒有同時存在，顯示為淡黃色
+                for (let box of columnBoxes) {
+                    if (box.userData.state === "•" || box.userData.state === "⨁") {
+                        box.material.color.setHex(0xb8b89a); // 淡黃灰色，與I相近
+                    }
+                }
+            }
+            
+            // 返回是否有無效的CNOT gate（只有一個"•"或"⨁"）
+            return (hasDot && !hasXOR) || (!hasDot && hasXOR);
+        }
+        
+        // 顯示多組CNOT gate錯誤
+        function showMultipleCNOTError(column, controlCount, targetCount) {
+            const runButton = document.querySelector('.run-button');
+            const originalBackground = runButton.style.background;
+            const originalText = runButton.textContent;
+            
+            // 改變按鈕顏色和文字
+            runButton.style.background = '#ff0000'; // 紅色
+            runButton.style.color = '#ffffff'; // 白色文字
+            runButton.textContent = 'ERROR';
+            
+            // 0.5秒後恢復按鈕
+            setTimeout(() => {
+                runButton.style.background = originalBackground;
+                runButton.style.color = '#000000'; // 恢復黑色文字
+                runButton.textContent = originalText;
+            }, 500);
+        }
+        
+        // 顯示error效果
+        function showErrorEffect() {
+            const runButton = document.querySelector('.run-button');
+            const originalBackground = runButton.style.background;
+            const originalText = runButton.textContent;
+            
+            // 改變按鈕顏色和文字
+            runButton.style.background = '#ff0000'; // 紅色
+            runButton.style.color = '#ffffff'; // 白色文字
+            runButton.textContent = 'ERROR';
+            
+            // 0.3秒後恢復
+            setTimeout(() => {
+                runButton.style.background = originalBackground;
+                runButton.style.color = '#000000'; // 恢復黑色文字
+                runButton.textContent = originalText;
+            }, 300);
+        }
+        
+        // 頁面加載完成後初始化遊戲
+        window.addEventListener('load', function() {
+            setTimeout(initGame, 100);
+            setTimeout(updateDescriptor, 200);
+            setTimeout(checkAndUpdateCNOTColors, 300);
+            setTimeout(updateTimeStepDisplay, 400); // 初始化時間步顯示
+            setTimeout(updateRandomValuesDisplay, 500); // 初始化隨機值顯示
+        });
+        
+        // 響應式調整
+        window.addEventListener('resize', function() {
+            if (renderer && camera) {
+                const container = document.getElementById('game-container');
+                const aspect = container.clientWidth / container.clientHeight;
+                camera.aspect = aspect;
+                camera.updateProjectionMatrix();
+                renderer.setSize(container.clientWidth, container.clientHeight);
+            }
+        });
+    </script>
+</body>
+</html>
