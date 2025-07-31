@@ -142,7 +142,7 @@
             gap: 5px;
         }
         
-        /* 右側 Expectation Value 區域 */
+        /* 右側 Pass Hints 區域 */
         .expectation-panel {
             flex: 1;
             display: flex;
@@ -418,7 +418,7 @@
     <div class="container">
         <div class="content">
             <div class="block active" id="block0">
-                <h2 style="font-family: Georgia, serif; font-size: 20px;">Level 4 - <span style="background: linear-gradient(45deg, #ff6b6b, #ffa500); color: white; padding: 4px 8px; border-radius: 6px; font-weight: bold; text-shadow: 1px 1px 2px rgba(0,0,0,0.3); box-shadow: 0 2px 4px rgba(0,0,0,0.2);">Challenge!</span> Transmitting Two-bits Information with Superdense Coding</h2>
+                <h2 style="font-family: Georgia, serif; font-size: 20px;">Level 4 - <span style="background: linear-gradient(45deg, #ff6b6b, #ffa500); color: white; padding: 4px 8px; border-radius: 6px; font-weight: bold; text-shadow: 1px 1px 2px rgba(0,0,0,0.3); box-shadow: 0 2px 4px rgba(0,0,0,0.2);">Normal Challenge!</span> Transmitting Two-bits Information with Superdense Coding</h2>
                 <div class="block-content">
                     <div class="block1-layout">
                         <div class="left-panel">
@@ -490,31 +490,35 @@
                             </div>
                         </div>
                         <div id="text-content" class="collapsed">
-                            <div class="content-label">Text Content</div>
+                            <div class="content-label">Tips</div>
                             <button class="toggle-button" onclick="toggleTextContent()">Show</button>
                             <div class="text-content-inner" style="margin-top: 40px; padding: 10px; display: none;">
-                                <h3 style="color: #2f4f78; margin-bottom: 15px;">Level 1 - Interactive Visualization</h3>
+                                <h3 style="color: #2f4f78; margin-bottom: 15px;">Challenge: Classical Bits Decryption</h3>
                                 
                                 <p style="margin-bottom: 10px; line-height: 1.5;">
-                                    This is Level 1 of the interactive visualization. Here you can explore 
-                                    the basic concepts and interactions.
+                                    This challenge aims to simulate the reception of two classical bits from one qubit. 
+                                    Suppose there are two qubits(Q1, Q2), and Q1 is embbeded with two classical bits information (i, j).
+                                    through "σxⁱ" and "σzʲ" gates. How can we extract the classical bits by using entanglement and joint measurement?
                                 </p>
                                 
-                                <h4 style="color: #2f4f78; margin: 15px 0 8px 0;">Instructions:</h4>
-                                <ul style="margin-left: 20px; line-height: 1.4;">
-                                    <li>Click "Run" to start the simulation</li>
-                                    <li>Click "Reset" to return to initial state</li>
-                                    <li>Use the toggle button to show/hide this content panel</li>
-                                    <li>Monitor the descriptor and expectation values</li>
-                                </ul>
-                                
-                                <h4 style="color: #2f4f78; margin: 15px 0 8px 0;">Features:</h4>
-                                <ul style="margin-left: 20px; line-height: 1.4;">
-                                    <li>3D coordinate system visualization</li>
-                                    <li>Real-time descriptor updates</li>
-                                    <li>Expectation value calculations</li>
-                                    <li>Interactive controls</li>
-                                </ul>
+                                <button class="instructions-toggle" onclick="toggleInstructions()" style="background: #2f4f78; color: white; border: none; padding: 1px 2px; border-radius: 4px; cursor: pointer; font-size: 14px; font-weight: bold; margin: 15px 0 8px 0;">Introduction ▼</button>
+                                <div id="instructions-content" style="display: none; margin-left: 20px;">
+                                    <ul style="margin-left: 20px; line-height: 1.4;">
+                                        <li>Suppose two qubits Q1, Q2 are entangled and seperated from a long distance, where Alice hold Q1 and Bob hold Q2.</li>
+                                        <li>Alice stores the i, j information into Q1 by Pauli "σx(i)" and "σz(j)" gates.</li>
+                                        <li>Then Bob receives the Q1 from Alice, and perform Bell measurement on Q1 and Q2 to extract the i, j information.</li>
+                                        <li>Therefore, this simulation shows the possibility of transmitting two classical bits through one quantum bit.</li>
+                                    </ul>
+                                </div>
+                                <br>
+                                <button class="expectation-toggle" onclick="toggleExpectation()" style="background: #2f4f78; color: white; border: none; padding: 1px 2px; border-radius: 4px; cursor: pointer; font-size: 14px; font-weight: bold; margin: 15px 0 8px 0;">Pass Hints ▼</button>
+                                <div id="expectation-content" style="display: none; margin-left: 20px;">
+                                    <ul style="margin-left: 20px; line-height: 1.4;">
+                                        <li>This simulation can be achieved by Bell state formation and Bell measurement.</li>
+                                        <li>The information of i and j could be reasoned by the expectation values of the descriptor.</li>
+                                        <li>Try not to guess the answer. 🤫</li>
+                                    </ul>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -524,6 +528,21 @@
     </div>
 
     <script>
+        function toggleExpectation() {
+            const expectationContent = document.getElementById('expectation-content');
+            const toggleButton = document.querySelector('.expectation-toggle');
+            
+            if (expectationContent.style.display === 'none') {
+                // 展開
+                expectationContent.style.display = 'block';
+                toggleButton.textContent = 'Pass Hints ▲';
+            } else {
+                // 收起
+                expectationContent.style.display = 'none';
+                toggleButton.textContent = 'Pass Hints ▼';
+            }
+        }
+
         function showBlock(blockIndex) {
             // 隱藏所有區塊
             const blocks = document.querySelectorAll('.block');
@@ -658,6 +677,21 @@
             scene.add(bBar);
         }
         
+        function toggleInstructions() {
+            const instructionsContent = document.getElementById('instructions-content');
+            const toggleButton = document.querySelector('.instructions-toggle');
+            
+            if (instructionsContent.style.display === 'none') {
+                // 展開
+                instructionsContent.style.display = 'block';
+                toggleButton.textContent = 'Introduction ▲';
+            } else {
+                // 收起
+                instructionsContent.style.display = 'none';
+                toggleButton.textContent = 'Introduction ▼';
+            }
+        }
+
         function createBoxes() {
             const boxWidth = 2;
             const defaultBoxHeight = 0.4;
@@ -1087,11 +1121,11 @@
                 q2Elem.innerHTML = html;
             }
             
-            // 更新Expectation Values
+            // 更新Pass Hintss
             updateExpectationValues();
         }
         
-        // 更新Expectation Values
+        // 更新Pass Hintss
         function updateExpectationValues() {
             // 檢查M1和M2是否發光（t=7時）
             if (t < 7) {
@@ -1108,8 +1142,8 @@
                 return;
             }
             
-            // 只有在M1M2發光時才計算Expectation Values
-            // 計算Q1的Expectation Values
+            // 只有在M1M2發光時才計算Pass Hintss
+            // 計算Q1的Pass Hintss
             let excXQ1 = q1Left.includes('X') ? 0 : 1;
             let excZQ1 = q1Right.includes('X') ? 0 : 1;
             
@@ -1126,7 +1160,7 @@
                 excZQ1 = Math.pow(-1, randomJ) * excZQ1;
             }
             
-            // 計算Q2的Expectation Values
+            // 計算Q2的Pass Hintss
             let excXQ2 = q2Left.includes('X') ? 0 : 1;
             let excZQ2 = q2Right.includes('X') ? 0 : 1;
             
