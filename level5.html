@@ -624,28 +624,40 @@
                             <div class="content-label">Text Content</div>
                             <button class="toggle-button" onclick="toggleTextContent()">Show</button>
                             <div class="text-content-inner" style="margin-top: 40px; padding: 10px; display: none;">
-                                <h3 style="color: #2f4f78; margin-bottom: 15px;">Level 1 - Interactive Visualization</h3>
+                                <h3 style="color: #2f4f78; margin-bottom: 15px;">Master Challenge - Bit-flip Error Detection and Correction</h3>
                                 
                                 <p style="margin-bottom: 10px; line-height: 1.5;">
-                                    This is Level 1 of the interactive visualization. Here you can explore 
-                                    the basic concepts and interactions.
+                                    In process of quantum communication, qubits(Q1, Q2, Q3) are easily affected by the environment, which may cause the bit-flip error. (e.g. Q1 is flipped to |1>)
+                                    By applying extra qubits(Q4, Q5) to detect which qubit has been flipped, and do the correction to flip back the error qubit.
+                                    "<b>σxⁱ、σxʲ、σxᵏ</b>" are error pauli X gates with unknown <b>i, j, k</b>.
                                 </p>
                                 
-                                <h4 style="color: #2f4f78; margin: 15px 0 8px 0;">Instructions:</h4>
-                                <ul style="margin-left: 20px; line-height: 1.4;">
-                                    <li>Click "Run" to start the simulation</li>
-                                    <li>Click "Reset" to return to initial state</li>
-                                    <li>Use the toggle button to show/hide this content panel</li>
-                                    <li>Monitor the descriptor and expectation values</li>
-                                </ul>
-                                
-                                <h4 style="color: #2f4f78; margin: 15px 0 8px 0;">Features:</h4>
-                                <ul style="margin-left: 20px; line-height: 1.4;">
-                                    <li>3D coordinate system visualization</li>
-                                    <li>Real-time descriptor updates</li>
-                                    <li>Expectation value calculations</li>
-                                    <li>Interactive controls</li>
-                                </ul>
+                                <button class="instructions-toggle" onclick="toggleInstructions()" style="background: #2f4f78; color: white; border: none; padding: 1px 2px; border-radius: 4px; cursor: pointer; font-size: 14px; font-weight: bold; margin: 15px 0 8px 0;">Introduction ▼</button>
+                                <div id="instructions-content" style="display: none; margin-left: 20px;">
+                                    <ul style="margin-left: 20px; line-height: 1.4;">
+                                        <li>This simulation indicates that if one of the qubits(Q1, Q2, Q3) is flipped, how can we apply Q4 and Q5 to detect the redundant filpped information.</li>
+                                        <li>The CNOT gate is a useful tool to disperse one qubit's information to another qubit.</li>
+                                        <li>After the error happens(σxⁱ、σxʲ、σxᵏ are activated), CNOT gates can also be used to disperse the filpped information to Q4 and Q5 for detection.</li>
+                                        <li>The measurement of Q4 and Q5 can be used to detect which qubit is flipped.</li>
+                                        <li>The correction can be done by applying the same gate to the error qubit.</li>
+                                    </ul>
+                                </div>
+                                <br>
+                                <button class="expectation-toggle" onclick="toggleExpectation()" style="background: #2f4f78; color: white; border: none; padding: 1px 2px; border-radius: 4px; cursor: pointer; font-size: 14px; font-weight: bold; margin: 15px 0 8px 0;">Pass Hints ▼</button>
+                                <div id="expectation-content" style="display: none; margin-left: 20px;">
+                                    <ul style="margin-left: 20px; line-height: 1.4;">
+                                        <li>Hadamard gate may not be necessary for this simulation.</li>
+                                        <li>Before the error happens, information of Q1, Q2, Q3 should be dispersed with each other.</li>
+                                        <li>After the error happens, apply CNOT gates to disperse the error informations(i, j ,k) to Q4 and Q5. The circuit should be similar to the figure below.</li>
+                                    </ul>
+                                    
+                                    <div style="margin: 20px 0; text-align: center;">
+                                        <img src="figure2.jpeg" alt="Quantum Circuit Diagram" style="max-width: 100%; height: auto; border: 1px solid #ccc; border-radius: 8px; box-shadow: 0 4px 8px rgba(0,0,0,0.1);">
+                                        <p style="margin-top: 10px; font-size: 10px; color: #666; font-style: italic;">
+                                            Chatterjee, A., Phalak, K., & Ghosh, S. (2023). Quantum Error Correction For Dummies (arXiv:2304.08678 [quant‑ph]).
+                                        </p>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -663,6 +675,36 @@
     </div>
 
     <script>
+        function toggleExpectation() {
+            const expectationContent = document.getElementById('expectation-content');
+            const toggleButton = document.querySelector('.expectation-toggle');
+            
+            if (expectationContent.style.display === 'none') {
+                // 展開
+                expectationContent.style.display = 'block';
+                toggleButton.textContent = 'Pass Hints ▲';
+            } else {
+                // 收起
+                expectationContent.style.display = 'none';
+                toggleButton.textContent = 'Pass Hints ▼';
+            }
+        }
+
+        function toggleInstructions() {
+            const instructionsContent = document.getElementById('instructions-content');
+            const toggleButton = document.querySelector('.instructions-toggle');
+            
+            if (instructionsContent.style.display === 'none') {
+                // 展開
+                instructionsContent.style.display = 'block';
+                toggleButton.textContent = 'Introduction ▲';
+            } else {
+                // 收起
+                instructionsContent.style.display = 'none';
+                toggleButton.textContent = 'Introduction ▼';
+            }
+        }
+
         function showBlock(blockIndex) {
             // 隱藏所有區塊
             const blocks = document.querySelectorAll('.block');
