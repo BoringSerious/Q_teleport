@@ -341,6 +341,8 @@
     </style>
     <!-- Three.js CDN -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <!-- Confetti CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
 </head>
 <body>
     <div class="container">
@@ -351,7 +353,6 @@
                     <div class="block1-layout">
                         <div class="left-panel">
                             <div id="monitor">
-                                <div class="area-label">Monitor</div>
                                 <div class="monitor-layout">
                                     <div class="descriptor-panel">
                                         <div class="monitor-block">
@@ -404,31 +405,41 @@
                             </div>
                         </div>
                         <div id="text-content" class="collapsed">
-                            <div class="content-label">Text Content</div>
+                            <div class="content-label">About Bell State</div>
                             <button class="toggle-button" onclick="toggleTextContent()">Show</button>
                             <div class="text-content-inner" style="margin-top: 40px; padding: 10px; display: none;">
-                                <h3 style="color: #2f4f78; margin-bottom: 15px;">Level 1 - Interactive Visualization</h3>
+                                <h3 style="color: #2f4f78; margin-bottom: 15px;">Level 3 - Build an Entangled Descriptor Pair</h3>
                                 
                                 <p style="margin-bottom: 10px; line-height: 1.5;">
-                                    This is Level 1 of the interactive visualization. Here you can explore 
-                                    the basic concepts and interactions.
+                                    Now, you can arrange different combination of Hadamard and CNOT gates to build a simple 
+                                    entangled Bell state..
                                 </p>
                                 
-                                <h4 style="color: #2f4f78; margin: 15px 0 8px 0;">Instructions:</h4>
-                                <ul style="margin-left: 20px; line-height: 1.4;">
-                                    <li>Click "Run" to start the simulation</li>
-                                    <li>Click "Reset" to return to initial state</li>
-                                    <li>Use the toggle button to show/hide this content panel</li>
-                                    <li>Monitor the descriptor and expectation values</li>
-                                </ul>
+                                <button class="instructions-toggle" onclick="toggleInstructions()" style="background: #2f4f78; color: white; border: none; padding: 1px 2px; border-radius: 4px; cursor: pointer; font-size: 14px; font-weight: bold; margin: 15px 0 8px 0;">Instructions ▼</button>
+                                <div id="instructions-content" style="display: none; margin-left: 20px;">
+                                    <ul style="margin-left: 20px; line-height: 1.4;">
+                                        <li>Click "I" boxes to change the operation</li>
+                                        <li>Descriptor monitor shows the evolution of the descriptor</li>
+                                        <li>Click "Run" to start the simulation</li>
+                                        <li>Click "Reset" to return to initial operation</li>  
+                                        <li>Measurement "M" boxes show the expectation values of the descriptor</li>
+                                    </ul>
+                                </div>
                                 
-                                <h4 style="color: #2f4f78; margin: 15px 0 8px 0;">Features:</h4>
+                                <h4 style="color: #2f4f78; margin: 15px 0 8px 0;">Bell State:</h4>
                                 <ul style="margin-left: 20px; line-height: 1.4;">
-                                    <li>3D coordinate system visualization</li>
-                                    <li>Real-time descriptor updates</li>
-                                    <li>Expectation value calculations</li>
-                                    <li>Interactive controls</li>
+                                    <li>It is a maximally entangled state with <b>zero</b> expectational value of any Pauli measurement.</li>
+                                    <li>Q1, Q2 share the information with each other.</li>
+                                    <li>Try to use "H" and "CNOT" gates to generate a Bell state by yourself. 🎉</li>
                                 </ul>
+
+                                <button class="expectation-toggle" onclick="toggleExpectation()" style="background: #2f4f78; color: white; border: none; padding: 1px 2px; border-radius: 4px; cursor: pointer; font-size: 14px; font-weight: bold; margin: 15px 0 8px 0;">Tips ▼</button>
+                                <div id="expectation-content" style="display: none; margin-left: 20px;">
+                                    <ul style="margin-left: 20px; line-height: 1.4;">
+                                        <li>Q1 will share its descriptor information(X1 or Z1) with Q2.</li>
+                                        <li>Q2 will share its descriptor information(X2 or Z2) with Q1.</li>
+                                    </ul>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -438,6 +449,21 @@
     </div>
 
     <script>
+        function toggleExpectation() {
+            const expectationContent = document.getElementById('expectation-content');
+            const toggleButton = document.querySelector('.expectation-toggle');
+            
+            if (expectationContent.style.display === 'none') {
+                // 展開
+                expectationContent.style.display = 'block';
+                toggleButton.textContent = 'Expectation value ▲';
+            } else {
+                // 收起
+                expectationContent.style.display = 'none';
+                toggleButton.textContent = 'Expectation value ▼';
+            }
+        }
+
         function showBlock(blockIndex) {
             // 隱藏所有區塊
             const blocks = document.querySelectorAll('.block');
@@ -539,6 +565,21 @@
             scene.add(axesHelper);
         }
         
+        function toggleInstructions() {
+            const instructionsContent = document.getElementById('instructions-content');
+            const toggleButton = document.querySelector('.instructions-toggle');
+            
+            if (instructionsContent.style.display === 'none') {
+                // 展開
+                instructionsContent.style.display = 'block';
+                toggleButton.textContent = 'Instructions ▲';
+            } else {
+                // 收起
+                instructionsContent.style.display = 'none';
+                toggleButton.textContent = 'Instructions ▼';
+            }
+        }
+
         function createBottomBars() {
             // A行bar參數
             const barWidth = 8.6; // 寬度
@@ -856,6 +897,73 @@
         let q1Left = 'X1', q1Right = 'Z1';
         let q2Left = 'X2', q2Right = 'Z2';
         
+        // Bell State成功判定標記
+        let hasTriggeredBellStateCelebration = false;
+        
+        // 煙花特效配置
+        const FIREWORK_CONFIG = {
+            // 主要爆炸
+            main: {
+                particleCount: 250,
+                spread: 65,
+                startVelocity: 40,
+                gravity: 0.6,
+                drift: 0.15,
+                ticks: 300,
+                origin: { y: 0.7 },
+                colors: ['#ff0000', '#00ff00', '#0000ff', '#ffff00', '#ff00ff', '#00ffff', '#ffa500', '#800080', '#ff6b6b', '#4ecdc4', '#ff4757', '#2ed573'],
+                shapes: ['circle', 'square'],
+                scalar: 1.4,
+                zIndex: 1000,
+                disableForReducedMotion: false
+            },
+            // 擴散效果
+            spread: {
+                particleCount: 150,
+                spread: 85,
+                startVelocity: 32,
+                gravity: 0.75,
+                drift: 0.25,
+                ticks: 220,
+                origin: { y: 0.65 },
+                colors: ['#ff6b6b', '#4ecdc4', '#45b7d1', '#96ceb4', '#ffeaa7', '#dda0dd', '#98d8c8', '#f7dc6f', '#ff9ff3', '#54a0ff', '#5f27cd', '#00d2d3'],
+                shapes: ['circle'],
+                scalar: 1.1,
+                zIndex: 1001,
+                disableForReducedMotion: false
+            },
+            // 尾隨效果
+            trail: {
+                particleCount: 100,
+                spread: 45,
+                startVelocity: 22,
+                gravity: 0.85,
+                drift: 0.12,
+                ticks: 200,
+                origin: { y: 0.75 },
+                colors: ['#ff9ff3', '#54a0ff', '#5f27cd', '#00d2d3', '#ff9f43', '#10ac84', '#ee5a24', '#ff3838', '#ff6348', '#ffa502'],
+                shapes: ['circle'],
+                scalar: 0.8,
+                zIndex: 1002,
+                disableForReducedMotion: false
+            },
+            // 小粒子效果
+            sparkle: {
+                particleCount: 80,
+                spread: 35,
+                startVelocity: 18,
+                gravity: 1.1,
+                drift: 0.35,
+                ticks: 170,
+                origin: { y: 0.8 },
+                colors: ['#ff9ff3', '#54a0ff', '#5f27cd', '#00d2d3', '#ff9f43', '#10ac84', '#ff6b6b', '#4ecdc4'],
+                shapes: ['circle'],
+                scalar: 0.6,
+                zIndex: 1003,
+                disableForReducedMotion: false
+            }
+        };
+        
         // 更新時間步顯示
         function updateTimeStepDisplay() {
             const timeStepDisplay = document.getElementById('time-step-display');
@@ -884,9 +992,6 @@
             updateTimeStepDisplay(); // 更新時間步顯示
             addGlowEffectToColumn(t);
 
-            // CNOT descriptor 運算
-            executeCNOTLogicForColumn(t);
-
             // 檢查A行/B行當前t列box狀態
             const aBox = boxes[t]; // row=0, col=t
             const bBox = boxes[4 + t]; // row=1, col=t
@@ -898,6 +1003,10 @@
                 // Q2左右互換
                 [q2Left, q2Right] = [q2Right, q2Left];
             }
+
+            // CNOT descriptor 運算（在Hadamard之後）
+            executeCNOTLogicForColumn(t);
+
             updateDescriptor();
 
             if (t >= 3) {
@@ -967,6 +1076,9 @@
             if (q2ExpectElem) {
                 q2ExpectElem.innerHTML = `Exc.X(Q2) = <strong><span style="background-color: yellow; padding: 2px 4px; border-radius: 3px;">${excXQ2}</span></strong>,    Exc.Z(Q2) = <strong><span style="background-color: yellow; padding: 2px 4px; border-radius: 3px;">${excZQ2}</span></strong>`;
             }
+            
+            // 檢查Bell State成功條件
+            checkBellStateSuccess();
         }
 
         // 為指定列的boxes添加發光效果
@@ -1056,6 +1168,8 @@
             // 重置Q1/Q2描述子
             q1Left = 'X1'; q1Right = 'Z1';
             q2Left = 'X2'; q2Right = 'Z2';
+            // 重置Bell State成功標記
+            hasTriggeredBellStateCelebration = false;
             updateDescriptor();
             boxes.forEach((box, idx) => {
                 const currentState = box.userData.state;
@@ -1199,6 +1313,109 @@
             
             // 返回是否有無效的CNOT gate（只有一個"•"或"⨁"）
             return (hasDot && !hasXOR) || (!hasDot && hasXOR);
+        }
+        
+        // 觸發真實煙花特效
+        function triggerRealisticFireworks() {
+            if (!window.confetti) return;
+            
+            // 第一波：主要煙花爆炸
+            confetti(FIREWORK_CONFIG.main);
+            
+            // 第二波：擴散效果
+            setTimeout(() => {
+                confetti(FIREWORK_CONFIG.spread);
+            }, 200);
+            
+            // 第三波：尾隨效果
+            setTimeout(() => {
+                confetti(FIREWORK_CONFIG.trail);
+            }, 400);
+            
+            // 第四波：小粒子效果
+            setTimeout(() => {
+                confetti(FIREWORK_CONFIG.sparkle);
+            }, 600);
+            
+            // 額外的隨機小爆炸效果 - 左側
+            setTimeout(() => {
+                confetti({
+                    ...FIREWORK_CONFIG.sparkle,
+                    particleCount: 45,
+                    spread: 25,
+                    startVelocity: 15,
+                    origin: { y: 0.85, x: 0.25 }
+                });
+            }, 750);
+            
+            // 額外的隨機小爆炸效果 - 右側
+            setTimeout(() => {
+                confetti({
+                    ...FIREWORK_CONFIG.sparkle,
+                    particleCount: 35,
+                    spread: 30,
+                    startVelocity: 13,
+                    origin: { y: 0.9, x: 0.75 }
+                });
+            }, 950);
+            
+            // 最後的閃爍效果
+            setTimeout(() => {
+                confetti({
+                    particleCount: 20,
+                    spread: 15,
+                    startVelocity: 8,
+                    gravity: 1.2,
+                    drift: 0.2,
+                    ticks: 120,
+                    origin: { y: 0.95, x: 0.5 },
+                    colors: ['#ffffff', '#ffff00', '#ff9ff3', '#54a0ff'],
+                    shapes: ['circle'],
+                    scalar: 0.4,
+                    zIndex: 1004
+                });
+            }, 1200);
+        }
+        
+        // 檢查Bell State成功條件
+        function checkBellStateSuccess() {
+            // 只有在M1M2發光時（t=3）才檢查
+            if (t < 3) {
+                return;
+            }
+            
+            // 如果已經觸發過成功特效，不再觸發
+            if (hasTriggeredBellStateCelebration) {
+                return;
+            }
+            
+            // 檢查兩種Bell State狀態
+            // 狀態1: Q1 = (Z1X2,X1) & Q2 = (X2,X1Z2)
+            const isState1 = (q1Left === 'Z1X2' || q1Left === 'X2Z1') && 
+                           (q1Right === 'X1') && 
+                           (q2Left === 'X2') && 
+                           (q2Right === 'X1Z2' || q2Right === 'Z2X1');
+            
+            // 狀態2: Q1 = (X1,X2Z1) & Q2 = (Z2X1,X2)
+            const isState2 = (q1Left === 'X1') && 
+                           (q1Right === 'X2Z1' || q1Right === 'Z1X2') && 
+                           (q2Left === 'Z2X1') && 
+                           (q2Right === 'X2');
+            
+            console.log('Bell State Check:', {
+                q1Left, q1Right, q2Left, q2Right,
+                isState1, isState2
+            });
+            
+            if (isState1 || isState2) {
+                console.log('Bell State achieved! Triggering celebration...');
+                hasTriggeredBellStateCelebration = true;
+                
+                // 觸發煙花特效
+                setTimeout(() => {
+                    triggerRealisticFireworks();
+                }, 200);
+            }
         }
         
         // 顯示error效果
