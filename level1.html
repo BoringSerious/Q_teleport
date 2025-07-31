@@ -351,7 +351,6 @@
                     <div class="block1-layout">
                         <div class="left-panel">
                             <div id="monitor">
-                                <div class="area-label">Monitor</div>
                                 <div class="monitor-layout">
                                     <div class="descriptor-panel">
                                         <div class="monitor-block">
@@ -404,31 +403,41 @@
                             </div>
                         </div>
                         <div id="text-content" class="collapsed">
-                            <div class="content-label">Text Content</div>
+                            <div class="content-label">About Hadamard Gate</div>
                             <button class="toggle-button" onclick="toggleTextContent()">Show</button>
                             <div class="text-content-inner" style="margin-top: 40px; padding: 10px; display: none;">
-                                <h3 style="color: #2f4f78; margin-bottom: 15px;">Level 1 - Interactive Visualization</h3>
+                                <h3 style="color: #2f4f78; margin-bottom: 15px;">Level 1 - Hadamard Gate</h3>
                                 
                                 <p style="margin-bottom: 10px; line-height: 1.5;">
-                                    This is Level 1 of the interactive visualization. Here you can explore 
-                                    the basic concepts and interactions.
+                                    This is an interactive visualization of the Hadamard gate. Here you can explore 
+                                    the basic concepts of how the Hadamard gate works on the descriptor. Besides, the reference state is |0>^(⨂2).
                                 </p>
                                 
-                                <h4 style="color: #2f4f78; margin: 15px 0 8px 0;">Instructions:</h4>
-                                <ul style="margin-left: 20px; line-height: 1.4;">
-                                    <li>Click "Run" to start the simulation</li>
-                                    <li>Click "Reset" to return to initial state</li>
-                                    <li>Use the toggle button to show/hide this content panel</li>
-                                    <li>Monitor the descriptor and expectation values</li>
-                                </ul>
+                                <button class="instructions-toggle" onclick="toggleInstructions()" style="background: #2f4f78; color: white; border: none; padding: 1px 2px; border-radius: 4px; cursor: pointer; font-size: 14px; font-weight: bold; margin: 15px 0 8px 0;">Instructions ▼</button>
+                                <div id="instructions-content" style="display: none; margin-left: 20px;">
+                                    <ul style="margin-left: 20px; line-height: 1.4;">
+                                        <li>Click "I" boxes to change the operation</li>
+                                        <li>Descriptor monitor shows the evolution of the descriptor</li>
+                                        <li>Click "Run" to start the simulation</li>
+                                        <li>Click "Reset" to return to initial operation</li>  
+                                        <li>Measurement "M" boxes show the expectation values of the descriptor</li>
+                                    </ul>
+                                </div>
                                 
-                                <h4 style="color: #2f4f78; margin: 15px 0 8px 0;">Features:</h4>
+                                <h4 style="color: #2f4f78; margin: 15px 0 8px 0;">Hadamard Gate(H):</h4>
                                 <ul style="margin-left: 20px; line-height: 1.4;">
-                                    <li>3D coordinate system visualization</li>
-                                    <li>Real-time descriptor updates</li>
-                                    <li>Expectation value calculations</li>
-                                    <li>Interactive controls</li>
+                                    <li>An useful one-qubit gate for <b>swapping</b> the descriptor.</li>
+                                    <li>Try to play with the gates and see what happens to the descriptor.</li>
                                 </ul>
+
+                                <button class="expectation-toggle" onclick="toggleExpectation()" style="background: #2f4f78; color: white; border: none; padding: 1px 2px; border-radius: 4px; cursor: pointer; font-size: 14px; font-weight: bold; margin: 15px 0 8px 0;">Expectation value ▼</button>
+                                <div id="expectation-content" style="display: none; margin-left: 20px;">
+                                    <ul style="margin-left: 20px; line-height: 1.4;">
+                                        <li>Exc.X(Q) and Exc.Z(Q) are the Pauli X and Z measurement from the descriptor Q.</li>
+                                        <li>For Q=(left,right), Exc.X(Q) calculation from left-part, and Exc.Z(Q) from right-part.</li>
+                                        <li>The measurement of Xi is 0, and the measurement of Zi is 1. For any integer i.</li>
+                                    </ul>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -474,6 +483,38 @@
                 textContent.classList.add('collapsed');
                 textContentInner.style.display = 'none';
                 toggleButton.textContent = 'Show';
+            }
+        }
+        
+        // 切換 Instructions 顯示/隱藏
+        function toggleInstructions() {
+            const instructionsContent = document.getElementById('instructions-content');
+            const toggleButton = document.querySelector('.instructions-toggle');
+            
+            if (instructionsContent.style.display === 'none') {
+                // 展開
+                instructionsContent.style.display = 'block';
+                toggleButton.textContent = 'Instructions ▲';
+            } else {
+                // 收起
+                instructionsContent.style.display = 'none';
+                toggleButton.textContent = 'Instructions ▼';
+            }
+        }
+        
+        // 切換 Expectation value 顯示/隱藏
+        function toggleExpectation() {
+            const expectationContent = document.getElementById('expectation-content');
+            const toggleButton = document.querySelector('.expectation-toggle');
+            
+            if (expectationContent.style.display === 'none') {
+                // 展開
+                expectationContent.style.display = 'block';
+                toggleButton.textContent = 'Expectation value ▲';
+            } else {
+                // 收起
+                expectationContent.style.display = 'none';
+                toggleButton.textContent = 'Expectation value ▼';
             }
         }
 
