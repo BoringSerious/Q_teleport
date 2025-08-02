@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Btt-flip error detection - Level 5</title>
+    <title>Bit-flip error detection - Level 5</title>
     <style>
         * {
             margin: 0;
@@ -374,7 +374,7 @@
             background: #0D47A1;
         }
         
-        .camera-label {
+        /* .camera-label {
             position: absolute;
             bottom: 35px;
             left: 50%;
@@ -387,7 +387,7 @@
             font-weight: bold;
             z-index: 12;
             white-space: nowrap;
-        }
+        } */
         
         /* 隨機值顯示區塊樣式 */
         .random-values-container {
@@ -497,7 +497,7 @@
                     <div class="block1-layout">
                         <div class="left-panel">
                             <div id="monitor">
-                                <div class="area-label">Monitor</div>
+                                <!-- <div class="area-label">Monitor</div> -->
                                 <div class="monitor-layout">
                                     <div class="descriptor-panel">
                                         <div class="monitor-block">
@@ -595,7 +595,7 @@
                                 <!-- 攝影機控制條 -->
                                 <div class="camera-control" id="camera-control">
                                     <div class="camera-slider" id="camera-slider"></div>
-                                    <div class="camera-label" id="camera-label">Camera X: 0</div>
+                                    <!-- <div class="camera-label" id="camera-label">Camera X: 0</div> -->
                                 </div>
                                 
                                 <!-- 隨機值顯示區塊 -->
@@ -627,7 +627,7 @@
                                 <h3 style="color: #2f4f78; margin-bottom: 15px;">Master Challenge - Bit-flip Error Detection and Correction</h3>
                                 
                                 <p style="margin-bottom: 10px; line-height: 1.5;">
-                                    In process of quantum communication, qubits(Q1, Q2, Q3) are easily affected by the environment, which may cause the bit-flip error. (e.g. Q1 is flipped to |1>)
+                                    In the process of quantum communication, qubits(Q1, Q2, Q3) are easily affected by the environment, which may cause the bit-flip error. (e.g. Q1 is flipped to |1>)
                                     By applying extra qubits(Q4, Q5) to detect which qubit has been flipped, and do the correction to flip back the error qubit.
                                     "<b>σxⁱ、σxʲ、σxᵏ</b>" are error pauli X gates with unknown <b>i, j, k</b>.
                                 </p>
@@ -635,9 +635,9 @@
                                 <button class="instructions-toggle" onclick="toggleInstructions()" style="background: #2f4f78; color: white; border: none; padding: 1px 2px; border-radius: 4px; cursor: pointer; font-size: 14px; font-weight: bold; margin: 15px 0 8px 0;">Introduction ▼</button>
                                 <div id="instructions-content" style="display: none; margin-left: 20px;">
                                     <ul style="margin-left: 20px; line-height: 1.4;">
-                                        <li>This simulation indicates that if one of the qubits(Q1, Q2, Q3) is flipped, how can we apply Q4 and Q5 to detect the redundant filpped information.</li>
+                                        <li>This simulation indicates that if one of the qubits(Q1, Q2, Q3) is flipped, how can we apply Q4 and Q5 to detect the redundant flipped information.</li>
                                         <li>The CNOT gate is a useful tool to disperse one qubit's information to another qubit.</li>
-                                        <li>After the error happens(σxⁱ、σxʲ、σxᵏ are activated), CNOT gates can also be used to disperse the filpped information to Q4 and Q5 for detection.</li>
+                                        <li>After the error happens(σxⁱ、σxʲ、σxᵏ are activated), CNOT gates can also be used to disperse the flipped information to Q4 and Q5 for detection.</li>
                                         <li>The measurement of Q4 and Q5 can be used to detect which qubit is flipped.</li>
                                         <li>The correction can be done by applying the same gate to the error qubit.</li>
                                     </ul>
@@ -669,7 +669,7 @@
     <!-- 提示方框 -->
     <div id="correction-popup" class="correction-popup" style="display: none;">
         <div class="correction-popup-content">
-            <p>Now do correction based on the results of "M4" & "M5".</p>
+            <p>Now using "σx" gates to do correction based on the results of "M4" & "M5". The Q1, Q2, Q3 should have 0 and 1 expectation values of X and Z.</p>
             <button class="correction-popup-close" onclick="closeCorrectionPopup()">OK</button>
         </div>
     </div>
@@ -791,7 +791,7 @@
             scene.add(directionalLight);
             
             // 添加坐標軸
-            createAxes();
+            //createAxes();
             
             // 創建boxes
             createBoxes();
@@ -811,12 +811,12 @@
         
 
         
-        function createAxes() {
-            // 創建坐標軸
-            const axesHelper = new THREE.AxesHelper(3);
-            axesHelper.position.set(0, 0, 0); // 放在四個格子的中心
-            scene.add(axesHelper);
-        }
+        // function createAxes() {
+        //     // 創建坐標軸
+        //     const axesHelper = new THREE.AxesHelper(3);
+        //     axesHelper.position.set(0, 0, 0); // 放在四個格子的中心
+        //     scene.add(axesHelper);
+        // }
         
         function createBottomBars() {
             // 定義每行的顏色
@@ -965,9 +965,9 @@
                     box.add(wireframe); // 作為子物件添加到box
                     
                     // 創建位置標籤（右上角）並作為box的子物件
-                    const positionLabel = createLabel(`${rowNames[row]}${col}`);
-                    positionLabel.position.set(boxWidth/2 - 0.3, boxHeight/2 + 0.01, -boxDepth/2 + 0.3);
-                    box.add(positionLabel); // 作為子物件添加到box
+                    // const positionLabel = createLabel(`${rowNames[row]}${col}`);
+                    // positionLabel.position.set(boxWidth/2 - 0.3, boxHeight/2 + 0.01, -boxDepth/2 + 0.3);
+                    // box.add(positionLabel); // 作為子物件添加到box
                     
                     // 創建狀態標籤（頂面中央）並作為box的子物件
                     let centerText = "I";
@@ -1016,7 +1016,7 @@
                     box.userData = { 
                         state: centerText, // 使用實際顯示的文字作為狀態
                         wireframe: wireframe,
-                        positionLabel: positionLabel,
+                        // positionLabel: positionLabel, // 已移除位置標籤
                         stateLabel: stateLabel,
                         isFixed: col === 0 || col === 10 || 
                                 ((row === 3 && (col === 1 || col === 2 || col === 3)) || 
@@ -1167,12 +1167,12 @@
         function initCameraControl() {
             const slider = document.getElementById('camera-slider');
             const control = document.getElementById('camera-control');
-            const label = document.getElementById('camera-label');
+            // const label = document.getElementById('camera-label');
             
             // 設置初始滑塊位置（對應cameraX = -7）
             const initialSliderPosition = 50 + (cameraX / 0.26); // 將cameraX映射回滑塊位置
             slider.style.left = initialSliderPosition + '%';
-            label.textContent = `Camera X: ${Math.round(cameraX)}`;
+            // label.textContent = `Camera X: ${Math.round(cameraX)}`;
             
             // 滑塊拖拽事件
             slider.addEventListener('mousedown', function(e) {
@@ -1208,7 +1208,7 @@
                 updateCameraPosition();
                 
                 // 更新標籤
-                label.textContent = `Camera X: ${Math.round(cameraX)}`;
+                // label.textContent = `Camera X: ${Math.round(cameraX)}`;
             });
             
             // 滑塊拖拽結束
@@ -1241,7 +1241,7 @@
                 updateCameraPosition();
                 
                 // 更新標籤
-                label.textContent = `Camera X: ${Math.round(cameraX)}`;
+                // label.textContent = `Camera X: ${Math.round(cameraX)}`;
             });
         }
         
@@ -1602,7 +1602,7 @@
         
         // 顯示失敗提示方框
         function showFailureModal() {
-            createModal('❌ Wrong Expectation Values!', 'Please Try Again! My Friend.', '#f44336');
+            createModal('❌ Wrong Expectation Values!', 'Please Try Again!', '#f44336');
         }
         
         // 顯示早期提示方框（還沒到檢查時機）
@@ -1634,7 +1634,7 @@
             } else if (successCount >= 4) {
                 createModal('Tch! Final chance!', 'I\'m waiting for your mistake.', '#FF6B35');
             } else if (successCount >= 3) {
-                createModal('😤 Hmph, show me what you\'ve got!', 'I\'m dying to see you mess up.', '#FF6B35');
+                createModal('Hmph, show me what you\'ve got!', 'I\'m dying to see you mess up.', '#FF6B35');
             } else {
                 createModal('😒 Try Again.', 'Prove to me you\'re not guessing.', '#FF9800');
             }
@@ -1646,27 +1646,27 @@
             
             switch (successCount) {
                 case 1:
-                    title = '🎉 Congrats! But who knows if you just got a lucky guess?🙄';
+                    title = '🎉 Correct! Don\'t tell me you\'re guessing again!';
                     message = '1/5✅ ';
                     color = '#FF9800';
                     break;
                 case 2:
-                    title = '😒 Tch! Twice correct?! You\'re annoyingly lucky.';
+                    title = '😒 You look kinda talented. But...';
                     message = '2/5✅ ✅ ';
                     color = '#FF9800';
                     break;
                 case 3:
-                    title = '😤 Hump, no more than three! You\'ll definitely mess up next time.';
+                    title = 'Will you mess up next time?';
                     message = '3/5✅ ✅ ✅ ';
                     color = '#FF9800';
                     break;
                 case 4:
-                    title = '🤨 Just some clever little tricks! Guess I underestimated you.';
+                    title = 'Great job! One last chance!';
                     message = '4/5✅ ✅ ✅ ✅ ';
                     color = '#FF9800';
                     break;
                 case 5:
-                    title = '😮‍💨 Alright, I\'ll admit—you\'ve got some brains';
+                    title = 'You\'re smarter than what I expected.';
                     message = 'You\'ve mastered this challenge!👑';
                     color = '#4CAF50';
                     break;
@@ -1676,7 +1676,7 @@
                         message = `${successCount}/5 - You\'ve mastered this beyond perfection!👑`;
                         color = '#9C27B0'; // 紫色，表示超越完美
                     } else {
-                        title = '🎉 Congrats! But who knows if you just got a lucky guess?';
+                        title = '🎉 Correct! Don\'t tell me you\'re guessing again!';
                         message = `${successCount}/5`;
                         color = '#FF9800';
                     }
@@ -2246,15 +2246,15 @@
         function resetCameraPosition() {
             cameraX = -7; // 重置到初始位置
             const slider = document.getElementById('camera-slider');
-            const label = document.getElementById('camera-label');
+            // const label = document.getElementById('camera-label');
             
             if (slider) {
                 const resetSliderPosition = 50 + (cameraX / 0.26);
                 slider.style.left = resetSliderPosition + '%';
             }
-            if (label) {
-                label.textContent = `Camera X: ${Math.round(cameraX)}`;
-            }
+            // if (label) {
+            //     label.textContent = `Camera X: ${Math.round(cameraX)}`;
+            // }
             
             updateCameraPosition();
         }
