@@ -389,7 +389,7 @@
                                             <div class="content">
                                                 <!-- Expectation Value 2 內容 -->
                                                 <p>
-                                                  Exc.(Q2) = 0,    Exc.Z(Q2) = 1
+                                                  Exc.X(Q2) = 0,    Exc.Z(Q2) = 1
                                                 </p>
                                             </div>
                                         </div>
@@ -411,8 +411,8 @@
                                 <h3 style="color: #2f4f78; margin-bottom: 15px;">Level 3 - Build an Entangled Descriptor Pair</h3>
                                 
                                 <p style="margin-bottom: 10px; line-height: 1.5;">
-                                    Now, you can arrange different combination of Hadamard and CNOT gates to build a simple 
-                                    entangled Bell state..
+                                    Now, you can arrange different combinations of Hadamard and CNOT gates to build a simple 
+                                    entangled Bell state.
                                 </p>
                                 
                                 <button class="instructions-toggle" onclick="toggleInstructions()" style="background: #2f4f78; color: white; border: none; padding: 1px 2px; border-radius: 4px; cursor: pointer; font-size: 14px; font-weight: bold; margin: 15px 0 8px 0;">Instructions ▼</button>
@@ -428,7 +428,7 @@
                                 
                                 <h4 style="color: #2f4f78; margin: 15px 0 8px 0;">Bell State:</h4>
                                 <ul style="margin-left: 20px; line-height: 1.4;">
-                                    <li>It is a maximally entangled state with <b>zero</b> expectational value of any Pauli measurement.</li>
+                                    <li>It is a maximally entangled state with <b>zero</b> expectation value of any Pauli measurement.</li>
                                     <li>Q1, Q2 share the information with each other.</li>
                                     <li>Try to use "H" and "CNOT" gates to generate a Bell state by yourself. 🎉</li>
                                 </ul>
@@ -456,11 +456,11 @@
             if (expectationContent.style.display === 'none') {
                 // 展開
                 expectationContent.style.display = 'block';
-                toggleButton.textContent = 'Expectation value ▲';
+                toggleButton.textContent = 'Tips ▲';
             } else {
                 // 收起
                 expectationContent.style.display = 'none';
-                toggleButton.textContent = 'Expectation value ▼';
+                toggleButton.textContent = 'Tips ▼';
             }
         }
 
@@ -541,7 +541,7 @@
             scene.add(directionalLight);
             
             // 添加坐標軸
-            createAxes();
+            //createAxes();
             
             // 創建boxes
             createBoxes();
@@ -678,9 +678,9 @@
                     box.add(wireframe); // 作為子物件添加到box
                     
                     // 創建位置標籤（右上角）並作為box的子物件
-                    const positionLabel = createLabel(row === 0 ? `A${col}` : `B${col}`);
-                    positionLabel.position.set(boxWidth/2 - 0.3, boxHeight/2 + 0.01, -boxDepth/2 + 0.3);
-                    box.add(positionLabel); // 作為子物件添加到box
+                    // const positionLabel = createLabel(row === 0 ? `A${col}` : `B${col}`);
+                    // positionLabel.position.set(boxWidth/2 - 0.3, boxHeight/2 + 0.01, -boxDepth/2 + 0.3);
+                    // box.add(positionLabel); // 作為子物件添加到box
                     
                     // 創建狀態標籤（頂面中央）並作為box的子物件
                     let centerText = "I";
@@ -700,7 +700,7 @@
                     box.userData = { 
                         state: centerText, // 使用實際顯示的文字作為狀態
                         wireframe: wireframe,
-                        positionLabel: positionLabel,
+                        // positionLabel: positionLabel, // 已移除位置標籤
                         stateLabel: stateLabel,
                         isFixed: col === 0 || col === 3, // 第0列和第3列（A0、B0、A3、B3）為固定不可互動
                         boxHeight: boxHeight
