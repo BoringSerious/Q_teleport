@@ -423,7 +423,7 @@
                     <div class="block1-layout">
                         <div class="left-panel">
                             <div id="monitor">
-                                <div class="area-label">Monitor</div>
+                                <!-- <div class="area-label">Monitor</div> -->
                                 <div class="monitor-layout">
                                     <div class="descriptor-panel">
                                         <div class="monitor-block">
@@ -460,7 +460,7 @@
                                             <div class="content">
                                                 <!-- Expectation Value 2 內容 -->
                                                 <p>
-                                                  Exc.(Q2) = 0,    Exc.Z(Q2) = 1
+                                                  Exc.X(Q2) = 0,    Exc.Z(Q2) = 1
                                                 </p>
                                             </div>
                                         </div>
@@ -497,14 +497,14 @@
                                 
                                 <p style="margin-bottom: 10px; line-height: 1.5;">
                                     This challenge aims to simulate the reception of two classical bits from one qubit. 
-                                    Suppose there are two qubits(Q1, Q2), and Q1 is embbeded with two classical bits information (i, j).
+                                    Suppose there are two qubits(Q1, Q2), and Q1 is encoded with two classical bits information (i, j).
                                     through "σxⁱ" and "σzʲ" gates. How can we extract the classical bits by using entanglement and joint measurement?
                                 </p>
                                 
                                 <button class="instructions-toggle" onclick="toggleInstructions()" style="background: #2f4f78; color: white; border: none; padding: 1px 2px; border-radius: 4px; cursor: pointer; font-size: 14px; font-weight: bold; margin: 15px 0 8px 0;">Introduction ▼</button>
                                 <div id="instructions-content" style="display: none; margin-left: 20px;">
                                     <ul style="margin-left: 20px; line-height: 1.4;">
-                                        <li>Suppose two qubits Q1, Q2 are entangled and seperated from a long distance, where Alice hold Q1 and Bob hold Q2.</li>
+                                        <li>Suppose two qubits Q1, Q2 are entangled and separated from a long distance, where Alice holds Q1 and Bob holds Q2.</li>
                                         <li>Alice stores the i, j information into Q1 by Pauli "σx(i)" and "σz(j)" gates.</li>
                                         <li>Then Bob receives the Q1 from Alice, and perform Bell measurement on Q1 and Q2 to extract the i, j information.</li>
                                         <li>Therefore, this simulation shows the possibility of transmitting two classical bits through one quantum bit.</li>
@@ -620,7 +620,7 @@
             scene.add(directionalLight);
             
             // 添加坐標軸
-            createAxes();
+            //createAxes();
             
             // 創建boxes
             createBoxes();
@@ -771,9 +771,9 @@
                     box.add(wireframe); // 作為子物件添加到box
                     
                     // 創建位置標籤（右上角）並作為box的子物件
-                    const positionLabel = createLabel(row === 0 ? `A${col}` : `B${col}`);
-                    positionLabel.position.set(boxWidth/2 - 0.3, boxHeight/2 + 0.01, -boxDepth/2 + 0.3);
-                    box.add(positionLabel); // 作為子物件添加到box
+                    // const positionLabel = createLabel(row === 0 ? `A${col}` : `B${col}`);
+                    // positionLabel.position.set(boxWidth/2 - 0.3, boxHeight/2 + 0.01, -boxDepth/2 + 0.3);
+                    // box.add(positionLabel); // 作為子物件添加到box
                     
                     // 創建狀態標籤（頂面中央）並作為box的子物件
                     let centerText = "I";
@@ -799,7 +799,7 @@
                     box.userData = { 
                         state: centerText, // 使用實際顯示的文字作為狀態
                         wireframe: wireframe,
-                        positionLabel: positionLabel,
+                        // positionLabel: positionLabel, // 已移除位置標籤
                         stateLabel: stateLabel,
                         isFixed: col === 0 || col === 7 || (col === 3 && row === 0) || (col === 4 && row === 0), // 第0列、第7列、第3列A行和第4列A行（A0、B0、A3、A4、A7、B7）為固定不可互動
                         boxHeight: boxHeight
