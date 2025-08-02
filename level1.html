@@ -387,7 +387,7 @@
                                             <div class="content">
                                                 <!-- Expectation Value 2 內容 -->
                                                 <p>
-                                                  Exc.(Q2) = 0,    Exc.Z(Q2) = 1
+                                                  Exc.X(Q2) = 0,    Exc.Z(Q2) = 1
                                                 </p>
                                             </div>
                                         </div>
@@ -426,16 +426,16 @@
                                 
                                 <h4 style="color: #2f4f78; margin: 15px 0 8px 0;">Hadamard Gate(H):</h4>
                                 <ul style="margin-left: 20px; line-height: 1.4;">
-                                    <li>An useful one-qubit gate for <b>swapping</b> the descriptor.</li>
+                                    <li>A useful one-qubit gate that transforms the descriptor by <b>exchanging</b> the X and Z components.</li>
                                     <li>Try to play with the gates and see what happens to the descriptor.</li>
                                 </ul>
 
                                 <button class="expectation-toggle" onclick="toggleExpectation()" style="background: #2f4f78; color: white; border: none; padding: 1px 2px; border-radius: 4px; cursor: pointer; font-size: 14px; font-weight: bold; margin: 15px 0 8px 0;">Expectation value ▼</button>
                                 <div id="expectation-content" style="display: none; margin-left: 20px;">
                                     <ul style="margin-left: 20px; line-height: 1.4;">
-                                        <li>Exc.X(Q) and Exc.Z(Q) are the Pauli X and Z measurement from the descriptor Q.</li>
-                                        <li>For Q=(left,right), Exc.X(Q) calculation from left-part, and Exc.Z(Q) from right-part.</li>
-                                        <li>The measurement of Xi is 0, and the measurement of Zi is 1. For any integer i.</li>
+                                        <li>Exc.X(Q) and Exc.Z(Q) are the expectation values of Pauli X and Z operators for the descriptor Q.</li>
+                                        <li>For Q=(left,right), Exc.X(Q) is calculated from the left component, and Exc.Z(Q) from the right component.</li>
+                                        <li>The expectation value of Xi is 0, and the expectation value of Zi is 1, for any integer i.</li>
                                     </ul>
                                 </div>
                             </div>
@@ -556,7 +556,7 @@
             scene.add(directionalLight);
             
             // 添加坐標軸
-            createAxes();
+            //createAxes();
             
             // 創建boxes
             createBoxes();
@@ -678,9 +678,9 @@
                     box.add(wireframe); // 作為子物件添加到box
                     
                     // 創建位置標籤（右上角）並作為box的子物件
-                    const positionLabel = createLabel(row === 0 ? `A${col}` : `B${col}`);
-                    positionLabel.position.set(boxWidth/2 - 0.3, boxHeight/2 + 0.01, -boxDepth/2 + 0.3);
-                    box.add(positionLabel); // 作為子物件添加到box
+                    // const positionLabel = createLabel(row === 0 ? `A${col}` : `B${col}`);
+                    // positionLabel.position.set(boxWidth/2 - 0.3, boxHeight/2 + 0.01, -boxDepth/2 + 0.3);
+                    // box.add(positionLabel); // 作為子物件添加到box
                     
                     // 創建狀態標籤（頂面中央）並作為box的子物件
                     let centerText = "I";
@@ -700,7 +700,7 @@
                     box.userData = { 
                         state: centerText, // 使用實際顯示的文字作為狀態
                         wireframe: wireframe,
-                        positionLabel: positionLabel,
+                        // positionLabel: positionLabel, // 已移除位置標籤
                         stateLabel: stateLabel,
                         isFixed: col === 0 || col === 3, // 第0列和第3列（A0、B0、A3、B3）為固定不可互動
                         boxHeight: boxHeight
@@ -967,11 +967,11 @@
             // 只有在M1M2發光時才計算Expectation Values
             // 計算Q1的Expectation Values
             const excXQ1 = q1Left.includes('X') ? 0 : 1;
-            const excZQ1 = q1Right.includes('X') ? 0 : 1;
+            const excZQ1 = q1Right.includes('Z') ? 1 : 0;
             
             // 計算Q2的Expectation Values
             const excXQ2 = q2Left.includes('X') ? 0 : 1;
-            const excZQ2 = q2Right.includes('X') ? 0 : 1;
+            const excZQ2 = q2Right.includes('Z') ? 1 : 0;
             
             // 更新顯示
             const q1ExpectElem = document.querySelector('.expectation-panel .monitor-block:nth-child(1) .content p');
